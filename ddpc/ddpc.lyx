@@ -318,8 +318,8 @@ key "Beck2007509"
 \end_inset
 
 .
- In particular, to see how a population of neurons is able to integrate
- information from two other populations.
+ In particular, consider the cue combination is a task in which a population
+ of neurons integrate information from two other populations.
  Let the three population activities (rates) be 
 \begin_inset Formula $\mathbf{r_{1},}\mathbf{r_{2},}$
 \end_inset
@@ -382,9 +382,9 @@ reference "eq:posterior"
 
 
 \begin_inset Formula 
-\[
+\begin{equation}
 p(x|\mathbf{r}_{1},\mathbf{r}_{2})\propto\exp\left(\sum_{i}(r_{1i}+r_{2i})\log[f_{i}(x)]\right)
-\]
+\end{equation}
 
 \end_inset
 
@@ -445,12 +445,191 @@ posterior spaces
 .
 \end_layout
 
+\begin_layout Subsection
+Exponential family
+\end_layout
+
 \begin_layout Standard
-More generally, if 
+More generally, PPC is in fact a coding scheme where the likelihood (encoding)
+ function is in the exponential family with linear sufficient statistics.
+ Here, the sufficient statistics is the response vector 
+\begin_inset Formula $\mathbf{r}$
+\end_inset
+
+, and the natural parameters is a (tuning) function of the stimulus 
+\begin_inset Formula $\mathbf{h}(x)$
+\end_inset
+
+.
+ Decoding corresponds to finding the MAP of the natural parameters in terms
+ of 
+\begin_inset Formula $x$
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Beck2007509"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Consider the same cue combination task above.
+ If the individual or joint likelihood function of the first two populations
+ is in the exponential family with linear sufficient statistics, and we
+ 
+\series bold
+relax the assumption
+\series default
+ that the tuning functions are identical in the three populations
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+p(\mathbf{r}_{1},\mathbf{r}_{2}|x)=\frac{1}{Z_{12}(x)}\eta(\mathbf{r}_{1},\mathbf{r}_{2})\exp(\mathbf{h}_{1}^{\intercal}(x)\mathbf{r}_{1}+\mathbf{h}_{2}^{\intercal}(x)\mathbf{r}_{2})
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Again, assume a flat prior over 
+\begin_inset Formula $x$
+\end_inset
+
+, the posterior over is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p(x|\mathbf{r}_{1},\mathbf{r}_{2})\propto\frac{1}{Z_{12}(x)}\exp(\mathbf{h}_{1}^{\intercal}(x)\mathbf{r}_{1}+\mathbf{h}_{2}^{\intercal}(x)\mathbf{r}_{2})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we further assume that the tuning curves share a common basis 
+\begin_inset Formula $\mathbf{h}_{1}(s)=\mathbf{A}_{1}\mathbf{b}(s)$
+\end_inset
+
+ and 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\mathbf{h}_{1}(s)=\mathbf{A}_{2}\mathbf{b}(s)$
+\end_inset
+
+, it can be shown 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Beck2007509"
+
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ that the optimal response of the third population is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{r}_{3}=\mathbf{A}_{1}^{\intercal}\mathbf{r}_{1}+\mathbf{A}_{2}^{\intercal}\mathbf{r}_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+a linear weighted sum of the first two population responses
 \end_layout
 
 \begin_layout Section
 Distributional Population Code (DPC)
+\end_layout
+
+\begin_layout Standard
+Due to the limitation of PPC, a second encoding scheme is proposed in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Zemel1998"
+
+\end_inset
+
+.
+ The authors considered a general stimulus 
+\begin_inset Formula $m(x)$
+\end_inset
+
+ which is not necessary a delta function.
+ Instead, it is a distribution of stimulus that over a potentially infinite
+ dimensional space (the continuous domain of orientation or location).
+ In this paper, a probability distribution of 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ is considered, and this is generalised to any distribution over 
+\begin_inset Formula $s$
+\end_inset
+
+ in a further work 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sahani:2003"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
