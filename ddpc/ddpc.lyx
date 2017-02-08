@@ -242,7 +242,17 @@ P(x|\mathbf{\mathbf{n}})\propto\exp\left(\sum n_{i}\log f_{i}(x)\right)\label{eq
 \end_layout
 
 \begin_layout Standard
-Assuming Gaussian tuning curve, 
+We can see that the observation interval 
+\begin_inset Formula $T$
+\end_inset
+
+ is not present in the posterior because it only contributes as a constant
+ w.r.t 
+\begin_inset Formula $s$
+\end_inset
+
+.
+ Assuming Gaussian tuning curve, 
 \end_layout
 
 \begin_layout Standard
@@ -607,7 +617,7 @@ key "Zemel1998"
 \end_inset
 
 .
- The authors considered a general stimulus 
+ The authors considered a general stimulus distribution 
 \begin_inset Formula $m(x)$
 \end_inset
 
@@ -627,6 +637,26 @@ key "Zemel1998"
 LatexCommand cite
 key "Sahani:2003"
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Encoding and decoding
+\end_layout
+
+\begin_layout Standard
+For a given stimulus distribution 
+\begin_inset Formula $m(s)$
+\end_inset
+
+, the rate of a neuron is a inner product (convolution) between 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ and 
+\begin_inset Formula $f_{i}(x)$
 \end_inset
 
 
