@@ -1,0 +1,468 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Notes on Distributed Distributional (Population) Code
+\end_layout
+
+\begin_layout Standard
+This is my own notes on how to use DDPC to do computation.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Probablistic Population Code (PPC)
+\end_layout
+
+\begin_layout Subsection
+Encoding and decoding
+\end_layout
+
+\begin_layout Standard
+In the popular probablistic population code, each neurons response is thought
+ to encode one dimensional quantity 
+\begin_inset Formula $x$
+\end_inset
+
+(e.g.
+ orientation, frequency).
+ If a population of neurons share the same tuning curves shape but evenly
+ spaced preferred stimuli, then the rate is 
+\begin_inset Formula $f(x)=f(x-x_{i})$
+\end_inset
+
+, then the responses of this population to a single input is similar to
+ this tuning curve, which is a 
+\begin_inset Quotes eld
+\end_inset
+
+discrete convolution
+\begin_inset Quotes erd
+\end_inset
+
+ between 
+\begin_inset Formula $f(x)$
+\end_inset
+
+ and delta function 
+\begin_inset Formula $\delta(x-x^{*})$
+\end_inset
+
+.
+ The observed rates will then be a noisy version of 
+\begin_inset Formula $f_{i}(x)$
+\end_inset
+
+.
+ When the noise is Poisson and the observation window is T, the probablity
+ of observing 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+ is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P(n_{i}|x)=e^{-Tf_{i}(x)}\frac{[Tf_{i}(x)]^{n_{i}}}{n_{i}!}\label{eq:lik}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Usually, tuning curves are assumed to be Gaussian
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+f_{i}(x)\propto\exp\left[-\frac{(x-x_{i})^{2}}{2\sigma^{2}}\right]
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Decoding using Bayes rule, we have
+\begin_inset Formula 
+\begin{eqnarray}
+P(x|\mathbf{n}) & \propto & \prod_{i}e^{-Tf_{i}(x)}\frac{[Tf_{i}(x)]^{n_{i}}}{n_{i}!}\nonumber \\
+\log P(x|\mathbf{\mathbf{n}}) & = & -T\sum_{i}f_{i}(x)+\sum_{i}n_{i}\log T+T\sum_{i}n_{i}\log f_{i}(x)-K\label{eq:1}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is common to make two assumptions:
+\end_layout
+
+\begin_layout Enumerate
+The tuning functions 
+\begin_inset Formula $f_{i}(x)$
+\end_inset
+
+ tile the space densely enough so that 
+\begin_inset Formula $\sum_{i}f_{i}(x)$
+\end_inset
+
+ is roughly as constant
+\end_layout
+
+\begin_layout Enumerate
+The number of total spikes 
+\begin_inset Formula $\sum_{i}n_{i}$
+\end_inset
+
+ is independent of 
+\begin_inset Formula $x$
+\end_inset
+
+ due to symmetry.
+\end_layout
+
+\begin_layout Standard
+Therefore, equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:1"
+
+\end_inset
+
+ becomes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P(x|\mathbf{\mathbf{n}})\propto\exp\left(\sum n_{i}\log f_{i}(x)\right)\label{eq:posterior}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Assuming Gaussian tuning curve, 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\log P(x|\mathbf{\mathbf{n}}) & = & -T\sum_{i}f_{i}(x)+\sum_{i}n_{i}\log T+\sum_{i}n_{i}\log[f_{i}(x)]-K\\
+ & = & -\frac{1}{2\sigma^{2}}\sum_{i}n_{i}(x-x_{i})^{2}+K'\\
+ & = & -\frac{1}{2}\frac{\sum_{i}n_{i}}{\sigma^{2}}\left(x-\frac{\sum_{i}n_{i}x_{i}}{\sum_{i}n_{i}}\right)^{2}+K''\\
+x|\mathbf{n} & \sim & \mathcal{N}\left(\frac{\sum_{i}n_{i}x_{i}}{\sum_{i}n_{i}},\frac{\sigma^{2}}{\sum_{i}n_{i}}\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A few observations and corresponding problems
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Zemel1998"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Enumerate
+
+\shape italic
+Multiplicity
+\shape default
+: MAP of the stimulus is the mean which is the population average and is
+ a single value (though this is consistent with assumption that we are encoding
+ a single dimension as seen in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:lik"
+
+\end_inset
+
+): 
+\series bold
+cannot decode into multimodal stimulus
+\end_layout
+
+\begin_layout Enumerate
+
+\shape italic
+Uncertainty
+\shape default
+: The variance is strictly less than the width of the tuning curve: c
+\series bold
+annot represent extrinsic stimulus uncertainty greater than
+\series default
+ 
+\begin_inset Formula $\sigma$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Computation
+\end_layout
+
+\begin_layout Standard
+Computations using PPC have been explored in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Beck2007509"
+
+\end_inset
+
+.
+ In particular, to see how a population of neurons is able to integrate
+ information from two other populations.
+ Let the three population activities (rates) be 
+\begin_inset Formula $\mathbf{r_{1},}\mathbf{r_{2},}$
+\end_inset
+
+and 
+\begin_inset Formula $\mathbf{r_{3}}$
+\end_inset
+
+.
+ We would like the thrid population to encode the same posterior density
+ jointly encoded by the first two:
+\begin_inset Formula 
+\begin{equation}
+p(x|\mathbf{r}_{3})=p(x|\mathbf{r}_{1},\mathbf{r}_{2})\label{eq:twopopulation}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Assume that the prior 
+\begin_inset Formula $p(x)$
+\end_inset
+
+ is flat and the first two populations activities are independent given
+ a stimulus, then 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+p(x|\mathbf{r}_{1},\mathbf{r}_{2})\propto p(\mathbf{r}_{1},\mathbf{r}_{2}|x)=p(\mathbf{r}_{1}|x)p(\mathbf{r}_{2}|x)\propto p(x|\mathbf{r}_{1})p(x|\mathbf{r}_{2})
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If the three populations have the same tuning curves 
+\begin_inset Formula $f_{1i}(x)=f_{2i}(x)=f_{3i}(x)=f_{i}(x)$
+\end_inset
+
+, then using equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:posterior"
+
+\end_inset
+
+ we have 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula 
+\[
+p(x|\mathbf{r}_{1},\mathbf{r}_{2})\propto\exp\left(\sum_{i}(r_{1i}+r_{2i})\log[f_{i}(x)]\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To satisfy equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:twopopulation"
+
+\end_inset
+
+, it can be concluded that the 
+\begin_inset Formula $\mathbf{r}_{3}=\mathbf{r}_{2}+\mathbf{r}_{1}$
+\end_inset
+
+.
+ Even though the this result is obtained by explicitly combining the the
+ first two population activites, this result also satisfy 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:posterior"
+
+\end_inset
+
+ which can be obtained by running Bayes rules on population 3 directly.
+ The critical part is constructing the 
+\series bold
+likelihood function
+\series default
+ 
+\series bold
+
+\begin_inset Formula $p(\mathbf{r}|s)$
+\end_inset
+
+
+\series default
+ and 
+\series bold
+operations on activities
+\series default
+ such that this operation is optimal in the sense that it is equivalent
+ to operations in 
+\series bold
+posterior spaces
+\series default
+ 
+\series bold
+
+\begin_inset Formula $p(s|\mathbf{r})$
+\end_inset
+
+
+\series default
+.
+\end_layout
+
+\begin_layout Standard
+More generally, if 
+\end_layout
+
+\begin_layout Section
+Distributional Population Code (DPC)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "ref"
+options "bibtotoc,plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
