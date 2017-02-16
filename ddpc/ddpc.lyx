@@ -1,7 +1,9 @@
-#LyX 2.0 created this file. For more info see http://www.lyx.org/
-\lyxformat 413
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
 \begin_document
 \begin_header
+\save_transient_properties true
+\origin unavailable
 \textclass article
 \use_default_options true
 \maintain_unincluded_children false
@@ -9,16 +11,16 @@
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
-\font_sans default
-\font_typewriter default
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
-
+\font_sf_scale 100 100
+\font_tt_scale 100 100
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -29,15 +31,24 @@
 \use_hyperref false
 \papersize default
 \use_geometry true
-\use_amsmath 1
-\use_esint 1
-\use_mhchem 1
-\use_mathdots 1
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
 \cite_engine basic
+\cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
 \suppress_date false
+\justification true
 \use_refstyle 1
 \index Index
 \shortcut idx
@@ -66,6 +77,10 @@
 
 \begin_layout Title
 Notes on Distributed Distributional (Population) Code
+\end_layout
+
+\begin_layout Author
+Kevin W Li
 \end_layout
 
 \begin_layout Standard
@@ -107,7 +122,7 @@ In the popular probablistic population code, each neurons response is thought
  orientation, frequency).
  If a population of neurons share the same tuning curves shape but evenly
  spaced preferred stimuli, then the rate is 
-\begin_inset Formula $f(x)=f(x-x_{i})$
+\begin_inset Formula $r(x)=r(x-x_{i})$
 \end_inset
 
 , then the responses of this population to a single input is similar to
@@ -120,7 +135,7 @@ discrete convolution
 \end_inset
 
  between 
-\begin_inset Formula $f(x)$
+\begin_inset Formula $r(x)$
 \end_inset
 
  and delta function 
@@ -129,12 +144,11 @@ discrete convolution
 
 .
  The observed rates will then be a noisy version of 
-\begin_inset Formula $f_{i}(x)$
+\begin_inset Formula $r_{i}(x)$
 \end_inset
 
 .
- When the noise is Poisson and the observation window is T, the probablity
- of observing 
+ The probablity of observing 
 \begin_inset Formula $n_{i}$
 \end_inset
 
@@ -142,16 +156,9 @@ discrete convolution
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $ $
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P(n_{i}|x)=e^{-Tf_{i}(x)}\frac{[Tf_{i}(x)]^{n_{i}}}{n_{i}!}\label{eq:lik}
+P(n_{i}|x)=e^{-r_{i}(x)}\frac{[r_{i}(x)]^{n_{i}}}{n_{i}!}\label{eq:lik}
 \end{equation}
 
 \end_inset
@@ -161,16 +168,9 @@ P(n_{i}|x)=e^{-Tf_{i}(x)}\frac{[Tf_{i}(x)]^{n_{i}}}{n_{i}!}\label{eq:lik}
 
 \begin_layout Standard
 Usually, tuning curves are assumed to be Gaussian
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $ $
-\end_inset
-
-
 \begin_inset Formula 
 \begin{equation}
-f_{i}(x)\propto\exp\left[-\frac{(x-x_{i})^{2}}{2\sigma^{2}}\right]
+r_{i}(x)\propto\exp\left[-\frac{(x-x_{i})^{2}}{2\sigma^{2}}\right]
 \end{equation}
 
 \end_inset
@@ -182,8 +182,8 @@ f_{i}(x)\propto\exp\left[-\frac{(x-x_{i})^{2}}{2\sigma^{2}}\right]
 Decoding using Bayes rule, we have
 \begin_inset Formula 
 \begin{eqnarray}
-P(x|\mathbf{n}) & \propto & \prod_{i}e^{-Tf_{i}(x)}\frac{[Tf_{i}(x)]^{n_{i}}}{n_{i}!}\nonumber \\
-\log P(x|\mathbf{\mathbf{n}}) & = & -T\sum_{i}f_{i}(x)+\sum_{i}n_{i}\log T+T\sum_{i}n_{i}\log f_{i}(x)-K\label{eq:1}
+P(x|\mathbf{n}) & \propto & \prod_{i}e^{-r_{i}(x)}\frac{[r_{i}(x)]^{n_{i}}}{n_{i}!}\nonumber \\
+\log P(x|\mathbf{\mathbf{n}}) & = & -\sum_{i}r_{i}(x)+\sum_{i}n_{i}\log r_{i}(x)+K\label{eq:1}
 \end{eqnarray}
 
 \end_inset
@@ -192,31 +192,15 @@ P(x|\mathbf{n}) & \propto & \prod_{i}e^{-Tf_{i}(x)}\frac{[Tf_{i}(x)]^{n_{i}}}{n_
 \end_layout
 
 \begin_layout Standard
-It is common to make two assumptions:
-\end_layout
-
-\begin_layout Enumerate
-The tuning functions 
-\begin_inset Formula $f_{i}(x)$
+It is common to make the assumption that the tuning functions 
+\begin_inset Formula $r_{i}(x)$
 \end_inset
 
  tile the space densely enough so that 
-\begin_inset Formula $\sum_{i}f_{i}(x)$
+\begin_inset Formula $\sum_{i}r_{i}(x)$
 \end_inset
 
  is roughly as constant
-\end_layout
-
-\begin_layout Enumerate
-The number of total spikes 
-\begin_inset Formula $\sum_{i}n_{i}$
-\end_inset
-
- is independent of 
-\begin_inset Formula $x$
-\end_inset
-
- due to symmetry.
 \end_layout
 
 \begin_layout Standard
@@ -233,7 +217,7 @@ reference "eq:1"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P(x|\mathbf{\mathbf{n}})\propto\exp\left(\sum n_{i}\log f_{i}(x)\right)\label{eq:posterior}
+P(x|\mathbf{\mathbf{n}})\propto\exp\left(\sum n_{i}\log r_{i}(x)\right)\label{eq:posterior}
 \end{equation}
 
 \end_inset
@@ -242,27 +226,17 @@ P(x|\mathbf{\mathbf{n}})\propto\exp\left(\sum n_{i}\log f_{i}(x)\right)\label{eq
 \end_layout
 
 \begin_layout Standard
-We can see that the observation interval 
-\begin_inset Formula $T$
-\end_inset
-
- is not present in the posterior because it only contributes as a constant
- w.r.t 
-\begin_inset Formula $s$
-\end_inset
-
-.
- Assuming Gaussian tuning curve, 
+Assuming Gaussian tuning curve, 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{eqnarray*}
-\log P(x|\mathbf{\mathbf{n}}) & = & -T\sum_{i}f_{i}(x)+\sum_{i}n_{i}\log T+\sum_{i}n_{i}\log[f_{i}(x)]-K\\
- & = & -\frac{1}{2\sigma^{2}}\sum_{i}n_{i}(x-x_{i})^{2}+K'\\
- & = & -\frac{1}{2}\frac{\sum_{i}n_{i}}{\sigma^{2}}\left(x-\frac{\sum_{i}n_{i}x_{i}}{\sum_{i}n_{i}}\right)^{2}+K''\\
+\begin{eqnarray}
+\log P(x|\mathbf{\mathbf{n}}) & = & \sum_{i}n_{i}\log[r_{i}(x)]+K\nonumber \\
+ & = & -\frac{1}{2\sigma^{2}}\sum_{i}n_{i}(x-x_{i})^{2}+K'\nonumber \\
+ & = & -\frac{1}{2}\frac{\sum_{i}n_{i}}{\sigma^{2}}\left(x-\frac{\sum_{i}n_{i}x_{i}}{\sum_{i}n_{i}}\right)^{2}+K''\nonumber \\
 x|\mathbf{n} & \sim & \mathcal{N}\left(\frac{\sum_{i}n_{i}x_{i}}{\sum_{i}n_{i}},\frac{\sigma^{2}}{\sum_{i}n_{i}}\right)
-\end{eqnarray*}
+\end{eqnarray}
 
 \end_inset
 
@@ -270,7 +244,9 @@ x|\mathbf{n} & \sim & \mathcal{N}\left(\frac{\sum_{i}n_{i}x_{i}}{\sum_{i}n_{i}},
 \end_layout
 
 \begin_layout Standard
-A few observations and corresponding problems
+Because the tuning curves are Gaussian, the posterior over stimulus location
+ is a Gaussian distribution.
+ A few observations and corresponding problems
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Zemel1998"
@@ -330,12 +306,16 @@ key "Beck2007509"
 .
  In particular, consider the cue combination is a task in which a population
  of neurons integrate information from two other populations.
- Let the three population activities (rates) be 
-\begin_inset Formula $\mathbf{r_{1},}\mathbf{r_{2},}$
+ Let the three population activities be 
+\begin_inset Formula $\mathbf{n_{1}}$
+\end_inset
+
+,
+\begin_inset Formula $\mathbf{n}_{2}$
 \end_inset
 
 and 
-\begin_inset Formula $\mathbf{r_{3}}$
+\begin_inset Formula $\mathbf{n_{3}}$
 \end_inset
 
 .
@@ -343,7 +323,7 @@ and
  jointly encoded by the first two:
 \begin_inset Formula 
 \begin{equation}
-p(x|\mathbf{r}_{3})=p(x|\mathbf{r}_{1},\mathbf{r}_{2})\label{eq:twopopulation}
+p(x|\mathbf{n}_{3})=p(x|\mathbf{n}_{1},\mathbf{n}_{2})\label{eq:twopopulation}
 \end{equation}
 
 \end_inset
@@ -363,7 +343,7 @@ Assume that the prior
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-p(x|\mathbf{r}_{1},\mathbf{r}_{2})\propto p(\mathbf{r}_{1},\mathbf{r}_{2}|x)=p(\mathbf{r}_{1}|x)p(\mathbf{r}_{2}|x)\propto p(x|\mathbf{r}_{1})p(x|\mathbf{r}_{2})
+p(x|\mathbf{n}_{1},\mathbf{n}_{2})\propto p(\mathbf{n}_{1},\mathbf{n}_{2}|x)=p(\mathbf{n}_{1}|x)p(\mathbf{n}_{2}|x)\propto p(x|\mathbf{n}_{1})p(x|\mathbf{n}_{2})
 \end{equation}
 
 \end_inset
@@ -393,7 +373,7 @@ reference "eq:posterior"
 
 \begin_inset Formula 
 \begin{equation}
-p(x|\mathbf{r}_{1},\mathbf{r}_{2})\propto\exp\left(\sum_{i}(r_{1i}+r_{2i})\log[f_{i}(x)]\right)
+p(x|\mathbf{n}_{1},\mathbf{n}_{2})\propto\exp\left(\sum_{i}(n_{1i}+n_{2i})\log[f_{i}(x)]\right)
 \end{equation}
 
 \end_inset
@@ -410,7 +390,7 @@ reference "eq:twopopulation"
 \end_inset
 
 , it can be concluded that the 
-\begin_inset Formula $\mathbf{r}_{3}=\mathbf{r}_{2}+\mathbf{r}_{1}$
+\begin_inset Formula $\mathbf{n}_{3}=\mathbf{n}_{2}+\mathbf{n}_{1}$
 \end_inset
 
 .
@@ -430,7 +410,7 @@ likelihood function
  
 \series bold
 
-\begin_inset Formula $p(\mathbf{r}|s)$
+\begin_inset Formula $p(\mathbf{n}|s)$
 \end_inset
 
 
@@ -447,7 +427,7 @@ posterior spaces
  
 \series bold
 
-\begin_inset Formula $p(s|\mathbf{r})$
+\begin_inset Formula $p(s|\mathbf{n})$
 \end_inset
 
 
@@ -463,7 +443,7 @@ Exponential family
 More generally, PPC is in fact a coding scheme where the likelihood (encoding)
  function is in the exponential family with linear sufficient statistics.
  Here, the sufficient statistics is the response vector 
-\begin_inset Formula $\mathbf{r}$
+\begin_inset Formula $\mathbf{n}$
 \end_inset
 
 , and the natural parameters is a (tuning) function of the stimulus 
@@ -500,7 +480,7 @@ relax the assumption
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-p(\mathbf{r}_{1},\mathbf{r}_{2}|x)=\frac{1}{Z_{12}(x)}\eta(\mathbf{r}_{1},\mathbf{r}_{2})\exp(\mathbf{h}_{1}^{\intercal}(x)\mathbf{r}_{1}+\mathbf{h}_{2}^{\intercal}(x)\mathbf{r}_{2})
+p(\mathbf{n}_{1},\mathbf{n}_{2}|x)=\frac{1}{Z_{12}(x)}\eta(\mathbf{n}_{1},\mathbf{n}_{2})\exp(\mathbf{h}_{1}^{\intercal}(x)\mathbf{n}_{1}+\mathbf{h}_{2}^{\intercal}(x)\mathbf{n}_{2})
 \end{equation}
 
 \end_inset
@@ -518,9 +498,9 @@ Again, assume a flat prior over
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-p(x|\mathbf{r}_{1},\mathbf{r}_{2})\propto\frac{1}{Z_{12}(x)}\exp(\mathbf{h}_{1}^{\intercal}(x)\mathbf{r}_{1}+\mathbf{h}_{2}^{\intercal}(x)\mathbf{r}_{2})
-\]
+\begin{equation}
+p(x|\mathbf{n}_{1},\mathbf{n}_{2})\propto\frac{1}{Z_{12}(x)}\exp(\mathbf{h}_{1}^{\intercal}(x)\mathbf{n}_{1}+\mathbf{h}_{2}^{\intercal}(x)\mathbf{n}_{2})
+\end{equation}
 
 \end_inset
 
@@ -591,9 +571,9 @@ key "Beck2007509"
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-\mathbf{r}_{3}=\mathbf{A}_{1}^{\intercal}\mathbf{r}_{1}+\mathbf{A}_{2}^{\intercal}\mathbf{r}_{2}
-\]
+\begin{equation}
+\mathbf{n}_{3}=\mathbf{A}_{1}^{\intercal}\mathbf{n}_{1}+\mathbf{A}_{2}^{\intercal}\mathbf{n}_{2}
+\end{equation}
 
 \end_inset
 
@@ -647,16 +627,849 @@ Encoding and decoding
 \end_layout
 
 \begin_layout Standard
-For a given stimulus distribution 
+The stimulus is not represented as a univariate random variable 
+\begin_inset Formula $s$
+\end_inset
+
+; instead, a distribution 
+\begin_inset Formula $p(s)$
+\end_inset
+
+ is used to indicate the presence of the stimulus along multiple (if 
+\begin_inset Formula $p(s)$
+\end_inset
+
+ is a vector) or infinite (if 
+\begin_inset Formula $p(s)$
+\end_inset
+
+ is a density) dimension of the stimuls.
+ Here, dimensionality is defined over the space of stimlus.
+ For example, it could be the direction of a sound source 
+\begin_inset Formula $[0,2\pi).$
+\end_inset
+
+The value of 
+\begin_inset Formula $p(s)$
+\end_inset
+
+ then tells that how likely is this stimlus present at orientation 
+\begin_inset Formula $s$
+\end_inset
+
+.
+ If the stimulus is the transparent motion along two directions, 
+\begin_inset Formula $p(s)=0.5[\delta(s-s_{1})+\delta(s-s_{2})]$
+\end_inset
+
+.
+ In addition, extrinsic undertainty or noise can also be represented into
+ this stimulus distribution as spread over those delta functions.
+ However, it also introducds a problem because multiplicity is conflated
+ with undertainty, as the spread of this distribution could be caused by
+ either or both of the two features.
+\end_layout
+
+\begin_layout Standard
+For a given stimulus 
+\shape italic
+probability
+\shape default
+ distribution 
 \begin_inset Formula $m(s)$
 \end_inset
 
-, the rate of a neuron is a inner product (convolution) between 
+, the mean rate of a neuron is a inner product (convolution) between stimulus
+ distribution 
 \begin_inset Formula $m(s)$
+\end_inset
+
+ and some basis function 
+\begin_inset Formula $f_{i}(x)$
+\end_inset
+
+ (could be tuning curve) 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+r_{i}=\int f_{i}(s)m(s)ds\label{eq:DPC}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus, each neuron code some aspect of the stimulus distribution.
+ Decoding is a bit complicated because now we would like to find a distribution
+ of 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ which is a potentially infinite dimensional quantity.
+ To regularize, a prior over the values of 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ needs to be specified.
+ The prior could be smoothness or max-entropy.
+\end_layout
+
+\begin_layout Standard
+Decoding in this case works as before, albeit that the posterior is now
+ 
+\begin_inset Formula $p(m|\mathbf{n})$
+\end_inset
+
+.
+ The domain of the stimulus is usually continuous, so this distribution
+ is over functions of the stimulus.
+ In practise, in order to fascilitate computation, 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ is discretised over stimulus domain into a vector 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+ with each element being the value of 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ at some values (grid) of
+\begin_inset Formula $s$
+\end_inset
+
+, and 
+\begin_inset Formula $P(\mathbf{m})$
+\end_inset
+
+ becomes a multivariate distribtuion.
+ As an example, consider the transparent motion situation, 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+ could a vector representing the probability of motion at each of the 360
+ degrees.
+ 
+\series bold
+It is important to realise that the quantity we care about is 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ or 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+ NOT 
+\begin_inset Formula $s$
+\end_inset
+
+ as the latter as become an argument of the function or index of the vector
+\series default
+.
+\end_layout
+
+\begin_layout Standard
+The actual posterior follows the same form as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+
+\end_inset
+
+ with the addition of a prior over 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+ and a constant 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ that specifies the strength of this prior.
+ The rate 
+\begin_inset Formula $r_{i}(x)$
+\end_inset
+
+ is also replace by discretised version of the definition in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DPC"
+
+\end_inset
+
+.
+ In addition, the term 
+\begin_inset Formula $\sum_{i}\mathbf{f_{i}^{\intercal}m}$
+\end_inset
+
+ is still a constant due to translation invariance.
+ So the log posterior is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\log P(\mathbf{m}|\mathbf{\mathbf{n}})=\alpha\log P(\mathbf{m})+\sum_{i}n_{i}\log[\mathbf{f}_{i}^{\intercal}\mathbf{m}]-K
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The prior 
+\begin_inset Formula $\log P(\mathbf{m})$
+\end_inset
+
+ can be a smoothness 
+\begin_inset Formula $\sum_{j}(m_{j}-m_{j+1})^{2}$
+\end_inset
+
+ or entropy 
+\begin_inset Formula $\sum_{j}m_{j}\log(m_{j})$
+\end_inset
+
+.
+ Decoding falls into a special case of DDPC which is discussed below.
+\end_layout
+
+\begin_layout Section
+Distributed Distributional Probablistic Coding
+\end_layout
+
+\begin_layout Subsection
+Encoding
+\end_layout
+
+\begin_layout Standard
+The major draw back of the DPC scheme is that it an only represent 
+\shape italic
+either
+\shape default
+ multiplicity 
+\shape italic
+or 
+\shape default
+undertainty.
+ The interpretation of the probability distribution over 
+\begin_inset Formula $s$
+\end_inset
+
+ is more powerful than PPC but not rich enough to distinguish these two
+ features of a stimulus.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sahani:2003"
+
+\end_inset
+
+, Sahani and Dayan introduced three modifications to DPC:
+\end_layout
+
+\begin_layout Enumerate
+The distribution of stimulus 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ does not need to be a probability distribution.
+ It can be any distribution/function and is itself random with density 
+\begin_inset Formula $p(m)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Condition on one stimulus distribution 
+\shape italic
+m
+\shape default
+, the mean rate of a neuron 
+\begin_inset Formula $\psi_{i}(m)$
+\end_inset
+
+ is an inner product of 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ and a function 
+\begin_inset Formula $f_{i}(s)$
+\end_inset
+
+ passed through a nonlinearity 
+\begin_inset Formula $\sigma_{i}(\cdot)$
+\end_inset
+
+,
+\end_layout
+
+\begin_layout Enumerate
+The marginal mean rate of a neuron is then averaged over 
+\begin_inset Formula $p(m)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In mathematical form, this means that the mean firing rate of a neuron is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+r_{i}=\langle\psi_{i}(m)\rangle_{p(m)}=\left\langle \sigma_{i}\left(\int f_{i}(s)m(s)ds\right)\right\rangle _{p(m)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where, 
+\begin_inset Formula $f(s)$
 \end_inset
 
  and 
-\begin_inset Formula $f_{i}(x)$
+\begin_inset Formula $m(s)$
+\end_inset
+
+ represents same quantities as in DPC.
+ This way, multiplicity and uncertainty are separated into two components.
+ 
+\begin_inset Formula $m(s)$
+\end_inset
+
+ indicates the 
+\series bold
+intensity 
+\series default
+or 
+\series bold
+magnitude
+\series default
+ of stimulus at different points in the stimulus domain, 
+\begin_inset Formula $p(m)$
+\end_inset
+
+ represents the 
+\series bold
+uncertainty
+\series default
+ over many possible intensity configurations over function space.
+ Again, in computations, 
+\begin_inset Formula $m$
+\end_inset
+
+ is usually discretised over stimulus domain to form a vector 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+.
+ Each neuron also as its own nonlinearity 
+\begin_inset Formula $\sigma_{i}$
+\end_inset
+
+.
+ There is evidence for multiple threshold found in the auditory system.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This formulation is in fact very similar to mean embedding in RKHS.
+ Namely, using RKHS terminology, the firing rate of a neuron could be written
+ as
+\begin_inset Formula 
+\[
+r_{i}=\mathbb{E}_{p(s)}\left\langle f_{i},\phi(s)\right\rangle _{\mathcal{H}}=\mathbb{E}_{p(s)}\left\langle f_{i},\phi(s)\right\rangle _{\mathcal{H}}=\left\langle f_{i},\mathbb{E}_{p(s)}\phi(s)\right\rangle _{\mathcal{H}}=\left\langle f_{i},\mu(x)\right\rangle _{\mathcal{H}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+where 
+\begin_inset Formula $\phi(x)$
+\end_inset
+
+ is the feature space representation of 
+\begin_inset Formula $s$
+\end_inset
+
+ in the RKHS 
+\begin_inset Formula $\mathcal{H}$
+\end_inset
+
+, and 
+\begin_inset Formula $f$
+\end_inset
+
+ is a function in 
+\begin_inset Formula $\mathcal{H}$
+\end_inset
+
+.
+ The difference here with DDPC is that the mapping is linear and the stochastici
+ty comes from 
+\begin_inset Formula $x$
+\end_inset
+
+ itself instead of the embedding function 
+\begin_inset Formula $\phi$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Why is DDPC powerful
+\end_layout
+
+\begin_layout Standard
+Before decoding, let's try to see why this encoding scheme is so powerful.
+ Each neuron not only has its basis tuning function 
+\begin_inset Formula $f_{i}(s)$
+\end_inset
+
+ (possibly with different preferred centre), but also a nonlinearity 
+\begin_inset Formula $\sigma_{i}$
+\end_inset
+
+ that has a different threshold (usually ReLU, sigmoid or step).
+ The neuron population hence tiles different regions in the stimulus domain
+ and is sensitive to different levels of stimulus intensity.
+ Cruicially, the expectation over 
+\begin_inset Formula $m$
+\end_inset
+
+ is taken after the nonlinearity.
+ This ordering creates a overcomplete representation of the stimulus and
+ enables DDPC to distinguish multiplicity and uncertainty.
+ 
+\end_layout
+
+\begin_layout Standard
+For example, suppose we are trying to distinguish two types of stimulus:
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+Stimulus
+\begin_inset space \space{}
+\end_inset
+
+A
+\shape default
+: A certain stimulus where the only possible distribution is 
+\begin_inset Formula $m_{A}(s)=0.5\delta(s-s_{1})+0.5\delta(s-s_{2})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+Stimulus
+\begin_inset space \space{}
+\end_inset
+
+B
+\shape default
+: An uncertain stimulus distribution that takes on 
+\begin_inset Formula $m_{B1}(s)=\delta(s-s_{1})$
+\end_inset
+
+ or 
+\begin_inset Formula $m_{B2}(s)=\delta(s-s_{2})$
+\end_inset
+
+ with equal probability
+\end_layout
+
+\begin_layout Standard
+If we average over uncertainty distribution 
+\begin_inset Formula $p(m)$
+\end_inset
+
+, these two types of stimulus are exactly the same.
+ If we extend the DPC scheme naively in which we encode each stimulus density
+ 
+\shape italic
+
+\begin_inset Formula $m(s)$
+\end_inset
+
+ 
+\shape default
+linearly and then take the average response over 
+\begin_inset Formula $p(m)$
+\end_inset
+
+, it would be impossible to recover the difference between these two.
+ So it should come naturally that there must be some sort of nonlinearity
+ before averaging across stimulus distribution; otherwise, this average
+ could equivalently happen before encoding 
+\begin_inset Formula $m(s)$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+But why do we need different nonlinearity for each neuron? It can be seen
+ that the mean rate is only sensitive to stimulus intensity under each particula
+r stimulus configuration, but not to the average strength.
+ If a neuron has a step-threshold at 0.8, the it will have zero mean rate
+ under the first case, but not the second.
+ The discriminant threshold will be lower if the average strength at each
+ 
+\begin_inset Formula $s$
+\end_inset
+
+ is lower (e.g.
+ same two stimuli but with half the intensities).
+ Therefore, 
+\series bold
+different thresholds are used to distinguish uncertainty and multiplicity
+ at all average strength.
+\end_layout
+
+\begin_layout Subsection
+Decoding
+\end_layout
+
+\begin_layout Standard
+Decoding is slightly more complicated because now the likelihood is the
+ activities given a 
+\emph on
+distribution
+\emph default
+ over 
+\begin_inset Formula $m$
+\end_inset
+
+ instead of a single
+\emph on
+ m
+\emph default
+.
+ Writing the distribution over 
+\begin_inset Formula $m$
+\end_inset
+
+ as 
+\begin_inset Formula $q(m)$
+\end_inset
+
+, equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+
+\end_inset
+
+ should be written as below
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\log p(\mathbf{n}|q[m]) & =\sum_{i}\left[-r_{i}+n_{i}\log r_{i}\right]\nonumber \\
+ & =\sum_{i}\left[-\int q(m)\psi_{i}(m)dm+n_{i}\log\int q(m)\psi_{i}(m)dm\right]
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Unlike in previous coding schemes, we cannot ignore the first term in DDPC
+ because now translation invariance is violated by neurons having non-unifom
+ nonlinearities.
+ This is in contrast with PPC and DPC where the rate 
+\begin_inset Formula $r$
+\end_inset
+
+ is linear in the stimulus distribution.
+ To uniquely identify the MAP, a prior over 
+\begin_inset Formula $p(q[m])$
+\end_inset
+
+.
+ One choice is to make the log prior proportional to the entropy of 
+\begin_inset Formula $q$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\log p(q[m])=\alpha H[q]+K(\alpha)=\alpha\int q(m)\log q(m)dm+K(\alpha)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For small 
+\begin_inset Formula $\alpha$
+\end_inset
+
+, this prior will select among many possible decoded distribution that will
+ give the same likelihood, choosing the one with greatest uncertainty.
+ Combining the two, together with the constraint that 
+\begin_inset Formula $q(m)$
+\end_inset
+
+ has to be normalized, we obtain the log posterior 
+\begin_inset Formula $\mathcal{L}[q(m)]=\log p(q[m]|\mathbf{n})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathcal{L}[q(m)]=\sum_{i}\left[-\int q(m)\psi_{i}(m)dm+n_{i}\log\int q(m)\psi_{i}(m)dm\right]+\alpha\int q(m)\log q(m)dm-\lambda\left[\int q(m)dm-1\right]
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To find the fixed point solution, one needs to take the variational derivative
+ with respect to function 
+\begin_inset Formula $q(m)$
+\end_inset
+
+ (assume this density is always positive)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\frac{\delta\mathcal{L}}{\delta q(m)} & =\sum_{i}\left[-\psi_{i}(m)+\frac{n_{i}}{r_{i}}\psi_{i}(m)\right]+\alpha(\log q(m)+1)-\lambda\nonumber \\
+q(m) & \propto\exp\left[\frac{1}{\alpha}\sum_{i}\left(\frac{n_{i}}{r_{i}}-1\right)\psi_{i}(m)\right]\label{eq:ddpc_pos}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since 
+\begin_inset Formula $r_{i}$
+\end_inset
+
+ depends on 
+\begin_inset Formula $q(m)$
+\end_inset
+
+, this method is only iterative.
+ The original authors used a different approach where the derivative is
+ take w.r.t.
+ 
+\begin_inset Formula $\log q(m)$
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sahani:2003"
+
+\end_inset
+
+to explicitly impose positivity.
+ To fascilitate computation, one has to discretize the stimulus domain 
+\begin_inset Formula $s$
+\end_inset
+
+ into a sufficiently dense grid (i.e.
+\begin_inset Formula $0^{\circ},\pm10^{\circ},\pm20^{\circ},\dots$
+\end_inset
+
+) so that 
+\begin_inset Formula $m$
+\end_inset
+
+ is replace with a vector 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+.
+ The distribution 
+\begin_inset Formula $q(\mathbf{m})$
+\end_inset
+
+, which gives the probability density of 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+ taking on any particular strength at the chosen grid points, can either
+ be a histogram or a parameterized density (e.g.
+ Gaussian Mixture).
+ 
+\end_layout
+
+\begin_layout Subsection
+Computation (on-going)
+\end_layout
+
+\begin_layout Standard
+So far, for each of the three coding methods, the main purpose has been
+ to decode from an encoding scheme.
+ A more interesting question is to ask how, if neurons indeed respond to
+ stimulus the way we think, various computations should be performed.
+ In particular, let's focus on the stimulus domain discretised version when
+ 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+ is a vector instead of a function.
+ One of the main computations is taking expectation of a function over stimulus
+ with respect to the density of this stimulus
+\begin_inset Formula 
+\begin{equation}
+\mathbb{\mathbb{E}}_{p(\mathbf{m})}\left[F(\mathbf{m}|\bm{\theta})\right]\label{eq:expect}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $F(\mathbf{m|\bm{\theta}})$
+\end_inset
+
+ can be a function parameterised by 
+\begin_inset Formula $\bm{\theta}$
+\end_inset
+
+ that has a vector argument 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+.
+ This can be any of the following commonly seen objects
+\end_layout
+
+\begin_layout Itemize
+joint distribution 
+\begin_inset Formula $p(\mathbf{m})p(x|\mathbf{m})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+the log joint probability 
+\begin_inset Formula $\log p(X=x,\mathbf{m}|\bm{\theta})$
+\end_inset
+
+ where 
+\begin_inset Formula $X$
+\end_inset
+
+ is observed to be 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathbf{m}$
+\end_inset
+
+ is the latent variable
+\end_layout
+
+\begin_layout Itemize
+State-action value function 
+\begin_inset Formula $Q(s,\mathbf{m}_{s})$
+\end_inset
+
+ where 
+\begin_inset Formula $s$
+\end_inset
+
+ is the state of an agent and 
+\begin_inset Formula $\mathbf{m}_{s}$
+\end_inset
+
+ is a set of stochastic policy vector at state s
+\end_layout
+
+\begin_layout Standard
+One insight from the decoding section is that, if we assume that the decoder
+ is performing max-entropy posterior estimation, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ddpc_pos"
+
+\end_inset
+
+ suggests that the resulting distribution is in the exponential family with
+ sufficient statistics 
+\begin_inset Formula $\psi_{i}(m)$
+\end_inset
+
+.
+ If the population activity is already the expected value of this quantity,
+ they are then in fact representing the exp-fam distribution through mean
+ parameters.
+ 
+\end_layout
+
+\begin_layout Standard
+This suggests an approach to compute the quantity in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:expect"
+
+\end_inset
+
+.
+ If 
+\begin_inset Formula $F(\mathbf{m|\bm{\theta})}$
+\end_inset
+
+ can be approximated by a linear combination of the sufficient statistics,
+ then this expectation is simply a linear readout of the neuron activities.
+\begin_inset Formula 
+\[
+\mathbb{\mathbb{E}}_{p(\mathbf{m})}\left[F(\mathbf{m}|\bm{\theta})\right]\approx\mathbb{E}_{p(\mathbf{m})}\sum_{i}\left[\alpha_{i}(\theta)\psi_{i}(\mathbf{m})\right]=\sum_{i}\left[\alpha_{i}(\theta)\mathbb{E}_{p(\mathbf{m})}\psi_{i}(\mathbf{m})\right]=\sum_{i}\left[\alpha_{i}(\theta)r_{i}(\mathbf{m})\right]
+\]
+
 \end_inset
 
 
