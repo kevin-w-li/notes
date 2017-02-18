@@ -1,0 +1,284 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip bigskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Maths stuff
+\end_layout
+
+\begin_layout Author
+Kevin W Li
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is my notes on some maths that I encountered and found to be interesting
+\end_layout
+
+\begin_layout Section
+Lampart W function
+\end_layout
+
+\begin_layout Standard
+This function is define as the inverse of the function 
+\begin_inset Formula $f(x)=xe^{x}$
+\end_inset
+
+, written as 
+\begin_inset Formula $W(z)=f^{-1}(z)$
+\end_inset
+
+ where 
+\begin_inset Formula $z\in[-e^{-1},+\infty]$
+\end_inset
+
+.
+ It can be used to solve many problems, for example the problem involving
+ propagation of action potential as in Gatsby theoretical neuroscience 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "http://www.gatsby.ucl.ac.uk/teaching/courses/tn1-2017/homeworks/hwk2.pdf"
+
+\end_inset
+
+.
+ One property is this 
+\begin_inset Formula $x=W(x)\exp W(x)$
+\end_inset
+
+ by substituting 
+\begin_inset Formula $z=W(x)$
+\end_inset
+
+ back to 
+\begin_inset Formula $f(x)=xe^{x}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solve 
+\begin_inset Formula $xa^{x}=b$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+xa^{x} & =xe^{x\ln a}=b\\
+x\ln(a)e^{x\ln(a)} & =\ln(a)b\\
+x & =\frac{1}{\ln(a)}W(b\ln(a))
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solve 
+\begin_inset Formula $x^{n}a^{x}=c$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+x^{n}a^{x} & =c\\
+xa^{\frac{x}{n}} & =c^{\frac{1}{n}}\\
+\frac{x}{n}a^{\frac{x}{n}} & =\frac{c}{n}\\
+x & =\frac{n}{\ln a}W(\frac{c^{\frac{1}{n}}}{n}\ln a)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Special case is when 
+\begin_inset Formula $a=e^{b},$
+\end_inset
+
+ then 
+\begin_inset Formula $x=\frac{n}{b}W(c^{\frac{1}{n}}\frac{b}{n})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solve 
+\begin_inset Formula $a^{x}=cx+d$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+a^{x} & =cx+d\\
+\frac{1}{c}a^{x} & =x+\frac{d}{c}\\
+\frac{1}{c}a^{-\frac{d}{c}}a^{x+\frac{d}{c}} & =x+\frac{d}{c}\\
+\left(x+\frac{d}{c}\right)a^{x+\frac{d}{c}} & =ca^{\frac{d}{c}}\\
+x+\frac{d}{c} & =-\frac{1}{\ln a}W(-\frac{\ln a}{ca^{\frac{d}{c}}})\\
+x & =-\frac{1}{\ln a}W(-\frac{\ln a}{ca^{\frac{d}{c}}})-\frac{d}{c}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solve 
+\begin_inset Formula $x\ln x=c$
+\end_inset
+
+ and 
+\begin_inset Formula $x^{x}=b$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+x\ln x & =c\\
+e^{\ln x}\ln x & =c\\
+\ln x & =W\text{(c)}\\
+x & =\exp W(c)=\frac{c}{W(c)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Taking 
+\begin_inset Formula $c=\log a$
+\end_inset
+
+ and exponentiate both size gives 
+\begin_inset Formula $xe^{x}=a$
+\end_inset
+
+ whose solution is 
+\begin_inset Formula $\exp W(\log a)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+The limit of (when converges) 
+\begin_inset Formula $h(x)=x^{x^{x^{...}}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+h(x) & =x^{h(x)}\\
+h(x) & =-\frac{1}{\ln x}W(-\ln x)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\delta\dot{v_{E}}=\frac{\partial\phi_{E}}{\partial v_{E}}$
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
