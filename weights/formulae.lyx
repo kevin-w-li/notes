@@ -6,6 +6,11 @@
 \origin unavailable
 \textclass article
 \use_default_options true
+\begin_modules
+theorems-ams
+eqs-within-sections
+figs-within-sections
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -30,7 +35,7 @@
 \spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -54,6 +59,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation skip
@@ -84,11 +93,11 @@ Assume that
 \begin_inset Formula $\mathbf{w}_{1}$
 \end_inset
 
-and 
+ and 
 \begin_inset Formula $\mathbf{w}_{2}$
 \end_inset
 
-that are drawn from correlated multivariate normal distributions (ignore
+ that are drawn from correlated multivariate normal distributions (ignore
  bold)
 \end_layout
 
@@ -122,9 +131,6 @@ Then their inner product
 \end_inset
 
 and means
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
 \mathbb{E}[p] & =\mu_{1}\cdot\mu_{2}\\
@@ -167,9 +173,6 @@ and
 
 \begin_layout Standard
 Then the inner product has the following statistics in terms of 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
 \mathbb{E}[p] & =Tr(C_{12})\\
@@ -191,9 +194,6 @@ For Gaussian variables
 \end_inset
 
 with zero means but nonzero correlation:
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
 \mathcal{\mathbb{E}}[\prod_{i=1}^{n}X_{i}]=\begin{cases}
