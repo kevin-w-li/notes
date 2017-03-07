@@ -262,12 +262,9 @@ The second way is to compute the first derivative first in terms of the
 \end_layout
 
 \begin_layout Standard
-One can notice that if we use the expectation of squared score function,
- the cross terms should be zero because they contain odd moments of Gaussian
- variables.
- However, it is also less clear how to write the third moment with vectors,
- especially with the trace.
- Let's continue with the dumb way.
+Taking the square yields something hard to proceed.
+ Let's continue with the other equivavlent definition of FI that uses second
+ derivatives.
 \end_layout
 
 \begin_layout Standard
