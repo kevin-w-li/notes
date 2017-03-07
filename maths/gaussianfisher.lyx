@@ -1,0 +1,335 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\bmu}{\mathbb{\mu}}
+\newcommand{\bSigma}{\bm{\Sigma}}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip bigskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Derivation of fisher information of a multivariate Gaussian density
+\end_layout
+
+\begin_layout Author
+Kevin W Li
+\end_layout
+
+\begin_layout Standard
+We are interested to find the fisher information of this density with respect
+ to parameter s upon which 
+\begin_inset Formula $\mu$
+\end_inset
+
+ and 
+\begin_inset Formula $\Sigma$
+\end_inset
+
+ depends.
+ This notes assumes fluency in matrix calculus (denominator layout) in the
+ matrix 
+\begin_inset CommandInset href
+LatexCommand href
+name "cookbook"
+target "http://www2.imm.dtu.dk/pubdb/views/edoc_download.php/3274/pdf/imm3274.pdf"
+
+\end_inset
+
+ or 
+\begin_inset CommandInset href
+LatexCommand href
+name "wikipedia"
+target "https://en.wikipedia.org/wiki/Matrix_calculus"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+For scalar 
+\begin_inset Formula $x$
+\end_inset
+
+, scalar function 
+\begin_inset Formula $f$
+\end_inset
+
+, vectors 
+\begin_inset Formula $a$
+\end_inset
+
+, 
+\begin_inset Formula $b$
+\end_inset
+
+, 
+\begin_inset Formula $c$
+\end_inset
+
+, and matrices 
+\begin_inset Formula $A,B,C$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+d\frac{a^{\intercal}Ab}{da} & =Ab\\
+d\frac{a^{\intercal}Ab}{dA} & =d\frac{Tr(a^{\intercal}Ab)}{dA}=d\frac{Tr(Aa^{\intercal}b)}{dA}=ab^{\intercal}\\
+d\frac{f(b(x))}{dx} & =\left[\frac{df(b)}{db}\right]^{\intercal}\nabla_{x}b\\
+d\frac{f(A(x))}{dx} & =Tr\left[\left(\frac{dx}{dA}\right)^{\intercal}\nabla_{x}A\right]\\
+d\frac{a(c)^{\intercal}b}{dc} & =\frac{da^{\intercal}}{dc}b\\
+d\frac{\log A}{dx} & =A^{-T}\nabla_{x}A\\
+dA^{-1} & =-A^{-1}dAA^{-1}\\
+d\frac{A^{-1}}{dx} & =-A^{-1}\nabla AA^{-1}\\
+d\frac{Tr(AB^{-1}C)}{dB} & =-B^{-T}CAB^{-T}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The multivariate Gaussian density is written as:
+\begin_inset Formula 
+\[
+p(x)=\frac{1}{\sqrt{|2\pi\Sigma|}}\exp\left(-\frac{1}{2}(x-\mu)^{\intercal}\Sigma^{-1}(x-\mu)\right)=\frac{|\Lambda|^{1/2}}{(2\pi)^{D/2}}\exp\left(-\frac{1}{2}(x-\mu)^{\intercal}\Lambda(x-\mu)\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\Lambda$
+\end_inset
+
+ is the precision matrix and is symmetric.
+ Define 
+\begin_inset Formula 
+\begin{align*}
+\nabla\mu & =\frac{d\mu}{ds}\\
+\nabla\Sigma & =\frac{d\Sigma}{s}\\
+\nabla\Lambda & =\frac{d\Lambda}{ds}=\frac{d\Sigma^{-1}}{ds}=-\Sigma^{-1}\nabla\Sigma\Sigma^{-1}
+\end{align*}
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+In the following, we will use the fact that 
+\begin_inset Formula $\Lambda=\Lambda^{\intercal}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And write the log density as:
+\begin_inset Formula 
+\[
+\log p(x)=\frac{1}{2}\log|\Lambda|-\frac{1}{2}(x-\mu)^{\intercal}\Lambda(x-\mu)+constant
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There two ways ahead.
+ One can write out the second derivative of the log density using the chain
+ rule.
+ It will be composed of four terms in which two of them will involve a score
+ term 
+\begin_inset Formula $\frac{d\log p(x)}{d\mu}$
+\end_inset
+
+ and 
+\begin_inset Formula $\frac{d\log p(x)}{d\Lambda}$
+\end_inset
+
+.
+ The expectation of these two terms will be zeros, so we ended up having
+ only two terms.
+ However, 
+\begin_inset Formula $\frac{d^{2}\log p(x)}{d\mu^{2}}$
+\end_inset
+
+ is a matrix and 
+\begin_inset Formula $\frac{d^{2}\log p(x)}{d\Lambda^{2}}$
+\end_inset
+
+ is a four-dimentional tensor which we should avoid...
+ It is still possible to work, but less clear.
+\end_layout
+
+\begin_layout Standard
+The second way is to compute the first derivative first in terms of the
+ parameters, and then take derivative again.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{d\log p(x)}{ds} & =\left[\frac{d\log p(s)}{d\mu}\right]^{\intercal}\nabla\mu+Tr\left[\frac{d\log p(s)}{d\Lambda}^{\intercal}\nabla\Lambda\right]\\
+ & =\underbrace{(x-\mu)^{\intercal}\Lambda\nabla\mu}_{M_{1}}+\frac{1}{2}\underbrace{Tr\left[\left[\Lambda^{-1}-(x-\mu)(x-\mu)^{\intercal}\right]\nabla\Lambda\right]}_{M_{2}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+One can notice that if we use the expectation of squared score function,
+ the cross terms should be zero because they contain odd moments of Gaussian
+ variables.
+ However, it is also less clear how to write the third moment with vectors,
+ especially with the trace.
+ Let's continue with the dumb way.
+\end_layout
+
+\begin_layout Standard
+Take the derivative of 
+\begin_inset Formula $M_{1}$
+\end_inset
+
+ and then evaluate the negative expectation
+\begin_inset Formula 
+\begin{align*}
+\frac{dM_{1}}{ds} & =\left[\frac{dM_{1}}{d\mu}\right]^{\intercal}\nabla\mu+Tr\left[\left[\frac{dM_{1}}{d\Lambda}\right]^{\intercal}\nabla\Lambda\right]\\
+ & =\left[-\Lambda\nabla\mu+\nabla^{2}\mu\Lambda(x-\mu)\right]^{\intercal}\nabla\mu+Tr\left[\left[(x-\mu)\nabla\mu^{\intercal}\right]^{\intercal}\nabla\Lambda\right]\\
+-\left\langle \frac{dM_{1}}{ds}\right\rangle  & =\nabla\mu^{\intercal}\Lambda\nabla\mu=\nabla\mu^{\intercal}\Sigma^{-1}\nabla\mu
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Do the same for 
+\begin_inset Formula $M_{2}$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{dM_{2}}{ds} & =\left[\frac{dM_{2}}{d\mu}\right]^{\intercal}\nabla\mu+Tr\left[\left[\frac{dM_{2}}{d\Lambda}\right]^{\intercal}\nabla\Lambda\right]\\
+ & =-\left[\frac{d}{d\mu}Tr\left[(x-\mu)(x-\mu)^{\intercal}\nabla\Lambda\right]\right]^{\intercal}\nabla\mu+Tr\left[\left[\frac{d}{d\Lambda}Tr\left[\Lambda^{-1}\nabla\Lambda\right]-\frac{d}{d\Lambda}Tr\left[(x-\mu)(x-\mu)^{\intercal}\nabla\Lambda\right]\right]^{\intercal}\nabla\Lambda\right]\\
+ & =-2(x-\mu)^{\intercal}\nabla\Lambda\nabla\mu+Tr\left[\left[-\Lambda^{-1}\nabla\Lambda\Lambda^{-1}+\Lambda^{-1}\nabla^{2}\Lambda-(x-\mu)(x-\mu)^{\intercal}\nabla^{2}\Lambda\right]^{\intercal}\nabla\Lambda\right]\\
+ & =-2(x-\mu)^{\intercal}\nabla\Lambda\nabla\mu+Tr\left[-\Lambda^{-1}\nabla\Lambda\Lambda^{-1}\nabla\Lambda\right]+Tr\left[\left[\Lambda^{-1}-(x-\mu)(x-\mu)^{\intercal}\right]\nabla^{2}\Lambda\nabla\Lambda\right]\\
+-\left\langle \frac{dM_{2}}{ds}\right\rangle  & =0+Tr\left[-\Lambda^{-1}\nabla\Lambda\Lambda^{-1}\nabla\Lambda\right]+Tr\left[\left[\Lambda^{-1}\nabla^{2}\Lambda-\Sigma\nabla^{2}\Lambda\right]\nabla\Lambda\right]\\
+-\left\langle \frac{dM_{2}}{ds}\right\rangle  & =Tr\left[\Lambda^{-1}\nabla\Lambda\Lambda^{-1}\nabla\Lambda\right]=Tr\left[\Lambda^{-1}\Sigma^{-1}\nabla\Sigma\Sigma^{-1}\Lambda^{-1}\Sigma^{-1}\nabla\Sigma\Sigma^{-1}\right]=Tr\left[\nabla\Sigma\Sigma^{-1}\nabla\Sigma\Sigma^{-1}\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The last equality is because the first contains first moment, and the third
+ term is zero even though we are not sure what 
+\begin_inset Formula $\nabla^{2}\Lambda$
+\end_inset
+
+ looks like.
+ 
+\end_layout
+
+\begin_layout Standard
+So the fisher information is then
+\begin_inset Formula 
+\[
+J(s)=\nabla\mu^{\intercal}\Sigma^{-1}\nabla\mu+\frac{1}{2}Tr\left[\nabla\Sigma\Sigma^{-1}\nabla\Sigma\Sigma^{-1}\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
