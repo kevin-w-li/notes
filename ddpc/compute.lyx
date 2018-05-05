@@ -1,0 +1,764 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\newcommand{\bx}{\mathbf{x}}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\noindent
+DDC Computation
+\end_layout
+
+\begin_layout Author
+\noindent
+Li Kevin Wenliang
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset FormulaMacro
+\newcommand{\bphi}{\bm{\phi}}
+{\bm{\phi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bmu}{\bm{\mu}}
+{\bm{\mu}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bSigma}{\bm{\Sigma}}
+{\bm{\Sigma}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bI}{\bm{I}}
+{I}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\w}{\mathbf{w}}
+{\mathbf{w}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\x}{\mathbf{x}}
+{\mathbf{x}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\y}{\mathbf{y}}
+{\mathbf{y}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\E}{\mathbb{E}}
+{\mathbb{E}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\H}{\mathbb{H}}
+{\mathbb{H}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bpsi}{\bm{\psi}}
+{\bm{\psi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cW}{\mathcal{W}}
+{\mathcal{W}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\m}{\mathbf{m}}
+{\mathbf{m}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bxi}{\bm{\xi}}
+{\bm{\xi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cH}{\mathcal{H}}
+{\mathcal{H}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cF}{\mathcal{F}}
+{\mathcal{F}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cG}{\mathcal{G}}
+{\mathcal{G}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cC}{\mathcal{C}}
+{\mathcal{C}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cU}{\mathcal{U}}
+{\mathcal{U}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset FormulaMacro
+\newcommand{\lotimes}{\Large{\otimes}}
+{\Large{\otimes}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bnu}{\bm{\nu}}
+{\bm{\nu}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+This notes includes the derivations of the correspondances between hand
+ designed finite dimensional features and its corresponding kernel in the
+ reproducing kernel hubert space (RKHS) if the number of feature goes to
+ infinity.
+\end_layout
+
+\begin_layout Section
+\noindent
+Message passing
+\end_layout
+
+\begin_layout Standard
+Usually, message passing is a series of operations over obstract functions.
+ It is unclear how the brain would perform these operations, and DDC is
+ a proposal of how the brain might implement message passing using vector
+ representations putatively encoded in a neural population.
+\end_layout
+
+\begin_layout Standard
+We review some key ideas that is relevant but not necessarilty related directly
+ to the final message passing scheme.
+ 
+\end_layout
+
+\begin_layout Subsection
+Kernel belief propagation
+\end_layout
+
+\begin_layout Standard
+Consider a graph 
+\begin_inset Formula $\mathcal{G}$
+\end_inset
+
+ of random variables 
+\begin_inset Formula $\mathcal{X}=\{x_{a}\}$
+\end_inset
+
+ indexed by letters.
+ The graph itself, without conditioning on any observations, implies a joint
+ distribution 
+\begin_inset Formula $P*(\mathcal{X})$
+\end_inset
+
+ over all variables.
+ For simplicity, let us consider a problem of computing a conditional distributi
+on 
+\begin_inset Formula $P^{c}(x_{a})=P(x_{a}|x_{b})$
+\end_inset
+
+, and we would like to solve this problem by belief propagation in terms
+ of RKHS functions.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "SonGreBic2011"
+
+\end_inset
+
+, the derivation of belief propagation follows from the results on reparameteris
+ed message which is defined as 
+\begin_inset Formula 
+\begin{equation}
+m_{a\to b}(x_{b})=\frac{m_{a\to b}^{c}(x_{b})}{m_{a\to b}^{*}(x_{b})}\label{eq:normalised_message}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $m_{a\to b}^{c}(x_{b})$
+\end_inset
+
+ is the usual BP message from node 
+\begin_inset Formula $a$
+\end_inset
+
+ to node 
+\begin_inset Formula $b$
+\end_inset
+
+ 
+\series bold
+conditioned on observed data
+\series default
+, and 
+\begin_inset Formula $m_{a\to b}^{*}(x_{b})$
+\end_inset
+
+ is the usual BP message from node 
+\begin_inset Formula $a$
+\end_inset
+
+ to node 
+\begin_inset Formula $b$
+\end_inset
+
+
+\series bold
+ without observing any data
+\series default
+.
+ There are two consequences of this formulation.
+\end_layout
+
+\begin_layout Enumerate
+Computing the marginal distribution on a node requires not only the messages
+ but also the unconditional marginal distribution of the variable
+\begin_inset Formula 
+\[
+P^{c}(x_{a})=\prod_{i\in ne(a)}m_{i\to b}^{c}(x_{a})=\prod_{i\in ne(a)}\left[m_{a\to b}^{*}(x_{b})m_{i\to b}(x_{a})\right]=P^{*}(x_{a})\prod_{i\in ne(a)}m_{i\to b}(x_{a})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Message propagation is computed using not only the messages but also the
+ unconditioned marginal distribution, e.g.
+ for a message from 
+\begin_inset Formula $a$
+\end_inset
+
+ sent to 
+\begin_inset Formula $b$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+m_{a\to b}(x_{b}) & =\E_{p*(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(x_{a})\right]
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $p*(x_{a}|x_{b})$
+\end_inset
+
+ can be estimated from data.
+ 
+\end_layout
+
+\begin_layout Standard
+The second result follows from the following algebra.
+ First, note that the following unobserved conditional distribution can
+ be written as the potentials on the original graph
+\begin_inset Formula 
+\begin{align}
+p^{*}(x_{a}|x_{b}) & =\frac{p^{*}(x_{a},x_{b})}{p^{*}(x_{b})}\nonumber \\
+ & =\frac{\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})\prod_{u\in ne(b)\neg a}m_{u\to b}^{*}(x_{b})}{m_{a\to b}^{*}(x_{b})\prod_{u\in ne(b)\neg a}m_{u\to b}^{*}(x_{b})}\nonumber \\
+ & =\frac{\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{m_{a\to b}^{*}(x_{b})}\label{eq:unboserveed_conditional}
+\end{align}
+
+\end_inset
+
+The original usual belief update is written in terms of messages and potentials
+ as 
+\begin_inset Formula 
+\begin{align*}
+m_{a\to b}^{c}(x_{b}) & =\int\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{c}(x_{a})dx_{a}
+\end{align*}
+
+\end_inset
+
+Now divide both sizes by the unobserved message 
+\begin_inset Formula $m_{a\to b}^{*}(x_{b})$
+\end_inset
+
+, and multiply inside the integral the constant 
+\begin_inset Formula $\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{m_{a\to b}^{c}(x_{b})}{m_{a\to b}^{*}(x_{b})} & =\frac{1}{m_{a\to b}^{*}(x_{b})}\int\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{c}(x_{a})\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}dx_{a}\\
+ & =\int\frac{\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{m_{a\to b}^{*}(x_{b})}\prod_{u\in ne(a)\neg b}\frac{m_{u\to a}^{c}(x_{a})}{m_{u\to a}^{*}(x_{a})}dx_{a}\\
+m_{a\to b}(x_{b}) & =\E_{p(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(x_{a})\right]
+\end{align*}
+
+\end_inset
+
+where the last equality holds following Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:unboserveed_conditional"
+
+\end_inset
+
+).
+ This is belief propagation under the message definition in Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:normalised_message"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+This expectation under the unobserved data needs to be computed for the
+ product of messages.
+ If we assume that 
+\begin_inset Formula $m_{u\to a}(x_{a})=\text{\left\langle m_{u\to a},\ \bphi(x_{a})\right\rangle }_{\cH}$
+\end_inset
+
+ where 
+\begin_inset Formula $\bphi(x_{a})$
+\end_inset
+
+ is a vector in space 
+\begin_inset Formula $\cH$
+\end_inset
+
+, and similarly that 
+\begin_inset Formula $m_{a\to b}(x_{b})=\text{\left\langle m_{u\to b},\ \bphi(x_{b})\right\rangle }_{\cF}$
+\end_inset
+
+ where 
+\begin_inset Formula $\bphi(x_{a})$
+\end_inset
+
+ is a vector in space 
+\begin_inset Formula $\cF$
+\end_inset
+
+, then we can translate the product above into an inner product
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+m_{a\to b}(x_{b}) & =\E_{p(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(x_{a})\right]\nonumber \\
+ & =\E_{p(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}\left\langle m_{u\to a},\ \bphi(x_{a})\right\rangle _{\cH}\right]\nonumber \\
+ & =\E_{p(x_{a}|x_{b})}\left[\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \underset{deg(a)-1}{\bigotimes}\bphi(x_{a})\right\rangle _{\cH^{\otimes}}\right]\nonumber \\
+ & =\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \E_{p(x_{a}|x_{b})}\left[\underset{deg(a)-1}{\bigotimes}\bphi(x_{a})\right]\right\rangle _{\cH^{\otimes}}\nonumber \\
+ & \stackrel{(1)}{=}\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \mathcal{W}_{X_{a}^{\otimes}|x_{b}}\bpsi(x_{b})\right\rangle _{\text{\cH^{\otimes}}}\nonumber \\
+ & =\left\langle \mathcal{W}_{X_{a}^{\otimes}|x_{b}}^{\dagger}\underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \bpsi(x_{b})\right\rangle _{\text{\cF}}\nonumber \\
+m_{a\to b} & =\mathcal{W}_{X_{a}^{\otimes}|x_{b}}^{\dagger}\underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a}\label{eq:kernel_BP}
+\end{align}
+
+\end_inset
+
+where in (1) we assume that the conditional expectation 
+\begin_inset Formula $\E_{p(x_{a}|x_{b})}\left[\large{\text{\otimes}}^{deg(b)-1}\bphi(x_{a})\right]$
+\end_inset
+
+, which is a function of 
+\begin_inset Formula $x_{b}$
+\end_inset
+
+, is in the space where 
+\begin_inset Formula $\bphi(x_{b})$
+\end_inset
+
+ is defined.
+ 
+\end_layout
+
+\begin_layout Standard
+Under this message passing scheme, computing the marginal probability under
+ the observed condition requires the knowledge of the corresponding unconditione
+d marginal distribution, which is in practise estimated by nonparametric
+ methods.
+ While appealing for kernelised inference where the model is fully observed,
+ the above message passing scheme cannot be directly applied to latent variable
+ models, such as Marko state-space model where the true generative parameters
+ are unknown or misspecified, rendering 
+\begin_inset Formula $P*(\mathcal{X})$
+\end_inset
+
+ unavailable.
+\end_layout
+
+\begin_layout Standard
+In particular, we note that message passing is performed by an inner product
+ between parameters 
+\begin_inset Formula $\mathcal{W}_{X_{a}^{\otimes}|x_{b}}^{\dagger}$
+\end_inset
+
+ and the tensor product of incomming messages.
+ In the section below, message passing using the mean representations of
+ variables also share this structure.
+\end_layout
+
+\begin_layout Subsection
+Approximating distributions
+\end_layout
+
+\begin_layout Standard
+Here we derive the message passing using the usual conditioned messages,
+ i.e.
+ expectation of factors without referencing the unconditioned messages.
+ The key idea is that we which to use a finite set of basis function which
+ can be used to approximate all the potentials in the model.
+ Using a infinitely large set of basis functions, such as the features implied
+ by universal kernels, then by universality this set of feature functions
+ can approximate any bounded continuous functions, which is the case for
+ many distributions distributions.
+ 
+\end_layout
+
+\begin_layout Standard
+We begin by stating the above assumptions.
+ As above, define vector features and its corresponding feature space as
+ 
+\begin_inset Formula $\bphi(x_{a})$
+\end_inset
+
+ and 
+\begin_inset Formula $\bpsi_{u}(x_{u})$
+\end_inset
+
+ for 
+\begin_inset Formula $u\in ne(a)$
+\end_inset
+
+, and additionaly we we make explicit the observed data at 
+\begin_inset Formula $x_{a}$
+\end_inset
+
+ to be 
+\begin_inset Formula $y_{a}$
+\end_inset
+
+ and define its feature represenation as
+\begin_inset Formula $\bnu(y_{a})$
+\end_inset
+
+.
+ We assume that we can approximate the following
+\begin_inset Formula 
+\begin{align}
+\int dx_{a}\bphi(x_{a})\prod_{u\in ne(a)}\Phi_{a,u}(x_{a,}x_{u},y_{a})\Phi_{u}(x_{u},y_{a}) & \approx\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(x_{u})\right\rangle \label{eq:pair_singleton}\\
+ & =\sum_{i_{1},\dots,i_{d(a)},k}W_{i_{1},\dots,i_{d(a)}}^{(a)}\nu_{k}(y_{a})\prod_{u\in ne(a)}\psi_{u,i_{u}}(x_{u})~\forall a\in\cG
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $W_{i_{1},\dots,i_{d(a)}}^{(a)}$
+\end_inset
+
+ are parameters.
+ This says that the integral of the product of the relevant potentials over
+ the variable we are computing the mean representation 
+\begin_inset Formula $x_{a}$
+\end_inset
+
+ (similar to the out-going message from 
+\begin_inset Formula $x_{a}$
+\end_inset
+
+) should be approximatd by the set of basis function formed by the outer
+ product of all the basis functions associated with the other variables
+ 
+\begin_inset Formula $x_{u}$
+\end_inset
+
+ and data 
+\begin_inset Formula $y_{a}$
+\end_inset
+
+.
+ This is analogous to the assumption make at in step (1) in deriving Equation
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel_BP"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Instead of messages, we consider (possibly unnormalised) expectations of
+ nonlinear functions for variables 
+\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(x_{u}|D_{u})}\left[\bpsi(x_{u})\right]$
+\end_inset
+
+ where 
+\begin_inset Formula $D_{u}$
+\end_inset
+
+ is the data conditioned on a upstream subtree of 
+\begin_inset Formula $u$
+\end_inset
+
+.
+ We restrict 
+\begin_inset Formula $u\in ne(a)=\{1,...,deg(a)\}$
+\end_inset
+
+ to be in the neighbours from which message propagates from.
+ 
+\begin_inset Formula $\tilde{\bmu}_{u}$
+\end_inset
+
+ is essentially the unnormalized mean representation of 
+\begin_inset Formula $\tilde{p}(x_{u}|D_{u})$
+\end_inset
+
+.
+ Given such previously computed means, we want to obtain the mean representation
+\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(x_{u}|D_{u},x_{d})}\left[\bphi(x_{u})\right]$
+\end_inset
+
+ given new data 
+\begin_inset Formula $x_{d}$
+\end_inset
+
+ attached to the relevant potentials.
+\begin_inset Formula 
+\begin{align}
+\tilde{\bmu}_{a} & =\int dx_{a}\bphi(x_{a})\tilde{p}(x_{a}|D_{u},x_{d})\nonumber \\
+ & =\int dx_{a}\bphi(x_{a})\prod_{u\in ne(a)}\int dx_{u}\tilde{p}(x_{u}|D_{u})\Phi_{a,u}(x_{a,}x_{u},x_{d})\Phi_{u}(x_{u},y_{a})\nonumber \\
+ & =\int\dots\int\left[\prod_{u\in ne(a)}dx_{u}\tilde{p}(x_{u}|D_{u})\right]\int dx_{a}\bphi(x_{a})\prod_{u\in ne(a)}\Phi_{a,u}(x_{a,}x_{u},y_{a})\Phi_{u}(x_{u},y)\nonumber \\
+ & \approx\int\dots\int\left[\prod_{u\in ne(a)}dx_{u}\tilde{p}(x_{u}|D_{u})\right]\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(x_{u})\right\rangle \nonumber \\
+ & =\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\left[\int dx_{u}\tilde{p}(x_{u}|D_{u})\bpsi_{u}(x_{u})\right]\right\rangle \nonumber \\
+ & =\left\langle \mathcal{W}{}^{a},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(x_{u})\right\rangle 
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is worth noting that the means are unnormalized, which does not matter
+ for inference.
+ To normalize the means, one can use divisive normalisation as follows.
+ For example, to nnormalize 
+\begin_inset Formula $\tilde{\bmu}$
+\end_inset
+
+, find a set of weights 
+\begin_inset Formula $\mathbf{n}$
+\end_inset
+
+ to approximate the constant function with the basis function
+\begin_inset Formula $\sum_{i}n_{i}\phi_{i}(x)=1$
+\end_inset
+
+, then the normalizer for 
+\begin_inset Formula $\tilde{p}(x|D)$
+\end_inset
+
+ is 
+\begin_inset Formula 
+\begin{align*}
+Z(D) & =\int\tilde{p}(x|D)dx\\
+ & =\int\tilde{p}(x|D)\sum_{i}n_{i}\phi_{i}(x)dx\\
+ & =\sum_{i}n_{i}\tilde{\mu}_{i}\\
+ & =\mathbf{n}^{\intercal}\tilde{\bmu}
+\end{align*}
+
+\end_inset
+
+and the normalized mean is 
+\begin_inset Formula 
+\begin{align*}
+\bmu & =\frac{\tilde{\bmu}}{\mathbf{n}^{\intercal}\tilde{\bmu}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Unlike the kernel belief propagation where the weights can be estimated
+ from real data by regression, there is no clear way to obtain these weights
+ as all the mean representations also depend on the weights.
+ Nonetheless, this message passing scheme motivates a neural network structure,
+ and given a task and an error signal, we can hopefully obtain the weights
+ using error backpropagation.
+ 
+\end_layout
+
+\begin_layout Subsection
+Kernel Bayes rule
+\end_layout
+
+\begin_layout Standard
+Kernel Bayes rule allows one to propagate messages while taking into account
+ normalisation automatically.
+ We begin by reviewing the basic kernel probability computations.
+ 
+\end_layout
+
+\begin_layout Standard
+Define the the mean embedding for random variable 
+\begin_inset Formula $X$
+\end_inset
+
+ to be
+\begin_inset Formula $\bmu_{X}=\E_{p(X)}\left[\phi(X)\right]$
+\end_inset
+
+, where 
+\begin_inset Formula $\phi(X)\in\cH_{X}$
+\end_inset
+
+ is a vector of features, and similarly 
+\begin_inset Formula $\bmu_{Y}=\E_{p(X)}\left[\phi(X)\right]$
+\end_inset
+
+ for
+\begin_inset Formula $\phi(X)\in\cH_{X}$
+\end_inset
+
+.
+ The mean embedding is useful as it allows evaluation of expectations through
+ a linear a linear transformation through the mean embeddings.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\E_{p(X)}\left[f(X)\right]=\E_{p(X)}\left[\left\langle f,\phi(X)\right\rangle \right]=\left\langle f,\E_{p(X)}\left[\phi(X)\right]\right\rangle =\left\langle f,\bmu_{x}\right\rangle 
+\]
+
+\end_inset
+
+
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "ref"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
