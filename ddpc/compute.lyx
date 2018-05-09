@@ -7,6 +7,7 @@
 \textclass article
 \begin_preamble
 \newcommand{\bx}{\mathbf{x}}
+\DeclareMathOperator{\Tr}{Tr}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -252,7 +253,7 @@ Consider a graph
 \end_inset
 
  of random variables 
-\begin_inset Formula $\mathcal{X}=\{x_{a}\}$
+\begin_inset Formula $\mathcal{X}=\{X_{a}\}$
 \end_inset
 
  indexed by letters.
@@ -264,7 +265,7 @@ Consider a graph
  over all variables.
  For simplicity, let us consider a problem of computing a conditional distributi
 on 
-\begin_inset Formula $P^{c}(x_{a})=P(x_{a}|x_{b})$
+\begin_inset Formula $P^{c}(X_{a})=P(x_{a}|X_{b})$
 \end_inset
 
 , and we would like to solve this problem by belief propagation in terms
@@ -280,13 +281,13 @@ key "SonGreBic2011"
 ed message which is defined as 
 \begin_inset Formula 
 \begin{equation}
-m_{a\to b}(x_{b})=\frac{m_{a\to b}^{c}(x_{b})}{m_{a\to b}^{*}(x_{b})}\label{eq:normalised_message}
+m_{a\to b}(x_{b})=\frac{m_{a\to b}^{c}(X_{b})}{m_{a\to b}^{*}(X_{b})}\label{eq:normalised_message}
 \end{equation}
 
 \end_inset
 
 where 
-\begin_inset Formula $m_{a\to b}^{c}(x_{b})$
+\begin_inset Formula $m_{a\to b}^{c}(X_{b})$
 \end_inset
 
  is the usual BP message from node 
@@ -302,7 +303,7 @@ where
 conditioned on observed data
 \series default
 , and 
-\begin_inset Formula $m_{a\to b}^{*}(x_{b})$
+\begin_inset Formula $m_{a\to b}^{*}(X_{b})$
 \end_inset
 
  is the usual BP message from node 
@@ -326,7 +327,7 @@ Computing the marginal distribution on a node requires not only the messages
  but also the unconditional marginal distribution of the variable
 \begin_inset Formula 
 \[
-P^{c}(x_{a})=\prod_{i\in ne(a)}m_{i\to b}^{c}(x_{a})=\prod_{i\in ne(a)}\left[m_{a\to b}^{*}(x_{b})m_{i\to b}(x_{a})\right]=P^{*}(x_{a})\prod_{i\in ne(a)}m_{i\to b}(x_{a})
+P^{c}(X_{a})=\prod_{i\in ne(a)}m_{i\to b}^{c}(X_{a})=\prod_{i\in ne(a)}\left[m_{a\to b}^{*}(X_{b})m_{i\to b}(X_{a})\right]=P^{*}(X_{a})\prod_{i\in ne(a)}m_{i\to b}(X_{a})
 \]
 
 \end_inset
@@ -348,13 +349,13 @@ Message propagation is computed using not only the messages but also the
 
 \begin_inset Formula 
 \begin{align*}
-m_{a\to b}(x_{b}) & =\E_{p*(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(x_{a})\right]
+m_{a\to b}(X_{b}) & =\E_{p*(X_{a}|X_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(X_{a})\right]
 \end{align*}
 
 \end_inset
 
 where 
-\begin_inset Formula $p*(x_{a}|x_{b})$
+\begin_inset Formula $p*(X_{a}|X_{b})$
 \end_inset
 
  can be estimated from data.
@@ -367,9 +368,9 @@ The second result follows from the following algebra.
  be written as the potentials on the original graph
 \begin_inset Formula 
 \begin{align}
-p^{*}(x_{a}|x_{b}) & =\frac{p^{*}(x_{a},x_{b})}{p^{*}(x_{b})}\nonumber \\
- & =\frac{\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})\prod_{u\in ne(b)\neg a}m_{u\to b}^{*}(x_{b})}{m_{a\to b}^{*}(x_{b})\prod_{u\in ne(b)\neg a}m_{u\to b}^{*}(x_{b})}\nonumber \\
- & =\frac{\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{m_{a\to b}^{*}(x_{b})}\label{eq:unboserveed_conditional}
+p^{*}(X_{a}|X_{b}) & =\frac{p^{*}(X_{a},X_{b})}{p^{*}(X_{b})}\nonumber \\
+ & =\frac{\Phi(X_{a,}X_{b})\Phi(X_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(X_{a})\prod_{u\in ne(b)\neg a}m_{u\to b}^{*}(X_{b})}{m_{a\to b}^{*}(X_{b})\prod_{u\in ne(b)\neg a}m_{u\to b}^{*}(X_{b})}\nonumber \\
+ & =\frac{\Phi(X_{a,}X_{b})\Phi(X_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(X_{a})}{m_{a\to b}^{*}(X_{b})}\label{eq:unboserveed_conditional}
 \end{align}
 
 \end_inset
@@ -378,25 +379,25 @@ The original usual belief update is written in terms of messages and potentials
  as 
 \begin_inset Formula 
 \begin{align*}
-m_{a\to b}^{c}(x_{b}) & =\int\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{c}(x_{a})dx_{a}
+m_{a\to b}^{c}(X_{b}) & =\int\Phi(X_{a,}X_{b})\Phi(X_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{c}(X_{a})dX_{a}
 \end{align*}
 
 \end_inset
 
 Now divide both sizes by the unobserved message 
-\begin_inset Formula $m_{a\to b}^{*}(x_{b})$
+\begin_inset Formula $m_{a\to b}^{*}(X_{b})$
 \end_inset
 
 , and multiply inside the integral the constant 
-\begin_inset Formula $\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}$
+\begin_inset Formula $\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(X_{a})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(X_{a})}$
 \end_inset
 
 
 \begin_inset Formula 
 \begin{align*}
-\frac{m_{a\to b}^{c}(x_{b})}{m_{a\to b}^{*}(x_{b})} & =\frac{1}{m_{a\to b}^{*}(x_{b})}\int\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{c}(x_{a})\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}dx_{a}\\
- & =\int\frac{\Phi(x_{a,}x_{b})\Phi(x_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(x_{a})}{m_{a\to b}^{*}(x_{b})}\prod_{u\in ne(a)\neg b}\frac{m_{u\to a}^{c}(x_{a})}{m_{u\to a}^{*}(x_{a})}dx_{a}\\
-m_{a\to b}(x_{b}) & =\E_{p(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(x_{a})\right]
+\frac{m_{a\to b}^{c}(X_{b})}{m_{a\to b}^{*}(X_{b})} & =\frac{1}{m_{a\to b}^{*}(X_{b})}\int\Phi(X_{a,}X_{b})\Phi(X_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{c}(X_{a})\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(X_{a})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(X_{a})}dX_{a}\\
+ & =\int\frac{\Phi(X_{a,}X_{b})\Phi(X_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(X_{a})}{m_{a\to b}^{*}(X_{b})}\prod_{u\in ne(a)\neg b}\frac{m_{u\to a}^{c}(X_{a})}{m_{u\to a}^{*}(X_{a})}dX_{a}\\
+m_{a\to b}(X_{b}) & =\E_{p(X_{a}|X_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(X_{a})\right]
 \end{align*}
 
 \end_inset
@@ -423,11 +424,11 @@ reference "eq:normalised_message"
 This expectation under the unobserved data needs to be computed for the
  product of messages.
  If we assume that 
-\begin_inset Formula $m_{u\to a}(x_{a})=\text{\left\langle m_{u\to a},\ \bphi(x_{a})\right\rangle }_{\cH}$
+\begin_inset Formula $m_{u\to a}(X_{a})=\text{\left\langle m_{u\to a},\ \bphi(x_{a})\right\rangle }_{\cH}$
 \end_inset
 
  where 
-\begin_inset Formula $\bphi(x_{a})$
+\begin_inset Formula $\bphi(X_{a})$
 \end_inset
 
  is a vector in space 
@@ -435,11 +436,11 @@ This expectation under the unobserved data needs to be computed for the
 \end_inset
 
 , and similarly that 
-\begin_inset Formula $m_{a\to b}(x_{b})=\text{\left\langle m_{u\to b},\ \bphi(x_{b})\right\rangle }_{\cF}$
+\begin_inset Formula $m_{a\to b}(X_{b})=\left\langle m_{u\to b},\ \bphi(X_{b})\right\rangle _{\cF}$
 \end_inset
 
  where 
-\begin_inset Formula $\bphi(x_{a})$
+\begin_inset Formula $\bphi(X_{a})$
 \end_inset
 
  is a vector in space 
@@ -452,31 +453,45 @@ This expectation under the unobserved data needs to be computed for the
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-m_{a\to b}(x_{b}) & =\E_{p(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(x_{a})\right]\nonumber \\
- & =\E_{p(x_{a}|x_{b})}\left[\prod_{u\in ne(a)\neg b}\left\langle m_{u\to a},\ \bphi(x_{a})\right\rangle _{\cH}\right]\nonumber \\
- & =\E_{p(x_{a}|x_{b})}\left[\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \underset{deg(a)-1}{\bigotimes}\bphi(x_{a})\right\rangle _{\cH^{\otimes}}\right]\nonumber \\
- & =\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \E_{p(x_{a}|x_{b})}\left[\underset{deg(a)-1}{\bigotimes}\bphi(x_{a})\right]\right\rangle _{\cH^{\otimes}}\nonumber \\
- & \stackrel{(1)}{=}\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \mathcal{W}_{X_{a}^{\otimes}|x_{b}}\bpsi(x_{b})\right\rangle _{\text{\cH^{\otimes}}}\nonumber \\
- & =\left\langle \mathcal{W}_{X_{a}^{\otimes}|x_{b}}^{\dagger}\underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \bpsi(x_{b})\right\rangle _{\text{\cF}}\nonumber \\
-m_{a\to b} & =\mathcal{W}_{X_{a}^{\otimes}|x_{b}}^{\dagger}\underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a}\label{eq:kernel_BP}
+m_{a\to b}(X_{b}) & =\E_{p(X_{a}|X_{b})}\left[\prod_{u\in ne(a)\neg b}m_{u\to a}(X_{a})\right]\nonumber \\
+ & =\E_{p(X_{a}|X_{b})}\left[\prod_{u\in ne(a)\neg b}\left\langle m_{u\to a},\ \bphi(X_{a})\right\rangle _{\cH}\right]\nonumber \\
+ & =\E_{p(X_{a}|X_{b})}\left[\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \underset{deg(a)-1}{\bigotimes}\bphi(X_{a})\right\rangle _{\cH^{\otimes}}\right]\nonumber \\
+ & =\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \E_{p(X_{a}|X_{b})}\left[\underset{deg(a)-1}{\bigotimes}\bphi(X_{a})\right]\right\rangle _{\cH^{\otimes}}\nonumber \\
+ & \stackrel{(1)}{=}\left\langle \underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \mathcal{W}_{X_{a}^{\otimes}|X_{b}}\bpsi(X_{b})\right\rangle _{\text{\cH^{\otimes}}}\nonumber \\
+ & =\left\langle \mathcal{W}_{X_{a}^{\otimes}|X_{b}}^{\dagger}\underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a},\ \bpsi(X_{b})\right\rangle _{\text{\cF}}\nonumber \\
+m_{a\to b} & =\mathcal{W}_{X_{a}^{\otimes}|X_{b}}^{\dagger}\underset{u\in ne(b)\neg a}{\bigotimes}m_{u\to a}\label{eq:kernel_BP}
 \end{align}
 
 \end_inset
 
 where in (1) we assume that the conditional expectation 
-\begin_inset Formula $\E_{p(x_{a}|x_{b})}\left[\large{\text{\otimes}}^{deg(b)-1}\bphi(x_{a})\right]$
+\begin_inset Formula $\E_{p(X_{a}|x_{b})}\left[\large{\text{\otimes}}^{deg(b)-1}\bphi(X_{a})\right]$
 \end_inset
 
 , which is a function of 
-\begin_inset Formula $x_{b}$
+\begin_inset Formula $X_{b}$
 \end_inset
 
 , is in the space where 
-\begin_inset Formula $\bphi(x_{b})$
+\begin_inset Formula $\bphi(X_{b})$
 \end_inset
 
  is defined.
  
+\end_layout
+
+\begin_layout Standard
+In particular, if 
+\begin_inset Formula 
+\begin{align*}
+\frac{m^{c}(X_{b})}{m^{*}(X_{b})} & =\frac{1}{m^{*}(x_{b})}\Phi(x_{b,}y_{b})\Phi(y_{b})\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(y_{b})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(y_{b})}\\
+ & =\frac{\Phi(x_{b,}y_{b})\Phi(y_{b})\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(y_{b})}{m^{*}(x_{b})}\frac{1}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(y_{b})}\\
+ & \propto p^{*}(x_{a}|x_{b})
+\end{align*}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -526,11 +541,11 @@ Here we derive the message passing using the usual conditioned messages,
 We begin by stating the above assumptions.
  As above, define vector features and its corresponding feature space as
  
-\begin_inset Formula $\bphi(x_{a})$
+\begin_inset Formula $\bphi(X_{a})$
 \end_inset
 
  and 
-\begin_inset Formula $\bpsi_{u}(x_{u})$
+\begin_inset Formula $\bpsi_{u}(X_{u})$
 \end_inset
 
  for 
@@ -538,7 +553,7 @@ We begin by stating the above assumptions.
 \end_inset
 
 , and additionaly we we make explicit the observed data at 
-\begin_inset Formula $x_{a}$
+\begin_inset Formula $X_{a}$
 \end_inset
 
  to be 
@@ -553,8 +568,8 @@ We begin by stating the above assumptions.
  We assume that we can approximate the following
 \begin_inset Formula 
 \begin{align}
-\int dx_{a}\bphi(x_{a})\prod_{u\in ne(a)}\Phi_{a,u}(x_{a,}x_{u},y_{a})\Phi_{u}(x_{u},y_{a}) & \approx\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(x_{u})\right\rangle \label{eq:pair_singleton}\\
- & =\sum_{i_{1},\dots,i_{d(a)},k}W_{i_{1},\dots,i_{d(a)}}^{(a)}\nu_{k}(y_{a})\prod_{u\in ne(a)}\psi_{u,i_{u}}(x_{u})~\forall a\in\cG
+\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\Phi_{a,u}(X_{a,}X_{u},y_{a})\Phi_{u}(X_{u},y_{a}) & \approx\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(X_{u})\right\rangle \label{eq:pair_singleton}\\
+ & =\sum_{i_{1},\dots,i_{d(a)},k}W_{i_{1},\dots,i_{d(a)}}^{(a)}\nu_{k}(y_{a})\prod_{u\in ne(a)}\psi_{u,i_{u}}(X_{u})~\forall a\in\cG
 \end{align}
 
 \end_inset
@@ -570,17 +585,17 @@ where
  are parameters.
  This says that the integral of the product of the relevant potentials over
  the variable we are computing the mean representation 
-\begin_inset Formula $x_{a}$
+\begin_inset Formula $X_{a}$
 \end_inset
 
  (similar to the out-going message from 
-\begin_inset Formula $x_{a}$
+\begin_inset Formula $X_{a}$
 \end_inset
 
 ) should be approximatd by the set of basis function formed by the outer
  product of all the basis functions associated with the other variables
  
-\begin_inset Formula $x_{u}$
+\begin_inset Formula $X_{u}$
 \end_inset
 
  and data 
@@ -602,7 +617,7 @@ reference "eq:kernel_BP"
 \begin_layout Standard
 Instead of messages, we consider (possibly unnormalised) expectations of
  nonlinear functions for variables 
-\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(x_{u}|D_{u})}\left[\bpsi(x_{u})\right]$
+\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(X_{u}|D_{u})}\left[\bpsi(X_{u})\right]$
 \end_inset
 
  where 
@@ -624,27 +639,27 @@ Instead of messages, we consider (possibly unnormalised) expectations of
 \end_inset
 
  is essentially the unnormalized mean representation of 
-\begin_inset Formula $\tilde{p}(x_{u}|D_{u})$
+\begin_inset Formula $\tilde{p}(X_{u}|D_{u})$
 \end_inset
 
 .
  Given such previously computed means, we want to obtain the mean representation
-\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(x_{u}|D_{u},x_{d})}\left[\bphi(x_{u})\right]$
+\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(X_{u}|D_{u},X_{d})}\left[\bphi(X_{u})\right]$
 \end_inset
 
  given new data 
-\begin_inset Formula $x_{d}$
+\begin_inset Formula $y_{a}$
 \end_inset
 
  attached to the relevant potentials.
 \begin_inset Formula 
 \begin{align}
-\tilde{\bmu}_{a} & =\int dx_{a}\bphi(x_{a})\tilde{p}(x_{a}|D_{u},x_{d})\nonumber \\
- & =\int dx_{a}\bphi(x_{a})\prod_{u\in ne(a)}\int dx_{u}\tilde{p}(x_{u}|D_{u})\Phi_{a,u}(x_{a,}x_{u},x_{d})\Phi_{u}(x_{u},y_{a})\nonumber \\
- & =\int\dots\int\left[\prod_{u\in ne(a)}dx_{u}\tilde{p}(x_{u}|D_{u})\right]\int dx_{a}\bphi(x_{a})\prod_{u\in ne(a)}\Phi_{a,u}(x_{a,}x_{u},y_{a})\Phi_{u}(x_{u},y)\nonumber \\
- & \approx\int\dots\int\left[\prod_{u\in ne(a)}dx_{u}\tilde{p}(x_{u}|D_{u})\right]\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(x_{u})\right\rangle \nonumber \\
- & =\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\left[\int dx_{u}\tilde{p}(x_{u}|D_{u})\bpsi_{u}(x_{u})\right]\right\rangle \nonumber \\
- & =\left\langle \mathcal{W}{}^{a},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(x_{u})\right\rangle 
+\tilde{\bmu}_{a} & =\int dX_{a}\bphi(X_{a})\tilde{p}(X_{a}|D_{u},X_{d})\nonumber \\
+ & =\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\int dX_{u}\tilde{p}(X_{u}|D_{u})\Phi_{a,u}(X_{a,}X_{u},X_{d})\Phi_{u}(X_{u},y_{a})\nonumber \\
+ & =\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|D_{u})\right]\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\Phi_{a,u}(X_{a,}X_{u},y_{a})\Phi_{u}(X_{u},y)\nonumber \\
+ & \approx\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|D_{u})\right]\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(X_{u})\right\rangle \nonumber \\
+ & =\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\left[\int dX_{u}\tilde{p}(X_{u}|D_{u})\bpsi_{u}(X_{u})\right]\right\rangle \nonumber \\
+ & =\left\langle \mathcal{W}{}^{a},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(X_{u})\right\rangle 
 \end{align}
 
 \end_inset
@@ -665,18 +680,18 @@ It is worth noting that the means are unnormalized, which does not matter
 \end_inset
 
  to approximate the constant function with the basis function
-\begin_inset Formula $\sum_{i}n_{i}\phi_{i}(x)=1$
+\begin_inset Formula $\sum_{i}n_{i}\phi_{i}(X)=1$
 \end_inset
 
 , then the normalizer for 
-\begin_inset Formula $\tilde{p}(x|D)$
+\begin_inset Formula $\tilde{p}(X|D)$
 \end_inset
 
  is 
 \begin_inset Formula 
 \begin{align*}
-Z(D) & =\int\tilde{p}(x|D)dx\\
- & =\int\tilde{p}(x|D)\sum_{i}n_{i}\phi_{i}(x)dx\\
+Z(D) & =\int\tilde{p}(X|D)dX\\
+ & =\int\tilde{p}(X|D)\sum_{i}n_{i}\phi_{i}(X)dX\\
  & =\sum_{i}n_{i}\tilde{\mu}_{i}\\
  & =\mathbf{n}^{\intercal}\tilde{\bmu}
 \end{align*}
@@ -709,10 +724,25 @@ Kernel Bayes rule
 \end_layout
 
 \begin_layout Standard
-Kernel Bayes rule allows one to propagate messages while taking into account
- normalisation automatically.
+Kernel Bayes rule 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "SmoGreSon2007"
+
+\end_inset
+
+ allows message propagation while taking into account normalisation based
+ on conditional operators.
  We begin by reviewing the basic kernel probability computations.
  
+\end_layout
+
+\begin_layout Subsubsection
+Mean representation of distributions
+\end_layout
+
+\begin_layout Paragraph
+Mean embedding
 \end_layout
 
 \begin_layout Standard
@@ -725,15 +755,15 @@ Define the the mean embedding for random variable
 \end_inset
 
 , where 
-\begin_inset Formula $\phi(X)\in\cH_{X}$
+\begin_inset Formula $\phi(X)\in\cH$
 \end_inset
 
  is a vector of features, and similarly 
-\begin_inset Formula $\bmu_{Y}=\E_{p(X)}\left[\phi(X)\right]$
+\begin_inset Formula $\bmu_{Y}=\E_{p(Y)}\left[\psi(X)\right]$
 \end_inset
 
  for
-\begin_inset Formula $\phi(X)\in\cH_{X}$
+\begin_inset Formula $\psi(X)\in\cF$
 \end_inset
 
 .
@@ -744,12 +774,469 @@ Define the the mean embedding for random variable
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\E_{p(X)}\left[f(X)\right]=\E_{p(X)}\left[\left\langle f,\phi(X)\right\rangle \right]=\left\langle f,\E_{p(X)}\left[\phi(X)\right]\right\rangle =\left\langle f,\bmu_{x}\right\rangle 
+\E_{p(X)}\left[f(X)\right]=\E_{p(X)}\left[\left\langle f,\phi(X)\right\rangle \right]=\left\langle f,\E_{p(X)}\left[\phi(X)\right]\right\rangle =\left\langle f,\bmu_{X}\right\rangle \quad\forall f\in\cH,g\in\cF
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Similar to the expectations above, one can also define a mean representation
+ for the joint distribution 
+\begin_inset Formula $p(X,Y)$
+\end_inset
+
+ as the mean over the outer product of the feature maps
+\begin_inset Formula 
+\[
+\cC_{XY}=\E_{p(X,Y)}\left[\bphi(x)\otimes\bpsi(y)\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with the property that any uncentered covariances between RKHS functions
+ 
+\begin_inset Formula $f(x)$
+\end_inset
+
+ and 
+\begin_inset Formula $g(y)$
+\end_inset
+
+ can be evaluated as 
+\begin_inset Formula 
+\[
+\E_{p(X,Y)}\left[f(x)g(y)\right]=\left\langle f\otimes g,\E_{p(X,Y)}\left[\bphi(x)\otimes\bpsi(y)\right]\right\rangle _{\cH\otimes\cF}=\left\langle f\otimes g,C_{XY}\right\rangle _{\cH\otimes\cF}=\left\langle f,C_{XY}g\right\rangle _{H}
+\]
+
+\end_inset
+
+where the last equality follows from the analogy with linear algebra 
+\begin_inset Formula $\Tr(\y\x^{\intercal}\mathbf{A})=\x^{\intercal}\mathbf{A}\y$
+\end_inset
+
+ and 
+\begin_inset Formula $C_{XY}$
+\end_inset
+
+ is viewed as an operator 
+\begin_inset Formula $\cF\to\cH$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
+Conditional mean embeddings and kernel Bayes rule (KBR)
+\end_layout
+
+\begin_layout Standard
+The conditional distribution 
+\begin_inset Formula $p(Y|X=x)$
+\end_inset
+
+ can also be defined in a similar way.
+ Denote by 
+\begin_inset Formula $x$
+\end_inset
+
+ the value take by 
+\begin_inset Formula $X$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\bmu_{Y|x}=\E_{p(Y|X=x)}\left[\bpsi(y)|X=x\right]\in\cF
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This mean maps a function 
+\begin_inset Formula $f\in\cH$
+\end_inset
+
+ to its conditional expectation.
+ 
+\begin_inset Formula 
+\[
+\E_{p(Y|X=x)}\left[g(y)\right]=\left\langle g,\E_{p(Y|X=x)}\left[\bpsi(y)\right]\right\rangle =\left\langle g,\bmu_{Y|x}\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In contrast to the 
+\begin_inset Formula $\bmu_{X}$
+\end_inset
+
+ and 
+\begin_inset Formula $\cC_{XY}$
+\end_inset
+
+, the conditional embedding 
+\begin_inset Formula $\bmu_{Y|x}$
+\end_inset
+
+ is an element in 
+\begin_inset Formula $\cF$
+\end_inset
+
+ as a function of 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ It would be convenient to obtain a operator that achieves this mapping
+ without using the definition above.
+ Indeed, it can be shown 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "FukKenFra2004,SonHuaJon2009"
+
+\end_inset
+
+ that such an operator 
+\begin_inset Formula $\cC_{Y|X}:\cH\to\cF$
+\end_inset
+
+ can be written as 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\cC_{Y|X}=\cC_{YX}\cC_{XX}^{-1}\label{eq:conditional_operator}
+\end{equation}
+
+\end_inset
+
+and when conditioned on a particular value of 
+\begin_inset Formula $x$
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{equation}
+\bmu_{Y|x}=\cC_{Y|X}\bphi(x)\label{eq:conditional_mean}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+One assumption is that 
+\begin_inset Formula $\E_{Y|X}\left[g(y)|X=\cdot\right]\in\cH$
+\end_inset
+
+ for all 
+\begin_inset Formula $g\in\cF$
+\end_inset
+
+ without conditioninig on any particular 
+\begin_inset Formula $x$
+\end_inset
+
+, so that 
+\begin_inset Formula $\left\langle \E_{Y|X}\left[g(y)|X=\cdot\right],\phi(x)\right\rangle =\E_{Y|X}\left[g(y)|X=x\right]$
+\end_inset
+
+.
+ To briefly show why 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:conditional_mean"
+
+\end_inset
+
+ holds, we need to show that 
+\begin_inset Formula $\E_{Y|x}\left[g(y)|X=x\right]=\left\langle g,\cC_{YX}\cC_{XX}^{-1}\bphi(x)\right\rangle $
+\end_inset
+
+.
+ For any 
+\begin_inset Formula $f\in\cH$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\left\langle f,\cC_{XX}\E_{p(Y|X)}\left[g(Y)|X=\cdot\right]\right\rangle _{\cH} & =\left\langle f,\E_{p(X)}\left[\bphi(X)\otimes\bphi(X)\right]\E_{p(Y|X)}\left[g(Y)|X=\cdot\right]\right\rangle _{\cF}\\
+ & \stackrel{(1)}{=}\E_{p(X)}\left[f(X)\left\langle \E_{Y|X}\left[g(y)|X=\cdot\right],\phi(X)\right\rangle _{\cF}\right]\\
+ & =\E_{p(X)}\left[f(X)\E_{p(Y|X)}\left[g(Y)|X\right]\right]\\
+ & =\E_{p(X,Y)}[f(X)\otimes g(y)]\\
+ & =\left\langle f,C_{XY}g\right\rangle _{\cH}\\
+\cC_{XX}\E_{p(Y|X)}\left[g(Y)|X=\cdot\right] & =C_{XY}g
+\end{align*}
+
+\end_inset
+
+where at step (1) we used the assumption 
+\begin_inset Formula $\E_{Y|X}\left[g(y)|X=\cdot\right]\in\cH$
+\end_inset
+
+ for all 
+\begin_inset Formula $g\in\cF$
+\end_inset
+
+.
+ By taking the tranpose of 
+\begin_inset Formula $\cC_{XX}$
+\end_inset
+
+ and conditioning on a particular value of 
+\begin_inset Formula $X=x$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\E_{Y|X}\left[g(y)|X=x\right] & = & \left\langle \cC_{XX}^{-1}\cC_{XY}g,\bphi(x)\right\rangle _{\cH}\\
+ & = & \left\langle g,\cC_{YX}\cC_{XX}^{-1}\bphi(x)\right\rangle _{\cF}\\
+\E_{Y|X}\left[\bpsi(y)|X=x\right] & = & \cC_{YX}\cC_{XX}^{-1}\bphi(x)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This means that the Bayes rule 
+\begin_inset Formula $p(Y|X=x)=\frac{P(Y,X=x)}{P(X=x)}$
+\end_inset
+
+ can be translated to relationships between the corresponding kernel mean
+ embeddings as
+\begin_inset Formula 
+\begin{equation}
+\bmu_{Y|x}=C_{YX}\cC_{XX}^{-1}\bphi(x)\label{eq:KBR}
+\end{equation}
+
+\end_inset
+
+which is known as the kernel Bayes rule.
+\end_layout
+
+\begin_layout Paragraph
+Kernel sum rule
+\end_layout
+
+\begin_layout Standard
+Following similar algebra on can show that that the sum rule 
+\begin_inset Formula $p(X)=\int dYp(X|Y)p(Y)$
+\end_inset
+
+ in terms of mean embeddings is 
+\begin_inset Formula 
+\begin{equation}
+\bmu_{Y}=\cC_{Y|X}\bmu_{X}\label{eq:KSM}
+\end{equation}
+
+\end_inset
+
+ since
+\begin_inset Formula 
+\[
+\bmu_{Y}=\E_{p(Y)}\left[\bphi(Y)\right]=\E_{p(X)}\E_{p(Y|X)}\left[\bpsi(y)|X=x\right]=\E_{p(X)}\left[\cC_{Y|X}\bphi(x)\right]=\cC_{Y|X}\E_{p(X)}\left[\bphi(x)\right]=\cC_{Y|X}\bmu_{X}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Subsubsection
+Propagation on a simple chain
+\end_layout
+
+\begin_layout Standard
+In belief propagation, we wish to successively condition on observations
+ and marginalise variables along a path in the graph.
+ Consider first a simple Bayesian network of 
+\begin_inset Formula $(D=d)\to X\to Y\to(Z=z)$
+\end_inset
+
+ where 
+\begin_inset Formula $D$
+\end_inset
+
+ and 
+\begin_inset Formula $Z$
+\end_inset
+
+ are observed to be 
+\begin_inset Formula $d$
+\end_inset
+
+ and 
+\begin_inset Formula $z$
+\end_inset
+
+, respectively .
+ Consider the situation where the mean embedding of 
+\begin_inset Formula $\bmu_{X|D=d}$
+\end_inset
+
+ is computed, and we wish to propagated this mean to obtain the mean embedding
+ for 
+\begin_inset Formula $Y$
+\end_inset
+
+.
+ To simplifiy notation, define a common feature map 
+\begin_inset Formula $\bphi(\cdot)\in\cH$
+\end_inset
+
+ for all variables.
+ Repeated use of KBR gives
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Y|Z=z,D=d} & =C_{YZ|d}C_{ZZ|d}^{-1}\bphi(z)\\
+ & =\left[C_{YZD}C_{DD}^{-1}\bphi(d)\right]\left[C_{ZZD}C_{DD}^{-1}\bphi(d)\right]^{-1}\bphi(z)
+\end{align*}
+
+\end_inset
+
+By definition, 
+\begin_inset Formula $\bmu_{X|d}=C_{XD}C_{DD}^{-1}\bphi(d)\implies C_{DD}^{-1}\bphi(d)=C_{XD}^{\dagger}\bmu_{X|d}$
+\end_inset
+
+, substituting this into the above gives
+\begin_inset Formula 
+\[
+\bmu_{Y|Z=z,D=d}=\left[C_{YZD}C_{XD}^{\dagger}\bmu_{X|d}\right]\left[C_{ZZD}C_{XD}^{\dagger}\bmu_{X|d}\right]^{-1}\bphi(z)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This update rule is taken by in the kernel predictive state representation
+ of latent chain models 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "BooByrGeo2013"
+
+\end_inset
+
+ and also motivated the architecture of the predictive state recurrent neural
+ network 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DowCarAhm2017"
+
+\end_inset
+
+.
+ While being able to take into account all past data on potentially non-Markovia
+n latent structure, one needs design features for all previous data history
+ 
+\begin_inset Formula $\psi(D)$
+\end_inset
+
+ if 
+\begin_inset Formula $D$
+\end_inset
+
+ involves previous observed nodes.
+ 
+\end_layout
+
+\begin_layout Standard
+Another way of propagating messages leavages the conditional independence
+ relationships within the chain 
+\begin_inset Formula $p(Y,Z|D)=\int dDp(Y,Z|X)p(X|D)$
+\end_inset
+
+, which, using kernel sum rule (Equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:KSM"
+
+\end_inset
+
+), can be written in mean embeddings as 
+\begin_inset Formula 
+\[
+C_{YZ|d}=C_{YZ|X}\bmu_{X|d}
+\]
+
+\end_inset
+
+and likewise
+\begin_inset Formula 
+\[
+C_{ZZ|d}=C_{ZZ|X}\bmu_{X|d}
+\]
+
+\end_inset
+
+And, therefore
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Y|Z=z,D=d} & =\left[C_{YZ|X}\bmu_{X|d}\right]\left[C_{ZZ|X}\bmu_{X|d}\right]^{-1}\bphi(z)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+More generally, using the common notation as above, we can compute messages
+ in the following way.
+ To shorten notation, denote by 
+\begin_inset Formula $\{X_{u}\}$
+\end_inset
+
+ the set of variables in the neighbourhood of 
+\begin_inset Formula $X_{a}$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\bmu_{a} & =C_{X_{a}Y_{a}|D}C_{Y_{a}Y_{a}|D}\nu(y_{a})\\
+ & =\left[C_{X_{a}Y_{a}\{X_{u}\}}C_{DD}^{-1}\right]C_{\{X_{u}\}\{X_{u}\}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "ref"
