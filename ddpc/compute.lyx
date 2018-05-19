@@ -507,6 +507,7 @@ d marginal distribution, which is in practise estimated by nonparametric
 \end_inset
 
  unavailable.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -518,205 +519,6 @@ In particular, we note that message passing is performed by an inner product
  and the tensor product of incomming messages.
  In the section below, message passing using the mean representations of
  variables also share this structure.
-\end_layout
-
-\begin_layout Subsection
-Approximating distributions
-\end_layout
-
-\begin_layout Standard
-Here we derive the message passing using the usual conditioned messages,
- i.e.
- expectation of factors without referencing the unconditioned messages.
- The key idea is that we which to use a finite set of basis function which
- can be used to approximate all the potentials in the model.
- Using a infinitely large set of basis functions, such as the features implied
- by universal kernels, then by universality this set of feature functions
- can approximate any bounded continuous functions, which is the case for
- many distributions distributions.
- 
-\end_layout
-
-\begin_layout Standard
-We begin by stating the above assumptions.
- As above, define vector features and its corresponding feature space as
- 
-\begin_inset Formula $\bphi(X_{a})$
-\end_inset
-
- and 
-\begin_inset Formula $\bpsi_{u}(X_{u})$
-\end_inset
-
- for 
-\begin_inset Formula $u\in ne(a)$
-\end_inset
-
-, and additionaly we we make explicit the observed data at 
-\begin_inset Formula $X_{a}$
-\end_inset
-
- to be 
-\begin_inset Formula $y_{a}$
-\end_inset
-
- and define its feature represenation as
-\begin_inset Formula $\bnu(y_{a})$
-\end_inset
-
-.
- We assume that we can approximate the following
-\begin_inset Formula 
-\begin{align}
-\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\Phi_{a,u}(X_{a,}X_{u},y_{a})\Phi_{u}(X_{u},y_{a}) & \approx\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(X_{u})\right\rangle \label{eq:pair_singleton}\\
- & =\sum_{i_{1},\dots,i_{d(a)},k}W_{i_{1},\dots,i_{d(a)}}^{(a)}\nu_{k}(y_{a})\prod_{u\in ne(a)}\psi_{u,i_{u}}(X_{u})~\forall a\in\cG
-\end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-where 
-\begin_inset Formula $W_{i_{1},\dots,i_{d(a)}}^{(a)}$
-\end_inset
-
- are parameters.
- This says that the integral of the product of the relevant potentials over
- the variable we are computing the mean representation 
-\begin_inset Formula $X_{a}$
-\end_inset
-
- (similar to the out-going message from 
-\begin_inset Formula $X_{a}$
-\end_inset
-
-) should be approximatd by the set of basis function formed by the outer
- product of all the basis functions associated with the other variables
- 
-\begin_inset Formula $X_{u}$
-\end_inset
-
- and data 
-\begin_inset Formula $y_{a}$
-\end_inset
-
-.
- This is analogous to the assumption make at in step (1) in deriving Equation
- (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:kernel_BP"
-
-\end_inset
-
-).
-\end_layout
-
-\begin_layout Standard
-Instead of messages, we consider (possibly unnormalised) expectations of
- nonlinear functions for variables 
-\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(X_{u}|D_{u})}\left[\bpsi(X_{u})\right]$
-\end_inset
-
- where 
-\begin_inset Formula $D_{u}$
-\end_inset
-
- is the data conditioned on a upstream subtree of 
-\begin_inset Formula $u$
-\end_inset
-
-.
- We restrict 
-\begin_inset Formula $u\in ne(a)=\{1,...,deg(a)\}$
-\end_inset
-
- to be in the neighbours from which message propagates from.
- 
-\begin_inset Formula $\tilde{\bmu}_{u}$
-\end_inset
-
- is essentially the unnormalized mean representation of 
-\begin_inset Formula $\tilde{p}(X_{u}|D_{u})$
-\end_inset
-
-.
- Given such previously computed means, we want to obtain the mean representation
-\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(X_{u}|D_{u},X_{d})}\left[\bphi(X_{u})\right]$
-\end_inset
-
- given new data 
-\begin_inset Formula $y_{a}$
-\end_inset
-
- attached to the relevant potentials.
-\begin_inset Formula 
-\begin{align}
-\tilde{\bmu}_{a} & =\int dX_{a}\bphi(X_{a})\tilde{p}(X_{a}|D_{u},X_{d})\nonumber \\
- & =\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\int dX_{u}\tilde{p}(X_{u}|D_{u})\Phi_{a,u}(X_{a,}X_{u},X_{d})\Phi_{u}(X_{u},y_{a})\nonumber \\
- & =\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|D_{u})\right]\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\Phi_{a,u}(X_{a,}X_{u},y_{a})\Phi_{u}(X_{u},y)\nonumber \\
- & \approx\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|D_{u})\right]\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(X_{u})\right\rangle \nonumber \\
- & =\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\left[\int dX_{u}\tilde{p}(X_{u}|D_{u})\bpsi_{u}(X_{u})\right]\right\rangle \nonumber \\
- & =\left\langle \mathcal{W}{}^{a},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(X_{u})\right\rangle 
-\end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-It is worth noting that the means are unnormalized, which does not matter
- for inference.
- To normalize the means, one can use divisive normalisation as follows.
- For example, to nnormalize 
-\begin_inset Formula $\tilde{\bmu}$
-\end_inset
-
-, find a set of weights 
-\begin_inset Formula $\mathbf{n}$
-\end_inset
-
- to approximate the constant function with the basis function
-\begin_inset Formula $\sum_{i}n_{i}\phi_{i}(X)=1$
-\end_inset
-
-, then the normalizer for 
-\begin_inset Formula $\tilde{p}(X|D)$
-\end_inset
-
- is 
-\begin_inset Formula 
-\begin{align*}
-Z(D) & =\int\tilde{p}(X|D)dX\\
- & =\int\tilde{p}(X|D)\sum_{i}n_{i}\phi_{i}(X)dX\\
- & =\sum_{i}n_{i}\tilde{\mu}_{i}\\
- & =\mathbf{n}^{\intercal}\tilde{\bmu}
-\end{align*}
-
-\end_inset
-
-and the normalized mean is 
-\begin_inset Formula 
-\begin{align*}
-\bmu & =\frac{\tilde{\bmu}}{\mathbf{n}^{\intercal}\tilde{\bmu}}
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Unlike the kernel belief propagation where the weights can be estimated
- from real data by regression, there is no clear way to obtain these weights
- as all the mean representations also depend on the weights.
- Nonetheless, this message passing scheme motivates a neural network structure,
- and given a task and an error signal, we can hopefully obtain the weights
- using error backpropagation.
- 
 \end_layout
 
 \begin_layout Subsection
@@ -1040,7 +842,7 @@ which is known as the kernel Bayes rule.
 \end_layout
 
 \begin_layout Paragraph
-Kernel sum rule
+Kernel sum rule (KSR)
 \end_layout
 
 \begin_layout Standard
@@ -1216,24 +1018,335 @@ And, therefore
 \begin_layout Standard
 More generally, using the common notation as above, we can compute messages
  in the following way.
+ Note that the conditional independence of the graph suggests that 
+\begin_inset Formula $p(X_{a}|X_{u},d_{u})=p(X_{a}|X_{u})$
+\end_inset
+
+.
  To shorten notation, denote by 
 \begin_inset Formula $\{X_{u}\}$
 \end_inset
 
- the set of variables in the neighbourhood of 
+ the set of latent variables in the upstream neighbourhood of 
 \begin_inset Formula $X_{a}$
 \end_inset
 
 
 \begin_inset Formula 
 \begin{align*}
-\bmu_{a} & =C_{X_{a}Y_{a}|D}C_{Y_{a}Y_{a}|D}\nu(y_{a})\\
- & =\left[C_{X_{a}Y_{a}\{X_{u}\}}C_{DD}^{-1}\right]C_{\{X_{u}\}\{X_{u}\}}
+\bmu_{a} & =C_{X_{a}Y_{a}|\left\{ d_{u}\right\} }C_{Y_{a}Y_{a}|d_{u}}^{-1}\nu(y_{a})\\
+ & =\left[C_{X_{a}Y_{a}|\left\{ X_{u}\right\} ,\left\{ d_{u}\right\} }C_{\left\{ X_{u}\right\} \left\{ X_{u}\right\} |\left\{ d_{u}\right\} }^{-1}\bmu_{\left\{ X_{u}\right\} }\right]\left[C_{X_{a}X_{a}|\left\{ X_{u}\right\} ,\left\{ d_{u}\right\} }C_{\left\{ X_{u}\right\} \left\{ X_{u}\right\} |\left\{ d_{u}\right\} }^{-1}\bmu_{\left\{ X_{u}\right\} }\right]^{-1}\nu(y_{a})\\
+ & =\left[C_{X_{a}Y_{a}\{X_{u}\}}C_{\left\{ X_{u}\right\} \left\{ X_{u}\right\} |\left\{ d_{u}\right\} }^{-1}\bmu_{\left\{ X_{u}\right\} }\right]\left[C_{Y_{a}Y_{a}\{X_{u}\}}C_{\left\{ X_{u}\right\} \left\{ X_{u}\right\} |\left\{ d_{u}\right\} }^{-1}\bmu_{\left\{ X_{u}\right\} }\right]^{-1}\nu(y_{a})
 \end{align*}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+However, in practice, due to the regularised inverse, propagating message
+ along a large graph (e.g.
+ a markov chain) results in accumulation of the errors in the mean embeddings.
+ 
+\end_layout
+
+\begin_layout Subsection
+Approximating distributions and distribution regression
+\end_layout
+
+\begin_layout Standard
+Here we derive the message passing using the usual conditioned messages,
+ i.e.
+ expectation of factors without referencing the unconditioned messages.
+ The key idea is that we which to use a finite set of basis function which
+ can be used to approximate all the potentials in the model.
+ Using a infinitely large set of basis functions, such as the features implied
+ by universal kernels, then by universality this set of feature functions
+ can approximate any bounded continuous functions, which is the case for
+ many distributions distributions.
+ 
+\end_layout
+
+\begin_layout Standard
+We begin by stating the above assumptions.
+ As above, define vector features and its corresponding feature space as
+ 
+\begin_inset Formula $\bphi(X_{a})$
+\end_inset
+
+ and 
+\begin_inset Formula $\bpsi_{u}(X_{u})$
+\end_inset
+
+ for 
+\begin_inset Formula $u\in ne(a)$
+\end_inset
+
+; Additionaly, we make explicit the observed data attached to variable 
+\begin_inset Formula $X_{a}$
+\end_inset
+
+ to be 
+\begin_inset Formula $Y_{a}=y_{a}$
+\end_inset
+
+ and define its feature represenation as
+\begin_inset Formula $\bnu(y_{a})$
+\end_inset
+
+.
+ We assume that we can approximate the following
+\begin_inset Formula 
+\begin{align}
+\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\Phi_{a,u}(X_{a,}X_{u},y_{a})\Phi_{u}(X_{u},y_{a}) & \approx\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(X_{u})\right\rangle \label{eq:approx_expectation}\\
+ & =\sum_{i_{1},\dots,i_{deg(a)},k}W_{i_{1},\dots,i_{deg(a)}}^{(a)}\nu_{k}(y_{a})\prod_{u\in ne(a)}\psi_{u,i_{u}}(X_{u})~\forall a\in\cG
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $W_{i_{1},\dots,i_{deg(a)}}^{(a)}$
+\end_inset
+
+ are parameters and 
+\begin_inset Formula $deg(a)$
+\end_inset
+
+ means the number of incoming mean representations.
+ Equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:approx_expectation"
+
+\end_inset
+
+ states that the integral of the product of the relevant potentials over
+ the variable we are computing the mean representation 
+\begin_inset Formula $X_{a}$
+\end_inset
+
+ (similar to the out-going message from 
+\begin_inset Formula $X_{a}$
+\end_inset
+
+) should be well approximatd by the set of basis function formed by the
+ outer product of all the basis functions associated with the other incoming
+ neighbouring variables 
+\begin_inset Formula $X_{u}$
+\end_inset
+
+ and data 
+\begin_inset Formula $y_{a}$
+\end_inset
+
+.
+ This is analogous to the assumption made at in step (1) in deriving Equation
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel_BP"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Instead of messages, we consider (possibly unnormalised) expectations of
+ nonlinear functions for variables 
+\begin_inset Formula $\tilde{\bmu}_{u}:=\E_{\tilde{p}(X_{u}|d_{u})}\left[\bpsi(X_{u})\right]$
+\end_inset
+
+ where 
+\begin_inset Formula $d_{u}$
+\end_inset
+
+ is the data conditioned on 
+\begin_inset Formula $D_{u}$
+\end_inset
+
+ the upstream of 
+\begin_inset Formula $u$
+\end_inset
+
+.
+ We restrict 
+\begin_inset Formula $u\in ne(a)=\{1,...,deg(a)\}$
+\end_inset
+
+ to be in the neighbours from which messages propagate from.
+ 
+\begin_inset Formula $\tilde{\bmu}_{u}$
+\end_inset
+
+ is essentially the unnormalized mean representation of 
+\begin_inset Formula $\tilde{p}(X_{u}|d_{u})$
+\end_inset
+
+.
+ Given such previously computed means conditioned on the set of observations
+ 
+\begin_inset Formula $\left\{ D_{u}=d_{n}\right\} _{u\in ne(a)}$
+\end_inset
+
+, we want to obtain the mean representation
+\begin_inset Formula $\tilde{\bmu}_{a}:=\E_{\tilde{p}(X_{a}|\left\{ d_{u}\right\} _{u\in ne(a)},y_{d})}\left[\bphi(X_{u})\right]$
+\end_inset
+
+ given new data 
+\begin_inset Formula $y_{a}$
+\end_inset
+
+ attached to the relevant potentials.
+\begin_inset Formula 
+\begin{align}
+\tilde{\bmu}_{a} & =\int dX_{a}\bphi(X_{a})\tilde{p}(X_{a}|\left\{ d_{u}\right\} _{u\in ne(a)},X_{d})\nonumber \\
+ & =\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\int dX_{u}\tilde{p}(X_{u}|d_{u})\Phi_{a,u}(X_{a,}X_{u},X_{d})\Phi_{u}(X_{u},y_{a})\nonumber \\
+ & =\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|d_{u})\right]\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\Phi_{a,u}(X_{a,}X_{u},y_{a})\Phi_{u}(X_{u},y_{a})\nonumber \\
+ & \stackrel{(1)}{}\approx\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|d_{u})\right]\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(X_{u})\right\rangle \nonumber \\
+ & =\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\left[\int dX_{u}\tilde{p}(X_{u}|d_{u})\bpsi_{u}(X_{u})\right]\right\rangle \nonumber \\
+ & =\left\langle \mathcal{W}{}^{a},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(X_{u})\right\rangle \label{eq:approx_dist_multilinear}
+\end{align}
+
+\end_inset
+
+where in step (1) we used the assumption of 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:approx_expectation"
+
+\end_inset
+
+.
+ It is worth noting that the means are unnormalized, which does not matter
+ for inference.
+ To normalize the means, one can use divisive normalisation.
+ For example, to normalize 
+\begin_inset Formula $\tilde{\bmu}$
+\end_inset
+
+, find a set of weights 
+\begin_inset Formula $\mathbf{n}$
+\end_inset
+
+ to approximate the constant function with the basis function
+\begin_inset Formula $\sum_{i}n_{i}\phi_{i}(X)=1$
+\end_inset
+
+, then the normalizer for 
+\begin_inset Formula $\tilde{p}(X|D)$
+\end_inset
+
+ is 
+\begin_inset Formula 
+\begin{align*}
+Z(D) & =\int\tilde{p}(X|D)dX\\
+ & =\int\tilde{p}(X|D)\sum_{i}n_{i}\phi_{i}(X)dX\\
+ & =\sum_{i}n_{i}\tilde{\mu}_{i}\\
+ & =\mathbf{n}^{\intercal}\tilde{\bmu}
+\end{align*}
+
+\end_inset
+
+and the normalized mean is 
+\begin_inset Formula 
+\begin{align*}
+\bmu & =\frac{\tilde{\bmu}}{\mathbf{n}^{\intercal}\tilde{\bmu}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are two ways to obtain the tensors 
+\begin_inset Formula $\mathcal{W}{}^{a}$
+\end_inset
+
+.
+ First, this message passing scheme motivates a neural network structure
+ that combines inputs in a multilinear way in the feature space.
+ Given a task and an error signal, we can hopefully obtain the weights using
+ backpropagation.
+ 
+\end_layout
+
+\begin_layout Standard
+The second way to obtain the weights is by looking (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:approx_dist_multilinear"
+
+\end_inset
+
+) from the perspective of distribution regression.
+ In the previous sections, we discussed ideas about how to perform that
+ was trained using samples but was intended for use on mean representations
+ during test time.
+ Is it possible to train also using mean representations? This has been
+ studied by Szabo et al.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "szabo2016learning"
+
+\end_inset
+
+ in the infinite dimensional feature case.
+ Using this approach, the mean representation is treated just as an input
+ vector, and we can simply learn a function that that maps these means and
+ any observed data to produce the next mean embedding.
+ 
+\begin_inset Formula 
+\begin{equation}
+\bmu_{a}=h\left(\left\{ \tilde{\bmu}_{u}(X_{u})\right\} {}_{u\in ne(a)},y_{a}\right)=\left\langle h,\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(X_{u})\right\rangle \label{eq:distribution_regression}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Again, this mapping 
+\begin_inset Formula $h(\cdot)$
+\end_inset
+
+ could be linear in feature space just as in the RKHS version.
+ Unlike kernel belief propagation where the operators 
+\begin_inset Formula $\cC$
+\end_inset
+
+'s are estimated from samples in a way that respects the true underlying
+ relationships between the variables, i.e.
+ using KSR to propagate message to another latent node followed KBR that
+ takes the message from the observation attached to that node, the regression
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:distribution_regression"
+
+\end_inset
+
+) does not care about the actual relationships between the variables, and
+ also obviates the need for the assumption in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:approx_expectation"
+
+\end_inset
+
+) as long as the function 
+\begin_inset Formula $h(\cdot)$
+\end_inset
+
+ is able to discover the true relationships between the intended mapping.
 \end_layout
 
 \begin_layout Standard
