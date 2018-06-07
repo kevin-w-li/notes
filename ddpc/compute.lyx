@@ -1052,19 +1052,18 @@ However, in practice, due to the regularised inverse, propagating message
 \end_layout
 
 \begin_layout Subsection
-Approximating distributions and distribution regression
+Message mean representation (MMR)
 \end_layout
 
 \begin_layout Standard
-Here we derive the message passing using the usual conditioned messages,
- i.e.
- expectation of factors without referencing the unconditioned messages.
+Here we derive a new message passing scheme based on mean representation
+ of unnormalized likelihoods or messages.
  The key idea is that we which to use a finite set of basis function which
- can be used to approximate all the potentials in the model.
+ can be used to approximate certain integrals of potentials in the graph.
  Using a infinitely large set of basis functions, such as the features implied
  by universal kernels, then by universality this set of feature functions
- can approximate any bounded continuous functions, which is the case for
- many distributions distributions.
+ can approximate any bounded continuous functions, which is usually the
+ case for many distributions and messages.
  
 \end_layout
 
@@ -1210,7 +1209,7 @@ Instead of messages, we consider (possibly unnormalised) expectations of
  & =\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|d_{u})\right]\int dX_{a}\bphi(X_{a})\prod_{u\in ne(a)}\Phi_{a,u}(X_{a,}X_{u},y_{a})\Phi_{u}(X_{u},y_{a})\nonumber \\
  & \stackrel{(1)}{}\approx\int\dots\int\left[\prod_{u\in ne(a)}dX_{u}\tilde{p}(X_{u}|d_{u})\right]\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bpsi_{u}(X_{u})\right\rangle \nonumber \\
  & =\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\left[\int dX_{u}\tilde{p}(X_{u}|d_{u})\bpsi_{u}(X_{u})\right]\right\rangle \nonumber \\
- & =\left\langle \mathcal{W}{}^{a},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(X_{u})\right\rangle \label{eq:approx_dist_multilinear}
+ & =\left\langle \mathcal{W},\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(X_{u})\right\rangle \label{eq:approx_dist_multilinear}
 \end{align}
 
 \end_inset
@@ -1255,9 +1254,9 @@ Z(D) & =\int\tilde{p}(X|D)dX\\
 
 and the normalized mean is 
 \begin_inset Formula 
-\begin{align*}
-\bmu & =\frac{\tilde{\bmu}}{\mathbf{n}^{\intercal}\tilde{\bmu}}
-\end{align*}
+\begin{align}
+\bmu & =\frac{\tilde{\bmu}}{\mathbf{n}^{\intercal}\tilde{\bmu}}\label{eq:approx_dist_normalize}
+\end{align}
 
 \end_inset
 
@@ -1265,47 +1264,54 @@ and the normalized mean is
 \end_layout
 
 \begin_layout Standard
-There are two ways to obtain the tensors 
-\begin_inset Formula $\mathcal{W}{}^{a}$
+Although it is not easy to find the weigths 
+\begin_inset Formula $\mathcal{W}$
 \end_inset
 
-.
- First, this message passing scheme motivates a neural network structure
- that combines inputs in a multilinear way in the feature space.
- Given a task and an error signal, we can hopefully obtain the weights using
- backpropagation.
+ using traning samples as in KBR, this message passing scheme that combines
  
-\end_layout
-
-\begin_layout Standard
-The second way to obtain the weights is by looking (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "eq:approx_dist_multilinear"
 
 \end_inset
 
-) from the perspective of distribution regression.
- In the previous sections, we discussed ideas about how to perform that
- was trained using samples but was intended for use on mean representations
- during test time.
- Is it possible to train also using mean representations? This has been
- studied by Szabo et al.
- 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "szabo2016learning"
+ and 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:approx_dist_normalize"
 
 \end_inset
 
- in the infinite dimensional feature case.
- Using this approach, the mean representation is treated just as an input
- vector, and we can simply learn a function that that maps these means and
- any observed data to produce the next mean embedding.
+ motivates a neural network structure that combines inputs multilinearly
+ in the feature space.
+ Given a task and an error signal, we can hopefully obtain the weights using
+ backpropagation.
+\end_layout
+
+\begin_layout Subsection
+Distribution regression to distribution (DRD)
+\end_layout
+
+\begin_layout Standard
+In the previous sections, we discussed ideas about how to perform that was
+ trained using samples but was intended for use on mean representations
+ during test time.
+ Is it possible to train also using mean representations? We can treat the
+ mean representation of upstream messages 
+\begin_inset Formula $\left\{ \bmu_{u}(X_{u})\right\} {}_{u\in ne(a)}$
+\end_inset
+
+ as input vectors, and simply learn a function that map them, together with
+ features of observed data 
+\begin_inset Formula $\bnu(y_{a})$
+\end_inset
+
+, to the next mean embedding.
  
 \begin_inset Formula 
 \begin{equation}
-\bmu_{a}=h\left(\left\{ \tilde{\bmu}_{u}(X_{u})\right\} {}_{u\in ne(a)},y_{a}\right)=\left\langle h,\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\tilde{\bmu}_{u}(X_{u})\right\rangle \label{eq:distribution_regression}
+\bmu_{a}=h\left(\left\{ \bmu_{u}(X_{u})\right\} {}_{u\in ne(a)},y_{a}\right)=\left\langle h,\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bmu_{u}(X_{u})\right\rangle \label{eq:distribution_regression}
 \end{equation}
 
 \end_inset
@@ -1314,11 +1320,29 @@ key "szabo2016learning"
 \end_layout
 
 \begin_layout Standard
-Again, this mapping 
+We call this approach distribution regression.
+ The function 
 \begin_inset Formula $h(\cdot)$
 \end_inset
 
- could be linear in feature space just as in the RKHS version.
+ is assumed to be linear in feature space.
+ It is also worth noting that 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:distribution_regression"
+
+\end_inset
+
+ is very similar to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel_BP"
+
+\end_inset
+
+ in that the forms of message passing are identical, even though the messages
+ combined were likelihoods (normalized by the unconditioned message) for
+ kernel BP and mean representations for distribution regression.
  Unlike kernel belief propagation where the operators 
 \begin_inset Formula $\cC$
 \end_inset
@@ -1346,7 +1370,101 @@ reference "eq:approx_expectation"
 \begin_inset Formula $h(\cdot)$
 \end_inset
 
- is able to discover the true relationships between the intended mapping.
+ is able to discover the relationships between the input and output messages.
+ A similar situation has been studied by Szabo et al.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "szabo2016learning"
+
+\end_inset
+
+ in the infinite dimensional feature case where the inputs are distributions
+ and output is a scalar or label of interest.
+ 
+\end_layout
+
+\begin_layout Standard
+To learn the function 
+\begin_inset Formula $h\left(\cdot\right)$
+\end_inset
+
+ on a directed graph, one can simulate the model by initializing the prior
+ nodes with samples whose feature vectors are averaged to create the prior
+ mean representations.
+ Conditioned on each set of prior samples, different sets of samples need
+ to be drawn in order to create enough training mean representations for
+ regresion.
+ One can iteratively learn the regressor 
+\begin_inset Formula $h(\cdot)$
+\end_inset
+
+ by training a regressor to take mean representations of the parent nodes
+ to predict feature vectors of samples at the child nodes under the squared
+ loss.
+ The predicted feature vectors can then be used as the mean representation
+ for the child nodes in the next regression.
+ Note that the set of data points for regression are in fact derived from
+ the many sets of samples drawn from the graph.
+\end_layout
+
+\begin_layout Standard
+Learning 
+\begin_inset Formula $h\left(\cdot\right)$
+\end_inset
+
+ on an undirected graph has not been considered yet, the difficulty being
+ that the there is no known prior distributions to start the recursive trainng.
+ 
+\end_layout
+
+\begin_layout Section
+Message passing for state-space models
+\end_layout
+
+\begin_layout Standard
+We now consider the particular type of inference problem described by the
+ following set of distributions describing a state-space model 
+\begin_inset Formula $p(y_{1}),p(y_{t}|y_{t-1}),p(x_{t}|y_{t})$
+\end_inset
+
+ where 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ are latent and 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ are observed.
+ We denote by 
+\begin_inset Formula $\bmu$
+\end_inset
+
+ the mean representation and 
+\begin_inset Formula $\bphi(x_{t})$
+\end_inset
+
+ the feature of observation.
+ Following the message passing schemes described above, we have the following
+ ways of performing the filtering operation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\text{KBR:} &  & \bmu_{Y_{t}|x_{1:t}}= & \left[C_{Y_{t}X_{t}|Y_{t-1}}\bmu_{Y_{t-1}|x_{1:t-1}}\right]\left[C_{X_{t}X_{t}|Y_{t-1}}\bmu_{Y_{t-1}|x_{1:t-1}}\right]^{-1}\bphi(x_{t})\\
+\text{MMR:} &  & \tilde{\bmu}{}_{Y_{t}|x_{1:t}}= & \left\langle \cW,\bmu{}_{Y_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle  & \bmu{}_{Y_{t}|x_{1:t}}=\frac{\tilde{\bmu}{}_{Y_{t}|x_{1:t}}}{\mathbf{n}^{\intercal}\tilde{\bmu}{}_{Y_{t}|x_{1:t}}}\\
+\text{DRD:} &  & \bmu_{Y_{t}|x_{1:t}}= & \left\langle h,\bmu{}_{Y_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle 
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Standard
