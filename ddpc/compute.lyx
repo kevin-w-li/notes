@@ -199,6 +199,12 @@ Li Kevin Wenliang
 \end_inset
 
 
+\begin_inset FormulaMacro
+\newcommand{\cN}{\mathcal{N}}
+{\mathcal{N}}
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -223,6 +229,704 @@ This notes includes the derivations of the correspondances between hand
  designed finite dimensional features and its corresponding kernel in the
  reproducing kernel hubert space (RKHS) if the number of feature goes to
  infinity.
+\end_layout
+
+\begin_layout Section
+Learning deep generative models
+\end_layout
+
+\begin_layout Standard
+In this section we consider using DDC to learn a deep generative model whose
+ structure is specified by the a prior distribution 
+\begin_inset Formula $p(Z_{1}|\theta_{1})$
+\end_inset
+
+ and sequence of conditional 
+\begin_inset Formula $p(Z_{l+1}|Z_{l};\theta_{l})$
+\end_inset
+
+ for 
+\begin_inset Formula $l\in\{1,2,\dots L\}$
+\end_inset
+
+ for an 
+\begin_inset Formula $L$
+\end_inset
+
+ layer generative model.
+ Let 
+\begin_inset Formula $x=z_{l}$
+\end_inset
+
+ to be the only observed variable.
+ We make two assumptions about the generative model
+\end_layout
+
+\begin_layout Enumerate
+It is easy to obtain samples from the prior and each conditional
+\end_layout
+
+\begin_layout Enumerate
+The gradients of the log normalized densities with respect to parameters
+ exist everywhere and are easy to compute in closed form.
+\end_layout
+
+\begin_layout Standard
+To learn the parameters, one can maximise the free energy by adjusting the
+ parameters of the model, which requires an approximate posterior of 
+\begin_inset Formula $q(Z|X)$
+\end_inset
+
+.
+ This process corresponds to 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Delta\theta=\left\langle \frac{\partial}{d\theta}\log p_{\theta}(Z,X)\right\rangle _{q(Z|X)}.\label{eq:general_wake}
+\end{equation}
+
+\end_inset
+
+ The approximate posterior can be found by an amortised learning scheme
+ where we build a recognition model to output some parameterisation of the
+ posterior distribution 
+\begin_inset Formula $q_{\psi}(|Z|X)$
+\end_inset
+
+, and the parameters 
+\begin_inset Formula $\psi$
+\end_inset
+
+ are adjusted by maximizing the likelihoods of samples drawn from the current
+ generative model under the recognition model
+\begin_inset Formula 
+\begin{equation}
+\Delta\psi=\left\langle \frac{\partial}{\partial\psi}\log q_{\psi}(Z|X)\right\rangle _{p_{\theta}(X,Z)}\label{eq:general_sleep}
+\end{equation}
+
+\end_inset
+
+This alternating learning scheme is known as the wake-sleep algorithm, with
+ the wake phase corresponding to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:general_wake"
+
+\end_inset
+
+ and the sleep phase to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:general_sleep"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Sleep phase with DDC
+\end_layout
+
+\begin_layout Subsubsection
+Inference with means
+\end_layout
+
+\begin_layout Subsubsection
+Gradient approximation using fixed basis functions
+\end_layout
+
+\begin_layout Standard
+Since approximating an expectation is easy using DDC, we can choose a set
+ of basis functions 
+\begin_inset Formula $\left\{ \phi_{l}(z_{l})\right\} $
+\end_inset
+
+ that span domain where 
+\begin_inset Formula $\frac{\partial}{d\theta}\log p_{\theta}(Z,X)$
+\end_inset
+
+ is largely supported, and apply the DDC trick in approximating an expectation.
+ In the sleep phase, a recognition network was trained to produce the DDC
+ encoding an approximate posterior 
+\begin_inset Formula $q(Z|X)$
+\end_inset
+
+, e.g.
+ for the 
+\begin_inset Formula $l$
+\end_inset
+
+'th layer
+\begin_inset Formula $\E_{q(Z|X)}\left[\phi_{l}(z_{l})\right]$
+\end_inset
+
+.
+ At the bottom layer 
+\begin_inset Formula $L$
+\end_inset
+
+ we can find these means by regression from samples of 
+\begin_inset Formula $x$
+\end_inset
+
+ to feature function evaluations of samples of 
+\begin_inset Formula $z_{l-1}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+W_{L}=\arg\min_{W}\sum_{s}\|W\phi_{L}(x_{L}^{(s)})-\phi_{l-1}(z_{l-1}^{(s)})\|_{2}^{2}
+\]
+
+\end_inset
+
+Given sufficient training examples, minimising the squared loss will make
+ 
+\begin_inset Formula $W_{L}\phi_{L}(x_{L})$
+\end_inset
+
+ approach the posterior mean 
+\begin_inset Formula 
+\[
+W_{L}\phi_{L}(x_{L})\approx\E_{q_{L}(Z_{L-1}|X)}\left[\phi_{L-1}(z_{L-1})\right]
+\]
+
+\end_inset
+
+This regression is performed between each two adjacent layers.
+ The mean representations of higher layers from samples can be found recursively
+ by noticing the Markov structure of the graph
+\begin_inset Formula 
+\[
+\E_{p(Z_{l-1}|X)}\left[\phi_{l-1}\right]=\E_{p_{l}(Z_{l}|X)}\left[\E_{p(Z_{l-1}|Z_{l})}\left[\phi_{l-1}\right]\right]\approx\E_{q(Z_{l}|X)}\left[\E_{q(Z_{l-1}|Z_{l})}\left[\phi_{l-1}\right]\right]=\E_{q(Z_{l}|X)}\left[W_{l}\phi_{l}\right]=W_{l}\E_{q(Z_{l}|X)}\left[\phi_{l}\right]
+\]
+
+\end_inset
+
+In addition, we also approximate the required gradients 
+\begin_inset Formula $\frac{\partial}{d\theta}\log p_{\theta}(Z,X)$
+\end_inset
+
+ as expressed in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:general_wake"
+
+\end_inset
+
+ using the set of feature chosen.
+ At the 
+\begin_inset Formula $l$
+\end_inset
+
+'th layer, the required gradient i
+\begin_inset Formula $\frac{\partial}{d\theta}\log p_{\theta,l}(Z_{l}|Z_{l-1})$
+\end_inset
+
+ which is a function of two variables.
+ On may approximate the it by a feature defined on both 
+\begin_inset Formula $Z_{l}$
+\end_inset
+
+ and 
+\begin_inset Formula $Z_{l-1}$
+\end_inset
+
+, although for high dimensions of latent variables, learning the approximate
+ over two variables may require a large number of features functions and
+ samples.
+ Nonetheless, it is still possible to learn the posterior mean of the gradient
+ using a feature on just one variable using at least two measures both of
+ which originates from the conditional independence structure:
+\series bold
+
+\begin_inset Formula 
+\begin{equation}
+\E_{q(Z_{l-1},Z_{l}|X)}\left[\frac{\partial}{d\theta}\log p_{\theta,l}(Z_{l}|Z_{l-1})\right]=\E_{q(Z_{l}|X)}\left[\E_{p(Z_{l-1}|Z_{l})}\left[\frac{\partial}{d\theta}\log p_{\theta,l}(Z_{l}|Z_{l-1})\right]\right]\label{eq:cond_indept_sample_sleep}
+\end{equation}
+
+\end_inset
+
+
+\series default
+the inner expectation can be approximated using samples of 
+\begin_inset Formula $Z_{t-1}$
+\end_inset
+
+ from the sleep phase.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Regression to log gradients (logp)
+\end_layout
+
+\begin_layout Standard
+In a more general case where we only require the assumptions stated above,
+ the expectation in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:cond_indept_sample_sleep"
+
+\end_inset
+
+ can be learned using sleep samples by learning a linear regression with
+ weights 
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\alpha:\phi_{1}(z_{1}) & \rightarrow\frac{\partial}{d\theta}\log p_{\theta,1}(z_{l})\\
+\beta:\phi_{l}(z_{l}) & \rightarrow\frac{\partial}{d\theta}\log p_{\theta,l}(z_{l}|z_{l-1}^{(s)}),l\in[2,3\dots L]
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $z_{l-1}^{(s)}$
+\end_inset
+
+ denotes samples of from the generative model.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Regression for exponential family (exp-fam)
+\end_layout
+
+\begin_layout Standard
+If, in addition to the two assumptions above, we also assume that the log
+ densities are in the exponentail family, then the log gradients can be
+ broken down into several separate regressions that are potentially easier
+ to learn compared with the gradient of log density itself.
+ Specifically, 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left\langle \log p_{\theta,l}(z_{l}|z_{l-1})\right\rangle _{q(z_{l-1},z_{l}|x)}=\left\langle \frac{\partial}{\partial\theta}g(\theta,z_{l-1})S(z_{l})\right\rangle _{q(z_{l-1},z_{l}|x)}-\left\langle \frac{\partial}{\partial\theta}g(\theta,z_{l-1})\mu_{z_{l}|z_{l-1}}\right\rangle _{q(z_{l-1}|x)}
+\]
+
+\end_inset
+
+by using the same trick as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:cond_indept_sample_sleep"
+
+\end_inset
+
+ for the first term, the required regression becomes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\alpha:\phi_{1}(z_{1})\rightarrow & S(z_{l})\\
+\beta:\phi_{l}(z_{l})\rightarrow & \frac{\partial}{\partial\theta}g(\theta,z_{l-1}^{(s)})S(z_{l}),l\in[2,\dots L-1]\\
+\gamma:\phi_{l}(z_{l-1})\rightarrow & \frac{\partial}{\partial\theta}g(\theta,z_{l-1})\mu_{z_{l}|z_{l-1}},l\in[1,\dots L]\\
+\delta:\phi_{L}(z_{L})\rightarrow & \frac{\partial}{\partial\theta}g(\theta,z_{L}^{(s)})
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $z_{l}^{(s)}$
+\end_inset
+
+ denotes samples of from the generative model.
+ 
+\end_layout
+
+\begin_layout Standard
+The first method does not rely on the exponential faimily assumption, but
+ the gradients may be difficult to learn and requires a log of samples for
+ higher dimensions for 
+\begin_inset Formula $z$
+\end_inset
+
+, since there are exponentially many more samples of a higher layer variable
+ that generate the same lower layer samples.
+ The second method avoids this problem except for 
+\begin_inset Formula $\left\langle \frac{\partial}{\partial\theta}g(\theta,z_{l-1})S(z_{l})\right\rangle _{q(z_{l-1},z_{l}|x)}$
+\end_inset
+
+, but 
+\begin_inset Formula $\frac{\partial}{\partial\theta}g(\theta,z_{l-1})S(z_{l})$
+\end_inset
+
+ is a smooth, such as for the sigmoid belief network where this is bilinear
+ in 
+\begin_inset Formula $z_{l-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $z_{l}$
+\end_inset
+
+.
+ The problem with second method lies in the fact that, for many exponentail
+ familiy distributions, the two terms in the log gradient expression are
+ highly correlated, and taking the difference between two separate function
+ approximations will exaggerate the errors in each of them.
+ This can happen in many continuous distributions when the noise is low,
+ or, when 
+\begin_inset Formula $S(z_{l})$
+\end_inset
+
+ evaluated at the samples are very close to the mean parameters.
+ 
+\end_layout
+
+\begin_layout Subsection
+Experiments
+\end_layout
+
+\begin_layout Standard
+We compare the how well wake-sleep can recover the true generative parameters
+ on toy datasets when using the two different types of gradient approximation
+ schemes in the sleep phase.
+ For each run, we randomly initialize some paraemters in the true model,
+ and generate 1000 samples as training data; 50 logistic basis fucntions
+ with random weights were used for the DDC representation of posteriors
+ and kept fixed through out training.
+ 1000 sleep samples are drawn in the sleep phase of each iteration.
+ Before learning, the parameters are initialized from the true values.
+ We used Adam optimizer with step size 0.01.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Sparse distributions
+\end_layout
+
+\begin_layout Standard
+Here, the training data are drawn from the following generative model
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+z_{0}\sim & 0.5\cN(-2,0.1^{2})+0.5\cN(2,0.1^{2})\\
+z_{1}|z_{0}\sim & Laplace(0,softplus(Bx_{0}))\\
+x|z_{1}\sim & \cN(Az_{1},0.2^{2})
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $B=[1.0,-1.0]^{T}$
+\end_inset
+
+ and 
+\begin_inset Formula $A$
+\end_inset
+
+ is a 2-by-2 matrix with entries randomly drawn from a standard Gaussian.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "50text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_logp_sparse.jpg
+	width 100text%
+	BoundingBox 0bp 0bp 720bp 290bp
+	clip
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+logp
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "49text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_exp_sparse.jpg
+	width 100text%
+	BoundingBox 0bp 0bp 720bp 290bp
+	clip
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Exp-fam
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Samples drawn from the true sparse datasets (blue) and from the model after
+ running DDC learning for 100 iterations with (a) logp and (b) exp-fam sleep
+ phase (orange).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Factor analysis 
+\end_layout
+
+\begin_layout Standard
+Here, the true model is as follows
+\begin_inset Formula 
+\begin{align*}
+z_{0}\sim & \cN(0,1.0\bI)\\
+x|z_{0}\sim & N(Az_{0},0.1)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "50text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_exp_fa.jpg
+	width 100text%
+	BoundingBox 0bp 0bp 1440bp 288bp
+	clip
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+logp
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "49text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_logp_fa.jpg
+	width 100text%
+	BoundingBox 0bp 0bp 1440bp 288bp
+	clip
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Exp-fam
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Samples drawn from the true factor analyses datasets (blue) and from the
+ model after running DDC learning for 100 iterations with (a) logp and (b)
+ exp-fam sleep phase (orange).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
