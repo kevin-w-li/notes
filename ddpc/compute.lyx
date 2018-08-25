@@ -86,7 +86,7 @@ DDC Computation
 
 \begin_layout Author
 \noindent
-Li Kevin Wenliang
+Kevin W Li
 \end_layout
 
 \begin_layout Standard
@@ -223,30 +223,22 @@ Li Kevin Wenliang
 
 \end_layout
 
-\begin_layout Standard
-\noindent
-This notes includes the derivations of the correspondances between hand
- designed finite dimensional features and its corresponding kernel in the
- reproducing kernel hubert space (RKHS) if the number of feature goes to
- infinity.
-\end_layout
-
 \begin_layout Section
-Learning deep generative models
+Learning deep generative models using wake-sleep
 \end_layout
 
 \begin_layout Standard
 In this section we consider using DDC to learn a deep generative model whose
  structure is specified by the a prior distribution 
-\begin_inset Formula $p(Z_{1}|\theta_{1})$
+\begin_inset Formula $p_{0}(Z_{0}|\theta_{0})$
 \end_inset
 
  and sequence of conditional 
-\begin_inset Formula $p(Z_{l+1}|Z_{l};\theta_{l})$
+\begin_inset Formula $p_{l+1}(Z_{l+1}|Z_{l};\theta_{l+1})$
 \end_inset
 
  for 
-\begin_inset Formula $l\in\{1,2,\dots L\}$
+\begin_inset Formula $l\in\{0,\dots L-1\}$
 \end_inset
 
  for an 
@@ -255,7 +247,7 @@ In this section we consider using DDC to learn a deep generative model whose
 
  layer generative model.
  Let 
-\begin_inset Formula $x=z_{l}$
+\begin_inset Formula $x=z_{L}$
 \end_inset
 
  to be the only observed variable.
@@ -292,7 +284,7 @@ To learn the parameters, one can maximise the free energy by adjusting the
  The approximate posterior can be found by an amortised learning scheme
  where we build a recognition model to output some parameterisation of the
  posterior distribution 
-\begin_inset Formula $q_{\psi}(|Z|X)$
+\begin_inset Formula $q_{\psi}(Z|X)$
 \end_inset
 
 , and the parameters 
@@ -311,14 +303,14 @@ To learn the parameters, one can maximise the free energy by adjusting the
 This alternating learning scheme is known as the wake-sleep algorithm, with
  the wake phase corresponding to 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "eq:general_wake"
 
 \end_inset
 
  and the sleep phase to 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "eq:general_sleep"
 
 \end_inset
@@ -326,16 +318,12 @@ reference "eq:general_sleep"
 .
 \end_layout
 
+\begin_layout Section
+Sleep phase using DDC
+\end_layout
+
 \begin_layout Subsection
-Sleep phase with DDC
-\end_layout
-
-\begin_layout Subsubsection
-Inference with means
-\end_layout
-
-\begin_layout Subsubsection
-Gradient approximation using fixed basis functions
+Gradient approximation using fixed basis functions on one variable
 \end_layout
 
 \begin_layout Standard
@@ -383,7 +371,7 @@ Since approximating an expectation is easy using DDC, we can choose a set
 \begin_layout Standard
 \begin_inset Formula 
 \[
-W_{L}=\arg\min_{W}\sum_{s}\|W\phi_{L}(x_{L}^{(s)})-\phi_{l-1}(z_{l-1}^{(s)})\|_{2}^{2}
+W_{L}=\arg\min_{W}\sum_{s}\|W\phi_{L}(X_{L}^{(s)})-\phi_{L-1}(Z_{L-1}^{(s)})\|_{2}^{2}
 \]
 
 \end_inset
@@ -396,7 +384,7 @@ Given sufficient training examples, minimising the squared loss will make
  approach the posterior mean 
 \begin_inset Formula 
 \[
-W_{L}\phi_{L}(x_{L})\approx\E_{q_{L}(Z_{L-1}|X)}\left[\phi_{L-1}(z_{L-1})\right]
+W_{L}\phi_{L}(X_{L})\approx\E_{q_{L}(Z_{L-1}|X)}\left[\phi_{L-1}(Z_{L-1})\right]
 \]
 
 \end_inset
@@ -417,7 +405,7 @@ In addition, we also approximate the required gradients
 
  as expressed in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "eq:general_wake"
 
 \end_inset
@@ -427,11 +415,11 @@ reference "eq:general_wake"
 \begin_inset Formula $l$
 \end_inset
 
-'th layer, the required gradient i
+'th layer, the required gradient 
 \begin_inset Formula $\frac{\partial}{d\theta}\log p_{\theta,l}(Z_{l}|Z_{l-1})$
 \end_inset
 
- which is a function of two variables.
+ is a function of two variables.
  On may approximate the it by a feature defined on both 
 \begin_inset Formula $Z_{l}$
 \end_inset
@@ -450,7 +438,7 @@ reference "eq:general_wake"
 
 \begin_inset Formula 
 \begin{equation}
-\E_{q(Z_{l-1},Z_{l}|X)}\left[\frac{\partial}{d\theta}\log p_{\theta,l}(Z_{l}|Z_{l-1})\right]=\E_{q(Z_{l}|X)}\left[\E_{p(Z_{l-1}|Z_{l})}\left[\frac{\partial}{d\theta}\log p_{\theta,l}(Z_{l}|Z_{l-1})\right]\right]\label{eq:cond_indept_sample_sleep}
+\E_{q(Z_{l},Z_{l+1}|X)}\left[\frac{\partial}{d\theta}\log p_{l+1}(Z_{l+1}|Z_{l},\theta_{l+1})\right]=\E_{q(Z_{l+1}|X)}\left[\E_{p(Z_{l}|Z_{l+1})}\left[\frac{\partial}{d\theta}\log p_{l+1}(Z_{l+1}|Z_{l},\theta_{l+1})\right]\right]\label{eq:cond_indept_sample_sleep}
 \end{equation}
 
 \end_inset
@@ -458,11 +446,28 @@ reference "eq:general_wake"
 
 \series default
 the inner expectation can be approximated using samples of 
-\begin_inset Formula $Z_{t-1}$
+\begin_inset Formula $Z_{l}$
 \end_inset
 
  from the sleep phase.
- 
+ Specifically, we can replace the inner expectation with a sample of 
+\begin_inset Formula $z_{l}$
+\end_inset
+
+ that is jointly drawn with 
+\begin_inset Formula $z_{l+1}$
+\end_inset
+
+ which is also used to evaluate feature 
+\begin_inset Formula $\phi_{l+1}(z_{l+1})$
+\end_inset
+
+.
+ Given sufficiently many joint samples, the joint expectation over 
+\begin_inset Formula $q(Z_{l},Z_{l+1}|X)$
+\end_inset
+
+ can be well approximated using the basis functions.
 \end_layout
 
 \begin_layout Paragraph
@@ -470,10 +475,10 @@ Regression to log gradients (logp)
 \end_layout
 
 \begin_layout Standard
-In a more general case where we only require the assumptions stated above,
+In the general case where we only require the assumptions stated above,
  the expectation in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "eq:cond_indept_sample_sleep"
 
 \end_inset
@@ -489,8 +494,8 @@ reference "eq:cond_indept_sample_sleep"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\alpha:\phi_{1}(z_{1}) & \rightarrow\frac{\partial}{d\theta}\log p_{\theta,1}(z_{l})\\
-\beta:\phi_{l}(z_{l}) & \rightarrow\frac{\partial}{d\theta}\log p_{\theta,l}(z_{l}|z_{l-1}^{(s)}),l\in[2,3\dots L]
+\alpha_{0}:\phi_{0}(z_{0}) & \rightarrow\frac{\partial}{d\theta}\log p_{0}(z_{0},\theta_{0})\\
+\alpha_{l+1}:\phi_{l+1}(z_{l+1}) & \rightarrow\frac{\partial}{d\theta}\log p_{l+1}(z_{l+1}|z_{l}^{(s)},\theta_{l+1}),l\in[0,\dots L-1]
 \end{align*}
 
 \end_inset
@@ -510,22 +515,22 @@ Regression for exponential family (exp-fam)
 \begin_layout Standard
 If, in addition to the two assumptions above, we also assume that the log
  densities are in the exponentail family, then the log gradients can be
- broken down into several separate regressions that are potentially easier
- to learn compared with the gradient of log density itself.
+ broken down into 1-2 separate regressions that are potentially easier to
+ learn compared with the gradient of log density itself.
  Specifically, 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\left\langle \log p_{\theta,l}(z_{l}|z_{l-1})\right\rangle _{q(z_{l-1},z_{l}|x)}=\left\langle \frac{\partial}{\partial\theta}g(\theta,z_{l-1})S(z_{l})\right\rangle _{q(z_{l-1},z_{l}|x)}-\left\langle \frac{\partial}{\partial\theta}g(\theta,z_{l-1})\mu_{z_{l}|z_{l-1}}\right\rangle _{q(z_{l-1}|x)}
+\left\langle \log p_{l+1}(z_{l+1}|z_{l},\theta_{l+1})\right\rangle _{q(z_{l},z_{l+1}|x)}=\left\langle \frac{\partial}{\partial\theta}g(\theta_{l+1},z_{l})S(z_{l+1})\right\rangle _{q(z_{l},z_{l+1}|x)}-\left\langle \frac{\partial}{\partial\theta}g(\theta_{l+1},z_{l})\mu_{z_{l+1}|z_{l}}\right\rangle _{q(z_{l}|x)}
 \]
 
 \end_inset
 
-by using the same trick as 
+by using the same trick implied by 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "eq:cond_indept_sample_sleep"
 
 \end_inset
@@ -536,10 +541,10 @@ reference "eq:cond_indept_sample_sleep"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\alpha:\phi_{1}(z_{1})\rightarrow & S(z_{l})\\
-\beta:\phi_{l}(z_{l})\rightarrow & \frac{\partial}{\partial\theta}g(\theta,z_{l-1}^{(s)})S(z_{l}),l\in[2,\dots L-1]\\
-\gamma:\phi_{l}(z_{l-1})\rightarrow & \frac{\partial}{\partial\theta}g(\theta,z_{l-1})\mu_{z_{l}|z_{l-1}},l\in[1,\dots L]\\
-\delta:\phi_{L}(z_{L})\rightarrow & \frac{\partial}{\partial\theta}g(\theta,z_{L}^{(s)})
+\delta_{0}:\phi_{0}(z_{0})\rightarrow & S(z_{0})\\
+\delta_{l}:\phi_{l}(z_{l})\rightarrow & \frac{\partial}{\partial\theta_{l}}g(\theta_{l},z_{l-1}^{(s)})S(z_{l}),l\in[1,\dots L-1]\\
+\gamma_{l}:\phi_{l}(z_{l})\rightarrow & \frac{\partial}{\partial\theta_{l+1}}g(\theta_{l+1},z_{l})\mu_{z_{l+1}|z_{l}},l\in[0,\dots L-1]\\
+\delta_{L-1}:\phi_{L-1}(z_{L-1})\rightarrow & \frac{\partial}{\partial\theta_{L}}g(\theta_{L},z_{L-1})
 \end{align*}
 
 \end_inset
@@ -559,18 +564,19 @@ The first method does not rely on the exponential faimily assumption, but
 \begin_inset Formula $z$
 \end_inset
 
-, since there are exponentially many more samples of a higher layer variable
- that generate the same lower layer samples.
- The second method avoids this problem except for 
-\begin_inset Formula $\left\langle \frac{\partial}{\partial\theta}g(\theta,z_{l-1})S(z_{l})\right\rangle _{q(z_{l-1},z_{l}|x)}$
+, since, intuitively there are roughly as exponentially many samples as
+ dimensions of a higher layer variable that can generate the same sample
+ in the lower layer.
+ Exp-fam avoids this problem except for 
+\begin_inset Formula $\left\langle \frac{\partial}{\partial\theta}g(\theta_{l},z_{l-1})S(z_{l})\right\rangle _{q(z_{l-1},z_{l}|x)}$
 \end_inset
 
-, but 
-\begin_inset Formula $\frac{\partial}{\partial\theta}g(\theta,z_{l-1})S(z_{l})$
+, but if 
+\begin_inset Formula $\frac{\partial}{\partial\theta}g(\theta_{l},z_{l-1})S(z_{l})$
 \end_inset
 
- is a smooth, such as for the sigmoid belief network where this is bilinear
- in 
+ is smooth, such as for the sigmoid belief network where this gradient is
+ bilinear in 
 \begin_inset Formula $z_{l-1}$
 \end_inset
 
@@ -578,21 +584,33 @@ The first method does not rely on the exponential faimily assumption, but
 \begin_inset Formula $z_{l}$
 \end_inset
 
-.
- The problem with second method lies in the fact that, for many exponentail
- familiy distributions, the two terms in the log gradient expression are
- highly correlated, and taking the difference between two separate function
+, the regression may be easier to learn than the full log pdf.
+ The problem with exp-fam is that the two terms in the log gradient expression
+ are correlated, and taking the difference between two separate function
  approximations will exaggerate the errors in each of them.
- This can happen in many continuous distributions when the noise is low,
- or, when 
+ This correlation may harm gradient approximation in continuous distributions
+ when the noise is low, or in other words, when 
 \begin_inset Formula $S(z_{l})$
 \end_inset
 
- evaluated at the samples are very close to the mean parameters.
+ evaluated at the samples are very close to its conditional mean.
  
 \end_layout
 
+\begin_layout Standard
+One way to reduce the correlation could be to use separate sets of features
+ or sleep samples for the two regressions (??)
+\end_layout
+
 \begin_layout Subsection
+Using features on pairwise variables 
+\begin_inset Formula $\phi(z_{l},z_{l+1})$
+\end_inset
+
+??
+\end_layout
+
+\begin_layout Section
 Experiments
 \end_layout
 
@@ -601,185 +619,16 @@ We compare the how well wake-sleep can recover the true generative parameters
  on toy datasets when using the two different types of gradient approximation
  schemes in the sleep phase.
  For each run, we randomly initialize some paraemters in the true model,
- and generate 1000 samples as training data; 50 logistic basis fucntions
+ and generate 1000 samples as training data; 100 logistic basis fucntions
  with random weights were used for the DDC representation of posteriors
  and kept fixed through out training.
  1000 sleep samples are drawn in the sleep phase of each iteration.
  Before learning, the parameters are initialized from the true values.
- We used Adam optimizer with step size 0.01.
- 
+ Parameters are adjusted using vanilla gradient descent with step size 0.01.
 \end_layout
 
-\begin_layout Subsubsection
-Sparse distributions
-\end_layout
-
-\begin_layout Standard
-Here, the training data are drawn from the following generative model
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align*}
-z_{0}\sim & 0.5\cN(-2,0.1^{2})+0.5\cN(2,0.1^{2})\\
-z_{1}|z_{0}\sim & Laplace(0,softplus(Bx_{0}))\\
-x|z_{1}\sim & \cN(Az_{1},0.2^{2})
-\end{align*}
-
-\end_inset
-
-where 
-\begin_inset Formula $B=[1.0,-1.0]^{T}$
-\end_inset
-
- and 
-\begin_inset Formula $A$
-\end_inset
-
- is a 2-by-2 matrix with entries randomly drawn from a standard Gaussian.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Box Frameless
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "50text%"
-special "none"
-height "1in"
-height_special "totalheight"
-thickness "0.4pt"
-separation "3pt"
-shadowsize "4pt"
-framecolor "black"
-backgroundcolor "none"
-status open
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_logp_sparse.jpg
-	width 100text%
-	BoundingBox 0bp 0bp 720bp 290bp
-	clip
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-logp
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Box Frameless
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "49text%"
-special "none"
-height "1in"
-height_special "totalheight"
-thickness "0.4pt"
-separation "3pt"
-shadowsize "4pt"
-framecolor "black"
-backgroundcolor "none"
-status open
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_exp_sparse.jpg
-	width 100text%
-	BoundingBox 0bp 0bp 720bp 290bp
-	clip
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Exp-fam
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Samples drawn from the true sparse datasets (blue) and from the model after
- running DDC learning for 100 iterations with (a) logp and (b) exp-fam sleep
- phase (orange).
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-Factor analysis 
+\begin_layout Subsection
+Factor analysis
 \end_layout
 
 \begin_layout Standard
@@ -787,12 +636,236 @@ Here, the true model is as follows
 \begin_inset Formula 
 \begin{align*}
 z_{0}\sim & \cN(0,1.0\bI)\\
-x|z_{0}\sim & N(Az_{0},0.1)
+x|z_{0}\sim & N(Az_{0},\Psi)
 \end{align*}
 
 \end_inset
 
+where A is an identity plus a square matrix with entries drawn from 
+\begin_inset Formula $\cN(0,0.3^{2})$
+\end_inset
 
+ and 
+\begin_inset Formula $\Psi$
+\end_inset
+
+ is diagonal with values 
+\begin_inset Formula $0.1^{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $0.2^{2}$
+\end_inset
+
+.
+ Distribution on 
+\begin_inset Formula $z_{0}$
+\end_inset
+
+ is fixed throughout learning.
+ For this particular case, the posterior is tractable, so we can compute
+ the analytical gradients and compare whether the gradients approximated
+ using the DDC sleep phase methods.
+ We initialised 1000 models with different parameters.
+ First, we compare how well the two DDC sleep phases can approximate the
+ gradients in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:general_wake"
+
+\end_inset
+
+.
+ 1000 data points are drawn and the true analytical gradients and DDC approximat
+e gradients using exp and logp were computed under these points.
+ The 2-norm squared of the difference between approxiamte and true gradients
+ are taken for each point, which are then averaged to produce a number that
+ summarises how far away, on average, the approxiate gradient is from the
+ true gradients under a particular model.
+ The distribution of this difference under 100 models are shown in Figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:FA_errors"
+
+\end_inset
+
+ (left).
+ It is clear that the gradients under logp has much smaller error.
+ 
+\end_layout
+
+\begin_layout Standard
+Although exp performs worse gradients evaluated at each individual point,
+ but if averaged across many training data, would the resulting parameter
+ update (under unit step size) be smaller? Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:FA_errors"
+
+\end_inset
+
+ (middle) shows the distribution of the MSD after averaging the gradients
+ across all 1000 data points.
+ Again, logp has significantly smaller MSD than exp.
+ 
+\end_layout
+
+\begin_layout Standard
+We then run the full wake-sleep algorithm using the two sleep phases for
+ 100 steps.
+ We then compared samples drawn from the learned model to the true model.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:FA_errors"
+
+\end_inset
+
+ (right) shows the distribution of MMD (Gaussian kernel with median heuristic)
+ from samples drawn from models learned with the two sleep phases to the
+ samples drawn from the true model.
+ Although the difference between exp and logp is not as noticeable as the
+ gradient errors, logp outperforms exp in general.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+
+\emph on
+\begin_inset Graphics
+	filename figs/FA_errors.pdf
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comparing the performance of exp and dlogp on learning factor analysis models.
+ 
+\series bold
+Left
+\series default
+, The gradients at each data point under dlogp are significantly closer
+ to the true values than those obtained using exp .
+ 
+\series bold
+Middle
+\series default
+, the true and DDC gradients are first averaged over the 1000 data points
+ before taking the mean squared difference, thereby giving the difference
+ in actual parameter updates for unit step size evaluated on all the 1000
+ data points.
+ The parameter updates are significantly closer to the true value using
+ dlogp.
+ 
+\series bold
+Right
+\series default
+, MMD of 2000 samples drawn from the learned model after 100 SGD steps.
+ Samples drawn from models trained using logp is significantly closer to
+ real samples.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:FA_errors"
+
+\end_inset
+
+.
+ p-values are MannMann–Whitney U test.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sparse distributions
+\end_layout
+
+\begin_layout Standard
+Here, the training data are drawn from the following generative model
+\begin_inset Formula 
+\begin{align*}
+z_{0}\sim & 0.5\cN(-3,0.1^{2})+0.5\cN(3,0.1^{2})\\
+z_{1}|z_{0}\sim & Laplace(0,softplus(Bx_{0}))\\
+x|z_{1}\sim & \cN(Az_{1},\Psi)
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $B$
+\end_inset
+
+ is 2-by-1 and 
+\begin_inset Formula $A$
+\end_inset
+
+ is 2-by-2, both with entries drawn from a standard Gaussian.
+ 
+\begin_inset Formula $\Psi$
+\end_inset
+
+ is 
+\begin_inset Formula $0.5I$
+\end_inset
+
+.
+ Thoughout learning, distribution of 
+\begin_inset Formula $z_{0}$
+\end_inset
+
+ was kept fixed.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sparse_samples"
+
+\end_inset
+
+ shows the samples drawn from the learned models trained using exp-fam (a)
+ and logp (b).
+ Using exp-fam as sleep phase produced more mis-match in both 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $z_{1}$
+\end_inset
+
+ compared with logp.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sparse_sigmoid_mmd"
+
+\end_inset
+
+(a) shows the MMDs obtained from training 30 different models, and clearly
+ logp outperforms exp-fam.
 \end_layout
 
 \begin_layout Standard
@@ -809,7 +882,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "50text%"
+width "100text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -828,9 +901,67 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_exp_fa.jpg
+	filename figs/ddc_exp_sparse.jpg
+	lyxscale 30
 	width 100text%
-	BoundingBox 0bp 0bp 1440bp 288bp
+	BoundingBox 0bp 0bp 3000bp 670bp
+	clip
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+exp-fam
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/ddc_logp_sparse.jpg
+	lyxscale 30
+	width 100text%
+	BoundingBox 0bp 0bp 3000bp 670bp
 	clip
 
 \end_inset
@@ -855,6 +986,76 @@ logp
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Samples drawn from the true sparse distributions (blue) and from the model
+ after running DDC learning for 100 iterations with (a) exp-fam and (b)
+ logp sleep phase (orange).
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sparse_samples"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sigmoid belief networks (SBN)
+\end_layout
+
+\begin_layout Standard
+Here, the training data are drawn from the following generative model
+\begin_inset Formula 
+\begin{align*}
+z_{0,i}\sim & Bern(\sigma(W_{0,i}))\\
+z_{1,i}|z_{0}\sim & Bern(\sigma(W_{1,i}z_{0}))\\
+x_{i}|z_{1}\sim & Bern(\sigma(W_{2,i}z_{1}))
+\end{align*}
+
+\end_inset
+
+where each variable is 50 dimensions and
+\begin_inset Formula $W$
+\end_inset
+
+'s are vectors with entries drawn from a standard Gaussian.
+ Learning was simulated on 30 set of parameters and the sample MMDs are
+ shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sparse_sigmoid_mmd"
+
+\end_inset
+
+(b).
+ There were no significant differences between the MMDs from exp or logp,
+ suggesting that, in this case, these two methods are comparable.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Box Frameless
 position "t"
 hor_pos "c"
@@ -862,7 +1063,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "49text%"
+width "40text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -880,30 +1081,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
-	filename C:/Users/kevinwli/Code/ddc_ssm/figs/ddc_logp_fa.jpg
+	filename figs/sparse_errors.pdf
 	width 100text%
-	BoundingBox 0bp 0bp 1440bp 288bp
-	clip
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Exp-fam
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
 
 \end_inset
 
@@ -914,9 +1095,7 @@ Exp-fam
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Samples drawn from the true factor analyses datasets (blue) and from the
- model after running DDC learning for 100 iterations with (a) logp and (b)
- exp-fam sleep phase (orange).
+Sparse distributions
 \end_layout
 
 \end_inset
@@ -924,6 +1103,99 @@ Samples drawn from the true factor analyses datasets (blue) and from the
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/binary_errors.pdf
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+SBN
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+MMD of samples drawn from the model trained using exp-fam (blue) and logp
+ (orange) as sleep phases.
+ 30 models are simulated for the sparse distributions (a) and SBN (b).
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sparse_sigmoid_mmd"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -2177,6 +2449,140 @@ LatexCommand bibtex
 bibfiles "ref"
 options "plain"
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset FormulaMacro
+\renewcommand{\bphi}{\bm{\phi}}
+{\bm{\phi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\bmu}{\bm{\mu}}
+{\bm{\mu}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\bSigma}{\bm{\Sigma}}
+{\bm{\Sigma}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\bI}{\bm{I}}
+{I}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\w}{\mathbf{w}}
+{\mathbf{w}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\x}{\mathbf{x}}
+{\mathbf{x}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\y}{\mathbf{y}}
+{\mathbf{y}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\E}{\mathbb{E}}
+{\mathbb{E}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\H}{\mathbb{H}}
+{\mathbb{H}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\bpsi}{\bm{\psi}}
+{\bm{\psi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\cW}{\mathcal{W}}
+{\mathcal{W}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\m}{\mathbf{m}}
+{\mathbf{m}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\bxi}{\bm{\xi}}
+{\bm{\xi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\cH}{\mathcal{H}}
+{\mathcal{H}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\cF}{\mathcal{F}}
+{\mathcal{F}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\cG}{\mathcal{G}}
+{\mathcal{G}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\cC}{\mathcal{C}}
+{\mathcal{C}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\cU}{\mathcal{U}}
+{\mathcal{U}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\cN}{\mathcal{N}}
+{\mathcal{N}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset FormulaMacro
+\renewcommand{\lotimes}{\Large{\otimes}}
+{\Large{\otimes}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\bnu}{\bm{\nu}}
+{\bm{\nu}}
 \end_inset
 
 
