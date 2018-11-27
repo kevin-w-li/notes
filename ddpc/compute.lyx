@@ -81,7 +81,7 @@
 
 \begin_layout Title
 \noindent
-DDC Computation
+DDC Message Passing
 \end_layout
 
 \begin_layout Author
@@ -219,10 +219,8 @@ Li Kevin Wenliang
 
 \begin_layout Standard
 \noindent
-This notes includes the derivations of the correspondances between hand
- designed finite dimensional features and its corresponding kernel in the
- reproducing kernel hubert space (RKHS) if the number of feature goes to
- infinity.
+This notes includes the derivations of the message passing using DDC, illustrate
+d with comparisons to the kernel literature.
 \end_layout
 
 \begin_layout Section
@@ -281,7 +279,7 @@ key "SonGreBic2011"
 ed message which is defined as 
 \begin_inset Formula 
 \begin{equation}
-m_{a\to b}(x_{b})=\frac{m_{a\to b}^{c}(X_{b})}{m_{a\to b}^{*}(X_{b})}\label{eq:normalised_message}
+m_{a\to b}(X_{b})=\frac{m_{a\to b}^{c}(X_{b})}{m_{a\to b}^{*}(X_{b})}\label{eq:normalised_message}
 \end{equation}
 
 \end_inset
@@ -481,7 +479,8 @@ where in (1) we assume that the conditional expectation
 \end_layout
 
 \begin_layout Standard
-In particular, if 
+In particular, the message from an observed node will produce the following
+ message
 \begin_inset Formula 
 \begin{align*}
 \frac{m^{c}(X_{b})}{m^{*}(X_{b})} & =\frac{1}{m^{*}(x_{b})}\Phi(x_{b,}y_{b})\Phi(y_{b})\frac{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(y_{b})}{\prod_{u\in ne(a)\neg b}m_{u\to a}^{*}(y_{b})}\\
@@ -1268,8 +1267,15 @@ Although it is not easy to find the weigths
 \begin_inset Formula $\mathcal{W}$
 \end_inset
 
- using traning samples as in KBR, this message passing scheme that combines
- 
+ using traning samples when the messages involve a data observation (we
+ illustrate the reason for a special case in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:ssm_case"
+
+\end_inset
+
+), this message passing scheme that combines 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:approx_dist_multilinear"
@@ -1311,7 +1317,7 @@ In the previous sections, we discussed ideas about how to perform that was
  
 \begin_inset Formula 
 \begin{equation}
-\bmu_{a}=h\left(\left\{ \bmu_{u}(X_{u})\right\} {}_{u\in ne(a)},y_{a}\right)=\left\langle h,\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bmu_{u}(X_{u})\right\rangle \label{eq:distribution_regression}
+\bmu_{a}=g\left(\left\{ \bmu_{u}(X_{u})\right\} {}_{u\in ne(a)},y_{a}\right)=\left\langle g,\bnu(y_{a})\otimes\bigotimes_{u\in ne(a)}\bmu_{u}(X_{u})\right\rangle \label{eq:distribution_regression}
 \end{equation}
 
 \end_inset
@@ -1386,7 +1392,7 @@ key "szabo2016learning"
 
 \begin_layout Standard
 To learn the function 
-\begin_inset Formula $h\left(\cdot\right)$
+\begin_inset Formula $g\left(\cdot\right)$
 \end_inset
 
  on a directed graph, one can simulate the model by initializing the prior
@@ -1410,7 +1416,7 @@ To learn the function
 
 \begin_layout Standard
 Learning 
-\begin_inset Formula $h\left(\cdot\right)$
+\begin_inset Formula $g\left(\cdot\right)$
 \end_inset
 
  on an undirected graph has not been considered yet, the difficulty being
@@ -1420,28 +1426,39 @@ Learning
 
 \begin_layout Section
 Message passing for state-space models
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:ssm_case"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 We now consider the particular type of inference problem described by the
  following set of distributions describing a state-space model 
-\begin_inset Formula $p(y_{1}),p(y_{t}|y_{t-1}),p(x_{t}|y_{t})$
+\begin_inset Formula $p(Z_{1}),p(Z_{t}|Z_{t-1}),p(Z_{t}|X_{t})$
 \end_inset
 
  where 
-\begin_inset Formula $y_{t}$
+\begin_inset Formula $Z_{t}$
 \end_inset
 
- are latent and 
-\begin_inset Formula $x_{t}$
+ is latent and 
+\begin_inset Formula $X_{t}$
 \end_inset
 
  are observed.
  We denote by 
-\begin_inset Formula $\bmu$
+\begin_inset Formula $\bmu_{Z_{t}|x_{1:t}}=\E_{p(Z_{t}|x_{1:t})}\left[\bpsi(Z_{t})\right]$
 \end_inset
 
- the mean representation and 
+ the mean representation of posterior 
+\begin_inset Formula $p(Z_{t}|x_{1:t})$
+\end_inset
+
+ and 
 \begin_inset Formula $\bphi(x_{t})$
 \end_inset
 
@@ -1452,10 +1469,248 @@ We now consider the particular type of inference problem described by the
 
 \begin_layout Standard
 \begin_inset Formula 
+\begin{align}
+\text{KBR:} &  & \bmu_{Z_{t}|x_{1:t}}= & \left[C_{Z_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]\left[C_{X_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]^{-1}\bphi(x_{t})\\
+\text{MMR:} &  & \tilde{\bmu}{}_{Z_{t}|x_{1:t}}= & \left\langle \cW,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle  & \bmu{}_{Z_{t}|x_{1:t}}=\frac{\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}{\mathbf{n}^{\intercal}\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}\\
+\text{DRD:} &  & \bmu_{Z_{t}|x_{1:t}}= & \left\langle g_{t},\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle 
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For KBR, the parameters 
+\begin_inset Formula $C_{Y_{t}X_{t}|Y_{t-1}}$
+\end_inset
+
+ and 
+\begin_inset Formula $C_{X_{t}X_{t}|Y_{t-1}}$
+\end_inset
+
+ are estimated from samples drawn from the stationary distribution.
+ For DRD, the regressor 
+\begin_inset Formula $h_{t}$
+\end_inset
+
+ is trained at each time step starting from an arbitrary prior until the
+ chains reach stationarity.
+ When the posteriors only weakly depends on the first observation 
+\begin_inset Formula $\bmu_{Y_{t}|x_{1:t}}\approx\bmu_{Y_{t}|x_{t-\tau::t}}$
+\end_inset
+
+ for some 
+\begin_inset Formula $0<\tau<t$
+\end_inset
+
+ and for all 
+\begin_inset Formula $t$
+\end_inset
+
+, we can assume that 
+\begin_inset Formula $h_{t}$
+\end_inset
+
+ is stationary and thus can be used at all future time steps.
+ For MMR, however, the weights cannot be obtained directly.
+ To see why, we write the filtering operation in the mean representation
+ of messsages as
+\begin_inset Formula 
+\begin{align}
+\tilde{\bmu}{}_{Z_{t}|x_{1:t}} & =\int dz_{t}\bpsi(z_{t})\tilde{p}(z_{t}|x_{1:t})\label{eq:ssm-mme-def}\\
+ & =\int dz_{t}\bpsi(z_{t})\int dz_{t-1}p(z_{t}|z_{t-1})p(x_{t}|z_{t})p(z_{t-1}|x_{1:t-1})\\
+ & =\int dz_{t-1}\left[\int dz_{t}\bpsi(z_{t})p(z_{t}|z_{t-1})p(x_{t}|z_{t})\right]p(z_{t-1}|x_{1:t-1})\label{eq:ssm-mme-integral}\\
+ & \stackrel{(1)}{\approx}\int dz_{t-1}\left[\left\langle \cW,\bphi(x_{t})\otimes\bpsi(z_{t})\right\rangle \right]p(z_{t-1}|x_{1:t-1})\label{ssm-mme}
+\end{align}
+
+\end_inset
+
+where in step (1) we used the equivalent of Equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:approx_expectation"
+
+\end_inset
+
+ to approximate the integral in the square brackets.
+ In a simpler scenario where there is no data likelihood 
+\begin_inset Formula $p(x_{t}|z_{t})$
+\end_inset
+
+), this integral is a conditional expectation and the weights 
+\begin_inset Formula $\cW$
+\end_inset
+
+ becomes a regressor from 
+\begin_inset Formula $z_{t-1}$
+\end_inset
+
+ to 
+\begin_inset Formula $z_{t}$
+\end_inset
+
+.
+ With the likelihood, this integral becomes an unnormalized expectation
+ and cannot be approximated by regression.
+ We discuss potential remedies in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:remedies-for-unnorm-exp"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Similarities between DRD and KBR for filtering
+\end_layout
+
+\begin_layout Standard
+Here, we focus on the novel DRD scheme and compare it with the KBR solution
+ which is known to be consistent using infinitely many features.
+ The function 
+\begin_inset Formula $g$
+\end_inset
+
+, if multilinear in its input features, can be written as
+\begin_inset Formula 
+\begin{align}
+g_{t} & =\underbrace{\E_{p(x_{1:t},z_{t})}\left[\bpsi(z_{t})\otimes\bphi(x_{t})\otimes\bmu_{Z_{t-1}|x_{1:t-1}}\right]}_{\cW_{\bpsi_{t}(\bphi_{t}\bmu_{t-1})}}\underbrace{\E_{p(x_{1:t})}\left[\left(\bphi(x_{t})\otimes\bmu_{Z_{t-1}|x_{1:t-1}}\right)\otimes\left(\bphi(x_{t})\otimes\bmu_{Z_{t-1}|x_{1:t-1}}\right)\right]^{-1}}_{\cW_{(\bphi_{t}\bmu_{t-1})(\bphi_{t}\bmu_{t-1})}^{-1}}\label{eq:ssm_drd_regressor}
+\end{align}
+
+\end_inset
+
+Denoting the random observation history 
+\begin_inset Formula $X_{1:t}$
+\end_inset
+
+ as 
+\begin_inset Formula $H_{t}$
+\end_inset
+
+, the corresponding observations 
+\begin_inset Formula $x_{1:t}$
+\end_inset
+
+ as 
+\begin_inset Formula $h_{t}$
+\end_inset
+
+ and its feature as 
+\begin_inset Formula $\bphi^{\otimes t}(h_{t})$
+\end_inset
+
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+since the feature for the history up to time 
+\begin_inset Formula $t$
+\end_inset
+
+ is the tensor product 
+\begin_inset Formula $\bigotimes_{i=1}^{t}\bphi(x_{i}$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
+.
+ The first expectation in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:ssm_drd_regressor"
+
+\end_inset
+
+can be simplified as 
+\begin_inset Formula 
 \begin{align*}
-\text{KBR:} &  & \bmu_{Y_{t}|x_{1:t}}= & \left[C_{Y_{t}X_{t}|Y_{t-1}}\bmu_{Y_{t-1}|x_{1:t-1}}\right]\left[C_{X_{t}X_{t}|Y_{t-1}}\bmu_{Y_{t-1}|x_{1:t-1}}\right]^{-1}\bphi(x_{t})\\
-\text{MMR:} &  & \tilde{\bmu}{}_{Y_{t}|x_{1:t}}= & \left\langle \cW,\bmu{}_{Y_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle  & \bmu{}_{Y_{t}|x_{1:t}}=\frac{\tilde{\bmu}{}_{Y_{t}|x_{1:t}}}{\mathbf{n}^{\intercal}\tilde{\bmu}{}_{Y_{t}|x_{1:t}}}\\
-\text{DRD:} &  & \bmu_{Y_{t}|x_{1:t}}= & \left\langle h,\bmu{}_{Y_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle 
+\cW_{\bpsi_{t}(\bphi_{t}\bmu_{t-1})} & =\E_{p(h_{t-1})}\left[\E_{p(z_{t},x_{t}|h_{t-1})}\left[\bpsi(z_{t})\otimes\bphi(x_{t})\right]\otimes\bmu_{Z_{t-1}|h_{t-1}}\right]\\
+ & =\E_{p(h_{t-1})}\left[\cC_{Z_{t}X_{t}|h_{t-1}}\otimes\bmu_{Z_{t-1}|h_{t-1}}\right]\\
+ & =\E_{p(h_{t-1})}\left[\left\langle \cC_{Z_{t}X_{t}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\right\rangle \otimes\left\langle \cC_{Z_{t-1}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\right\rangle \right]\\
+ & =\E_{p(h_{t-1})}\left[\left\langle \cC_{Z_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\otimes\bphi^{\otimes t-t}(h_{t-1})\right\rangle \right]\\
+ & =\left\langle \cC_{Z_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\E\left[\bphi^{\otimes t-1}(h_{t-1})\otimes\bphi^{\otimes t-1}(h_{t-1})\right]\right\rangle \\
+ & =\left\langle \cC_{Z_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\cC_{H_{t-1}^{\otimes2}}\right\rangle 
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $\cC_{H_{t-1}^{\otimes n}}:=\E\left[\bigotimes_{i}^{n}\left[\bphi^{\otimes t-1}(h_{t-1})\right]\right]$
+\end_inset
+
+.
+ The second expectation in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:ssm_drd_regressor"
+
+\end_inset
+
+ can be simplified similarly
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The tensor product, shortened as 
+\begin_inset Formula $\left(\bphi\otimes\bmu\right)\otimes\left(\bphi\otimes\bmu\right)$
+\end_inset
+
+, is implemend using matrix operations.
+ For the following, we use
+\begin_inset Formula $\otimes$
+\end_inset
+
+ as Kronecker product and 
+\begin_inset Formula $vec(\dot{\cdot)}$
+\end_inset
+
+ as the operation that concatenates the columns into a vector.
+ The term inside the expectation is in fact
+\begin_inset Formula 
+\[
+vec(\bphi\otimes\bmu^{T})vec^{T}(\bphi\otimes\bmu^{T})=(\bphi\bphi^{T})\otimes(\bmu\bmu^{T})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\cW_{(\bphi_{t}\bmu_{t-1})(\bphi_{t}\bmu_{t-1})} & =\E_{p(h_{t-1})}\left[\cC_{X_{t}X_{t}|h_{t-1}}\otimes\left\langle \cC_{Z_{t-1}|h_{t-1}},\cC_{Z_{t-1}|h_{t-1}}\right\rangle \right]\\
+ & =\E_{p(h_{t-1})}\left[\left\langle \cC_{X_{t}X_{t}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\right\rangle \otimes\left\langle \cC_{Z_{t-1}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\otimes\bphi^{\otimes t-1}(h_{t-1})\right\rangle \right]\\
+ & =\left\langle \cC_{X_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\cC_{H_{t-1}^{\otimes3}}\right\rangle 
+\end{align*}
+
+\end_inset
+
+which gives the recursion.
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:t}} & =\left\langle \left\langle \cC_{Z_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\cC_{H_{t-1}^{\otimes2}}\right\rangle \left\langle \cC_{X_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\cC_{H_{t-1}^{\otimes3}}\right\rangle ^{-1},\bphi(x_{t})\otimes\bmu_{Z_{t-1}|x_{1:t-1}}\right\rangle \\
+ & =\left\langle \left\langle \cC_{Z_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\cC_{H_{t-1}^{\otimes2}}\right\rangle \left\langle \cC_{X_{t}X{}_{t}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}}\otimes\cC_{Z_{t-1}|H_{t-1}},\cC_{H_{t-1}^{\otimes3}}\right\rangle ^{-1}\cC_{Z_{t-1}|H_{t-1}},\bphi(x_{t})\otimes\bphi^{\otimes t-1}(h_{t-1})\right\rangle 
+\end{align*}
+
+\end_inset
+
+Compare with KBR which can be written as 
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:t}} & =\left[C_{Z_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]\left[C_{X_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]^{-1}\bphi(x_{t})\\
+ & =\left\langle C_{Z_{t}X_{t}|Z_{t-1}}\cC_{Z_{t-1}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\right\rangle \left\langle C_{X_{t}X_{t}|Z_{t-1}}\cC_{Z_{t-1}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\right\rangle ^{-1}\bphi(x_{t})\\
+ & =\left\langle C_{Z_{t}X_{t}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\right\rangle \left\langle C_{X_{t}X_{t}|H_{t-1}},\bphi^{\otimes t-1}(h_{t-1})\right\rangle ^{-1}\bphi(x_{t})
 \end{align*}
 
 \end_inset
@@ -1464,7 +1719,249 @@ We now consider the particular type of inference problem described by the
 \end_layout
 
 \begin_layout Standard
+Both expressions involve the key covariance operators 
+\begin_inset Formula $\cC_{Z_{t}X{}_{t}|H_{t-1}}$
+\end_inset
 
+ and 
+\begin_inset Formula $\cC_{X_{t}X{}_{t}|H_{t-1}}$
+\end_inset
+
+.
+ However, in the regression operator of DRD, there are also terms that involve
+ the filtering posterior operator 
+\begin_inset Formula $\cC_{Z_{t-1}|H_{t-1}}$
+\end_inset
+
+ and 2nd and 3rd moment representations of the history 
+\begin_inset Formula $\cC_{H_{t-1}^{\otimes3}}$
+\end_inset
+
+, whereas in KBR no such terms are involved.
+ Critically, there is no interaction between the two covariance operators
+ and filtering posterior operator.
+ Thus, intuitively, if the filtering operator is only approximate (due to
+ regularisation), DRD is able to take into account any errors in the posterior.
+ Higher order moments of the observation history may also help enhance the
+ regression.
+\end_layout
+
+\begin_layout Subsection
+Strategies for evaluating the integral inside 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:remedies-for-unnorm-exp"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here we a discuss the issue of evaluating the integral in the square bracket
+ of 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:ssm-mme-integral"
+
+\end_inset
+
+as part of process for learning a filter by MMR.
+ Denote this expectation as 
+\begin_inset Formula $E_{t}=\int dz_{t}\bpsi(z_{t})p(z_{t}|z_{t-1})p(x_{t}|z_{t})$
+\end_inset
+
+.
+ Since it is not a expectation under a normalized density, training a regressor
+ from 
+\begin_inset Formula $z_{t-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ to predict 
+\begin_inset Formula $z_{t}$
+\end_inset
+
+ will not yield the desired weights 
+\begin_inset Formula $\cW$
+\end_inset
+
+ in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "ssm-mme"
+
+\end_inset
+
+.
+ This can be further verified by rewriting 
+\begin_inset Formula $E_{t}$
+\end_inset
+
+ as follows, noting the fact that 
+\begin_inset Formula $p(z_{t}|z_{t-1},x_{t})=\frac{p(z_{t}|z_{t-1})p(x_{t}|z_{t})}{p(x_{t}|z_{t-1})}$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+E_{t} & =\int dz_{t}\bpsi(z_{t})p(z_{t}|z_{t-1},x_{t})p(x_{t}|z_{t-1})\\
+ & \approx\bmu_{Z_{t}|z_{t-1},x_{t}}p(x_{t}|z_{t-1})
+\end{align*}
+
+\end_inset
+
+The regression method will produce the correct estimate of 
+\begin_inset Formula $\bmu_{Z_{t}|z_{t-1},x_{t}}$
+\end_inset
+
+ but will miss a factor 
+\begin_inset Formula $p(x_{t}|z_{t-1})$
+\end_inset
+
+ that depends on 
+\begin_inset Formula $z_{t-1}$
+\end_inset
+
+ for 
+\begin_inset Formula $E_{t}$
+\end_inset
+
+.
+ The update equation for the next normalized mean embedding in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:ssm-mme-def"
+
+\end_inset
+
+ becomes
+\begin_inset Formula 
+\[
+\tilde{\bmu}{}_{Z_{t}|x_{1:t}}=\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t}}p(x_{t}|z_{t-1})p(z_{t-1}|x_{1:t-1})
+\]
+
+\end_inset
+
+To take into account the normalizer, we can express the normalized mean
+ embedding in several ways.
+ 
+\begin_inset Formula 
+\begin{align}
+\bmu{}_{Z_{t}|x_{1:t}} & =\frac{1}{p(x_{t}|x_{1:t-1})}\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t}}p(x_{t}|z_{t-1})p(z_{t-1}|x_{1:t-1})\nonumber \\
+ & =\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t}}\frac{p(x_{t}|z_{t-1})}{p(x_{t}|x_{1:t-1})}p(z_{t-1}|x_{1:t-1})\nonumber \\
+ & =\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t}}\frac{p(x_{t},z_{t-1}|x_{1:t-1})}{p(x_{t}|x_{1:t-1})p(z_{t-1}|x_{1:t-1})}p(z_{t-1}|x_{1:t-1})\nonumber \\
+ & =\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t}}\frac{p(z_{t-1}|x_{1:t})}{p(z_{t-1}|x_{1:t-1})}p(z_{t-1}|x_{1:t-1})\nonumber \\
+ & =\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t}}p(z_{t-1}|x_{1:t})\label{eq:ssm-mme-recursion-lag-input}\\
+ & \ne\left\langle \cC_{Z_{t}|Z_{t-1},x_{t}},\bmu_{z_{t-1}|x_{1:t-1}}\right\rangle \nonumber 
+\end{align}
+
+\end_inset
+
+where 
+\begin_inset Formula $\cC_{Z_{t}|Z_{t-1},x_{t}}$
+\end_inset
+
+ is a conditional operator such that 
+\begin_inset Formula $\bmu_{Z_{t}|z_{t-1},x_{t}}=\left\langle \cC_{Z_{t}|Z_{t-1},x_{t}},\psi(z_{t-1})\right\rangle $
+\end_inset
+
+ and from the last line, we see that the desired input to the learned regressor
+ would be the mean representation of 
+\begin_inset Formula $p(z_{t-1}|x_{1:t})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Known likelihood function
+\end_layout
+
+\begin_layout Standard
+If this likelihood function is known, we could approximate it with 
+\begin_inset Formula $p(x_{t}|z_{t})\approx\left\langle p,\bphi(z_{t})\otimes\bpsi(x_{t})\right\rangle $
+\end_inset
+
+, and this integral becomes
+\begin_inset Formula 
+\begin{align*}
+E_{t} & =\int dz_{t}\bpsi(z_{t})p(z_{t}|z_{t-1})p(x_{t}|z_{t})\\
+ & =\int dz_{t}\bpsi(z_{t})\left\langle p,\bphi(z_{t})\otimes\bpsi(x_{t})\right\rangle p(z_{t}|z_{t-1})\\
+ & =\left\langle p,\bphi(x_{t})\otimes C_{Z_{t}Z_{t}|z_{t-1}}\right\rangle 
+\end{align*}
+
+\end_inset
+
+Nontheless, in general we would like to avoid approximating the likelihood
+ function as it is inaccessible in many situations.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Fixed-lag smoothing
+\end_layout
+
+\begin_layout Standard
+Another solution can be seen by recursing on a slightly different object.
+ Instead of 
+\begin_inset Formula $p(z_{t}|x_{1:t})$
+\end_inset
+
+, if we are interested in a fix-lag version of the posterior given some
+ future observations
+\begin_inset Formula $p(z_{t}|x_{1:t+\tau})$
+\end_inset
+
+ for some 
+\begin_inset Formula $\tau>0$
+\end_inset
+
+, then we may assume that 
+\begin_inset Formula $p(z_{t}|x_{1:t+\tau})\approx p(z_{t}|x_{1:t+\tau-1})$
+\end_inset
+
+.
+ From 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:ssm-mme-recursion-lag-input"
+
+\end_inset
+
+ it is easy to see 
+\begin_inset Formula 
+\begin{align*}
+\bmu{}_{Z_{t}|x_{1:t+\tau}} & =\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t:t+\tau}}p(z_{t-1}|x_{1:t+\tau})\\
+ & \approx\int dz_{t-1}\bmu_{Z_{t}|z_{t-1},x_{t:t+\tau}}p(z_{t-1}|x_{1:t+\tau-1})\\
+ & =\left\langle \cC_{Z_{t}|Z_{t-1},x_{t:t+\tau}},\bmu_{Z_{t-1}|x_{1:t+\tau-1}}\right\rangle 
+\end{align*}
+
+\end_inset
+
+which requires a regressor that takes 
+\begin_inset Formula $z_{t-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{t:t+\tau}$
+\end_inset
+
+ as input to predict 
+\begin_inset Formula $z_{t}$
+\end_inset
+
+, and the predictions can be used as 
+\begin_inset Formula $\bmu_{Z_{t}|z_{t-1},x_{t:t+\tau}}$
+\end_inset
+
+.
+ There is a trade-off between how well this dropped condition approximation
+ holds and how complicated the regressor have to be.
+ 
 \end_layout
 
 \begin_layout Standard
