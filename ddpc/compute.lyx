@@ -6,6 +6,7 @@
 \origin unavailable
 \textclass article
 \begin_preamble
+\usepackage{amsmath}
 \newcommand{\bx}{\mathbf{x}}
 \DeclareMathOperator{\Tr}{Tr}
 \end_preamble
@@ -218,6 +219,12 @@ Kevin W Li
 \begin_inset FormulaMacro
 \newcommand{\bnu}{\bm{\nu}}
 {\bm{\nu}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\argmin}{\operatornamewithlimits{arg\,min}}
+{\textrm{arg min}}
 \end_inset
 
 
@@ -2414,21 +2421,39 @@ name "sec:ssm_case"
 \end_layout
 
 \begin_layout Standard
-We now consider the particular type of inference problem described by the
- following set of distributions describing a state-space model 
-\begin_inset Formula $p(Z_{1}),p(Z_{t}|Z_{t-1}),p(Z_{t}|X_{t})$
+Consider the particular type of inference problem described by the following
+ set of distributions describing a state-space model 
+\begin_inset Formula $p(z_{1}),p(z_{t}|z_{t-1}),p(z_{t}|x_{t})$
 \end_inset
 
  where 
-\begin_inset Formula $Z_{t}$
+\begin_inset Formula $z_{t}$
 \end_inset
 
  is latent and 
-\begin_inset Formula $X_{t}$
+\begin_inset Formula $x_{t}$
 \end_inset
 
  are observed.
- We denote by 
+ 
+\begin_inset Formula 
+\begin{align*}
+p_{\theta_{0}}(z_{0}) & =\exp\left[g(\theta_{0})T(z_{1})-\Phi(g(\theta_{0}))\right]\\
+p_{\theta_{f}}(z_{t}|z_{t-1}) & =\exp\left[g(z_{t-1},\theta_{f})T(z_{t})-\Phi(g(z_{t-1},\theta_{f}))\right]\\
+p(x_{t}|z_{t}) & =\exp\left[g(z_{t-1},\theta_{g})T(x_{t})-\Phi(g(z_{t},\theta_{g}))\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Filtering 
+\end_layout
+
+\begin_layout Standard
+We denote by 
 \begin_inset Formula $\bmu_{Z_{t}|x_{1:t}}=\E_{p(Z_{t}|x_{1:t})}\left[\bpsi(Z_{t})\right]$
 \end_inset
 
@@ -2449,8 +2474,10 @@ We now consider the particular type of inference problem described by the
 \begin_inset Formula 
 \begin{align}
 \text{KBR:} &  & \bmu_{Z_{t}|x_{1:t}}= & \left[C_{Z_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]\left[C_{X_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]^{-1}\bphi(x_{t})\\
-\text{MMR:} &  & \tilde{\bmu}{}_{Z_{t}|x_{1:t}}= & \left\langle \cW,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle  & \bmu{}_{Z_{t}|x_{1:t}}=\frac{\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}{\mathbf{n}^{\intercal}\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}\\
-\text{DRD:} &  & \bmu_{Z_{t}|x_{1:t}}= & \left\langle g_{t},\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle 
+\text{DRD:} &  & \bmu_{Z_{t}|x_{1:t}}= & \left\langle \cW,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle \\
+ &  & \cW:\text{ \ } & \bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\xmapsto{x_{1:t},z_{t}}\bpsi(z_{t})\\
+\text{MMR:} &  & \tilde{\bmu}{}_{Z_{t}|x_{1:t}}= & \left\langle \cU,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle \\
+ &  & \bmu{}_{Z_{t}|x_{1:t}}= & \frac{\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}{\mathbf{n}^{\intercal}\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}
 \end{align}
 
 \end_inset
@@ -2499,7 +2526,7 @@ For KBR, the parameters
 \tilde{\bmu}{}_{Z_{t}|x_{1:t}} & =\int dz_{t}\bpsi(z_{t})\tilde{p}(z_{t}|x_{1:t})\label{eq:ssm-mme-def}\\
  & =\int dz_{t}\bpsi(z_{t})\int dz_{t-1}p(z_{t}|z_{t-1})p(x_{t}|z_{t})p(z_{t-1}|x_{1:t-1})\\
  & =\int dz_{t-1}\left[\int dz_{t}\bpsi(z_{t})p(z_{t}|z_{t-1})p(x_{t}|z_{t})\right]p(z_{t-1}|x_{1:t-1})\label{eq:ssm-mme-integral}\\
- & \stackrel{(1)}{\approx}\int dz_{t-1}\left[\left\langle \cW,\bphi(x_{t})\otimes\bpsi(z_{t})\right\rangle \right]p(z_{t-1}|x_{1:t-1})\label{ssm-mme}
+ & \stackrel{(1)}{\approx}\int dz_{t-1}\left[\left\langle \cU,\bphi(x_{t})\otimes\bpsi(z_{t})\right\rangle \right]p(z_{t-1}|x_{1:t-1})\label{ssm-mme}
 \end{align}
 
 \end_inset
@@ -2540,6 +2567,264 @@ reference "subsec:remedies-for-unnorm-exp"
 
 .
  
+\end_layout
+
+\begin_layout Subsubsection
+DRD
+\end_layout
+
+\begin_layout Standard
+DRD can be derived using a somewhat hypothetical path of computation.
+ If we ignore the graphical structure and simply perform a multilinear regressio
+n from history 
+\begin_inset Formula $x_{1},x_{2},\dots x_{t-1}$
+\end_inset
+
+ to 
+\begin_inset Formula $\bpsi(z_{t-1})$
+\end_inset
+
+, then we can obtain the previous filtering posterior directly 
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t-1}|x_{1:t-1}} & =\cC_{Z_{t-1}|X_{1:t-1}}\left[\bigotimes_{i=1}^{t-1}\bphi(x_{i})\right]
+\end{align*}
+
+\end_inset
+
+from which we can write 
+\begin_inset Formula 
+\[
+\bigotimes_{i=1}^{t-1}\bphi(x_{i})=\cC_{Z_{t-1}|X_{1:t-1}}^{\dagger}\bmu_{Z_{t-1}|x_{1:t-1}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Likewise, the current posterior can be obtained by 
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:t}} & =\cC_{Z_{t}|X_{1:t}}\left[\bigotimes_{i=1}^{t}\bphi(x_{i})\right]\\
+ & =\cC_{Z_{t}|X_{1:t}}\left[\left[\bigotimes_{i=1}^{t-1}\bphi(x_{i})\right]\otimes\bphi(x_{t})\right]\\
+ & =\cC_{Z_{t}|X_{1:t}}\left[\left[\cC_{Z_{t-1}|X_{1:t-1}}^{\dagger}\bmu_{Z_{t-1}|x_{1:t-1}}\right]\otimes\bphi(x_{t})\right]\\
+ & =\cC_{Z_{t}|X_{1:t}}\cC_{Z_{t-1}|X_{1:t-1}}^{\dagger}\left[\bmu_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right]\\
+ & =\cC_{Z_{t},X_{1:t}}\cC_{Z_{t-1},X_{1:t-1}}^{\dagger}\left[\bmu_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right]
+\end{align*}
+
+\end_inset
+
+Thus, there exists a bilinear mapping from 
+\begin_inset Formula $\bmu_{Z_{t-1}|x_{1:t-1}}$
+\end_inset
+
+ and 
+\begin_inset Formula $\bphi(x_{t})$
+\end_inset
+
+ to 
+\begin_inset Formula $\bmu_{Z_{t}|x_{1:t}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Combine DRD with sample-based learning
+\end_layout
+
+\begin_layout Standard
+Notice that there is a factorisation of the filtering DDC
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:t}} & =\E_{Z_{t}|x_{1:t}}\left[\bpsi(Z_{t})\right]\\
+ & =\E_{Z_{t-1}|x_{1:t}}\left[\E_{Z_{t}|Z_{t-1},X_{t}}\left[\bpsi(Z_{t})\right]\right]
+\end{align*}
+
+\end_inset
+
+Or in operator form
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:t}} & =\left\langle \cC_{Z_{t}|Z_{t-1}x_{t}},\bmu_{Z_{t-1}|X_{1:t}}\right\rangle \\
+ & =\left\langle \cC_{Z_{t}|Z_{t-1}X_{t}},\bmu_{Z_{t-1}|X_{1:t}}\otimes\bpsi(x_{t})\right\rangle 
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The inner expectation can be trained from samples, and 
+\begin_inset Formula $\bmu_{Z_{t-1}|X_{1:t}}$
+\end_inset
+
+ can be computed from DRD of the form
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}-1|x_{1:t}} & =\left\langle \cW,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle \\
+\cW:\text{ \ } & \bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\xmapsto{x_{1:t},z_{t-1}}\bpsi(z_{t-1})
+\end{align*}
+
+\end_inset
+
+In fact, as we will need the one-step smoothing DDC 
+\begin_inset Formula $\bmu_{Z_{t}-1|x_{1:t}}$
+\end_inset
+
+ for learning the generative model, this is the preferred filtering operation.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Learning
+\end_layout
+
+\begin_layout Standard
+The required gradients for updating the generative parameters are 
+\begin_inset Formula $\E\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta\right),T\left(Z_{t}\right)\right\rangle \right]$
+\end_inset
+
+ and 
+\begin_inset Formula $\E\left[\nabla_{\theta_{f}}\Phi\left(Z_{t-1},\theta\right)\right]$
+\end_inset
+
+ for the latent dynamics, and 
+\begin_inset Formula $\E\left[\nabla_{\theta_{g}}g\left(Z_{t},\theta_{g}\right)\right]$
+\end_inset
+
+ and 
+\begin_inset Formula $\E\left[\nabla_{\theta_{g}}\Phi\left(Z_{t},\theta_{g}\right)\right]$
+\end_inset
+
+ for the observation distribution, where all the expectations are taken
+ under the filtering posterior conditioned on 
+\begin_inset Formula $x_{1:t}$
+\end_inset
+
+.
+ The update for 
+\begin_inset Formula $\theta_{g}$
+\end_inset
+
+ can be obtained directly from 
+\begin_inset Formula $\bmu_{Z_{t}|x_{1:t}}$
+\end_inset
+
+ combined with DDC function approximation, 
+\begin_inset Formula $\E\left[\nabla_{\theta_{f}}\Phi\left(Z_{t-1},\theta\right)\right]$
+\end_inset
+
+ requires the one-step soothing posterior.
+ 
+\end_layout
+
+\begin_layout Standard
+There are a few ways one could approach expectation of under the pairwise
+ joint 
+\begin_inset Formula $\E\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta\right),T\left(Z_{t}\right)\right\rangle \right]$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Feature-gradient regression
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\E\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),T\left(Z_{t}\right)\right\rangle \right] & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),\E_{Z_{t}|Z_{t-1},x_{t}}\left[T\left(Z_{t}\right)\right]\right\rangle \right]\\
+ & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),\left\langle \cU_{z_{t-1},x_{t}\mapsto T}\bphi,(x_{t})\otimes\bpsi(z_{t-1})\right\rangle \right\rangle \right]\\
+ & =\left\langle \E_{Z_{t-1}|x_{1:t}}\left[\nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right)\otimes\bpsi(z_{t-1})\right],\left\langle \cU_{z_{t-1},x_{t}\mapsto T},\bphi(x_{t})\right\rangle \right\rangle \\
+ & =\left\langle \left\langle \cU_{z_{t-1}\mapsto\otimes},\bmu_{Z_{t-1}|x_{1:t}}\right\rangle ,\left\langle \cU_{z_{t-1},x_{t}\mapsto T},\bphi(x_{t})\right\rangle \right\rangle 
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula 
+\begin{align*}
+\cU_{z_{t-1}\mapsto\otimes}: & \ \bpsi(z_{t-1})\xmapsto{z_{t-1}}\nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right)\otimes\bpsi(z_{t-1})\\
+\cU_{z_{t-1},x_{t}\mapsto T}: & \ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}T(z_{t})
+\end{align*}
+
+\end_inset
+
+Two additional regressions are required, in which the regressor of 
+\begin_inset Formula $\cU_{z_{t-1}\mapsto\otimes}$
+\end_inset
+
+ is trained to predict from feature to an outer product of this feature
+ and gradients, and has deterministic target.
+ On the other hand, the regressor of 
+\begin_inset Formula $\cU_{z_{t-1},x_{t}\mapsto T}$
+\end_inset
+
+ involves only 
+\begin_inset Formula $z_{t}$
+\end_inset
+
+, but has noisy target.
+\end_layout
+
+\begin_layout Paragraph
+Direct regression
+\begin_inset Formula 
+\begin{align*}
+\E\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),T\left(Z_{t}\right)\right\rangle \right] & =\E_{Z_{t-1}|x_{1:t}}\left[\E_{Z_{t}|Z_{t-1},x_{t}}\left[\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle \right]\right]\\
+ & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \cU_{z_{t-1},x_{t}\mapsto gT},\bpsi(z_{t-1})\otimes\bphi(x_{t})\right\rangle \right]\\
+ & =\left\langle \cU_{z_{t-1},x_{t}\mapsto gT},\bmu_{Z_{t-1}|x_{1:t}}\otimes\bphi(x_{t})\right\rangle 
+\end{align*}
+
+\end_inset
+
+
+\series medium
+where 
+\begin_inset Formula 
+\[
+\cU_{z_{t-1},x_{t}\mapsto gT}:\ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),T\left(Z_{t}\right)\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+One additional regression is required, and like DRD, we may replace the
+ 
+\begin_inset Formula $\bpsi(z_{t-1})$
+\end_inset
+
+ with 
+\begin_inset Formula $\bmu_{Z_{t-1}|x_{1:t}}$
+\end_inset
+
+ from the sleep sequences.
+ The regression target is noisy and involves two variables 
+\begin_inset Formula $z_{t-1}$
+\end_inset
+
+and 
+\begin_inset Formula $z_{t}$
+\end_inset
+
+ regardless of using messages on or samples of 
+\begin_inset Formula $z_{t}$
+\end_inset
+
+ as inputs.
+\end_layout
+
+\begin_layout Subsection
+Smoothing
 \end_layout
 
 \begin_layout Subsection
