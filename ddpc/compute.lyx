@@ -2773,7 +2773,7 @@ Two additional regressions are required, in which the regressor of
 , but has noisy target.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
 Direct regression
 \begin_inset Formula 
 \begin{align*}
@@ -2789,17 +2789,14 @@ Direct regression
 where 
 \begin_inset Formula 
 \[
-\cU_{z_{t-1},x_{t}\mapsto gT}:\ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),T\left(Z_{t}\right)\right\rangle 
+\cU_{z_{t-1},x_{t}\mapsto gT}:\ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle 
 \]
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-One additional regression is required, and like DRD, we may replace the
- 
+One 
+\series default
+additional regression is required, and like DRD, we may replace the 
 \begin_inset Formula $\bpsi(z_{t-1})$
 \end_inset
 
@@ -2825,6 +2822,136 @@ and
 
 \begin_layout Subsection
 Smoothing
+\end_layout
+
+\begin_layout Standard
+In smoothing, we compute 
+\begin_inset Formula $\bmu_{Z_{t}|x_{1:T}}$
+\end_inset
+
+ recursively using future 
+\begin_inset Formula $\bmu_{Z_{t+1}|x_{1:T}}$
+\end_inset
+
+ .We will use the following identity
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:T}} & =\E_{Z_{t}|x_{1:T}}\left[\bpsi(Z_{t})\right]\\
+ & =\E_{Z_{t+1}|x_{1:T}}\left[\E_{Z_{t}|Z_{t+1},x_{1:T}}\bpsi(Z_{t})\right]\\
+ & =\E_{Z_{t+1}|x_{1:T}}\left[\E_{Z_{t}|Z_{t+1},x_{1:t}}\bpsi(Z_{t})\right]
+\end{align*}
+
+\end_inset
+
+or, in kernel form
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:T}} & =\cC_{Z_{t}|Z_{t+1},x_{1:t}}\bmu_{Z_{t+1}|x_{1:T}}
+\end{align*}
+
+\end_inset
+
+There are two ways to compute the smoothing operator 
+\begin_inset Formula $\cC_{Z_{t}|Z_{t+1},x_{1:t}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+KBR
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\cC_{Z_{t}|Z_{t+1},x_{1:t}} & =\cC_{Z_{t},Z_{t+1}|x_{1:t}}\cC_{Z_{t+1},Z_{t+1}|x_{1:t}}^{-1}\\
+ & =\left[\cC_{Z_{t},Z_{t+1}|Z_{t}}\bmu_{Z_{t}|x_{1:t}}\right]\left[\cC_{Z_{t+1},Z_{t+1}|Z_{t}}\bmu_{Z_{t}|x_{1:t}}\right]^{-1}
+\end{align*}
+
+\end_inset
+
+where the conditional operators can be learned from samples.
+\end_layout
+
+\begin_layout Subsubsection
+DRD
+\end_layout
+
+\begin_layout Standard
+The smoothing operator is a mapping that is formed using filtering DDC 
+\begin_inset Formula $\bmu_{Z_{t}|x_{1:t}}$
+\end_inset
+
+, then takes the future sample 
+\begin_inset Formula $\bpsi\left(z_{t+1}\right)$
+\end_inset
+
+ to predict 
+\begin_inset Formula $\bpsi\left(z_{t}\right)$
+\end_inset
+
+.
+ Note that it is very similar to the filtering operator 
+\begin_inset Formula $\cC_{Z_{t}|X_{t+1},x_{1:t}}$
+\end_inset
+
+.
+ The corresponding DRD operation is then 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\bmu_{Z_{t}|x_{1:T}} & =\left\langle \cW,\bmu{}_{Z_{t}|x_{1:t}}\otimes\bmu{}_{Z_{t}|x_{1:T}}\right\rangle \\
+\cW: & \text{ \ }\bmu{}_{Z_{t}|x_{1:t}}\otimes\bpsi(z_{t+1})\xmapsto{x_{1:t},z_{t-1}}\bpsi(z_{t})
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+On a stationary chain,
+\begin_inset Formula $\cW$
+\end_inset
+
+ can be computed from the last time step once for all the subsequent smoothing
+ operation, as 
+\begin_inset Formula $\bmu{}_{Z_{T}|x_{1:T}}$
+\end_inset
+
+ will have similar distribution to previous filtering DDCs (except for 
+\begin_inset Formula $t$
+\end_inset
+
+ close to 0).
+ One could replace 
+\begin_inset Formula $\bpsi(z_{t+1})$
+\end_inset
+
+ wiht 
+\begin_inset Formula $\bmu_{Z_{t+1}|x_{1:T}}$
+\end_inset
+
+, but would then need to perform smoothing on the sleep sequences for a
+ few time steps for 
+\begin_inset Formula $\bmu_{Z_{t+1}|x_{1:T}}$
+\end_inset
+
+ to converge on a stationary distribution backward in time.
+\end_layout
+
+\begin_layout Subsubsection
+Learning 
+\end_layout
+
+\begin_layout Subsection
+Hierarchical observation distribution
 \end_layout
 
 \begin_layout Subsection
