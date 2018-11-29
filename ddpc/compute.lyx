@@ -2778,8 +2778,8 @@ Direct regression
 \begin_inset Formula 
 \begin{align*}
 \E\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),T\left(Z_{t}\right)\right\rangle \right] & =\E_{Z_{t-1}|x_{1:t}}\left[\E_{Z_{t}|Z_{t-1},x_{t}}\left[\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle \right]\right]\\
- & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \cU_{z_{t-1},x_{t}\mapsto gT},\bpsi(z_{t-1})\otimes\bphi(x_{t})\right\rangle \right]\\
- & =\left\langle \cU_{z_{t-1},x_{t}\mapsto gT},\bmu_{Z_{t-1}|x_{1:t}}\otimes\bphi(x_{t})\right\rangle 
+ & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \cU_{z_{t-1},x_{t}\mapsto\nabla T},\bpsi(z_{t-1})\otimes\bphi(x_{t})\right\rangle \right]\\
+ & =\left\langle \cU_{z_{t-1},x_{t}\mapsto\nabla T},\bmu_{Z_{t-1}|x_{1:t}}\otimes\bphi(x_{t})\right\rangle 
 \end{align*}
 
 \end_inset
@@ -2789,7 +2789,7 @@ Direct regression
 where 
 \begin_inset Formula 
 \[
-\cU_{z_{t-1},x_{t}\mapsto gT}:\ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle 
+\cU_{z_{t-1},x_{t}\mapsto\nabla T}:\ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle 
 \]
 
 \end_inset
@@ -2950,8 +2950,73 @@ On a stationary chain,
 Learning 
 \end_layout
 
+\begin_layout Standard
+Learning using smoothed posteriors will provide more stable updates.
+ We focus on the pairwise term, as other terms are straightforward to compute.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Feature-gradient regression
+\end_layout
+
+\begin_layout Standard
+Our previous factorisation will not work, as can be seen below
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\E_{p(Z_{t},Z_{t+1}|x_{1:T})}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t},\theta_{f}\right),T\left(Z_{t+1}\right)\right\rangle \right]=\E_{p(Z_{t}|x_{1:t})}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t},\theta_{f}\right),\E_{Z_{t+1}|Z_{t},x_{t+t:T}}\left[T\left(Z_{t+1}\right)\right]\right\rangle \right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The inner expectation is over the distribution 
+\begin_inset Formula $p\left(Z_{t+1}|Z_{t},x_{t+t:T}\right)$
+\end_inset
+
+ and is not available.
+ Another factorisation is possible 
+\begin_inset Formula 
+\begin{align*}
+\E_{p(Z_{t},Z_{t+1}|x_{1:T})}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t},\theta_{f}\right),T\left(Z_{t+1}\right)\right\rangle \right] & =\E_{p(Z_{t+1}|x_{1:T})}\left[\left\langle \E_{Z_{t}|Z_{t+1},x_{1:t}}\left[\nabla_{\theta_{f}}g\left(Z_{t},\theta_{f}\right)\right],T\left(Z_{t+1}\right)\right\rangle \right]\\
+ & =\E_{p(Z_{t+1}|x_{1:T})}\left[\left\langle \left\langle \cW_{\bmu_{x_{1:t}},\bpsi\left(z_{t+1}\right)\mapsto\nabla,}\bmu_{Z_{t}|x_{1:t}}\otimes\bpsi\left(z_{t+1}\right)\right\rangle ,T\left(Z_{t+1}\right)\right\rangle \right]\\
+ & =\E_{p(Z_{t+1}|x_{1:T})}\left[\left\langle \left\langle \cW_{\bmu_{x_{1:t}},\bpsi\left(z_{t+1}\right)\mapsto\nabla,}\bmu_{Z_{t}|x_{1:t}}\right\rangle ,\bpsi\left(z_{t+1}\right)\otimes T\left(Z_{t+1}\right)\right\rangle \right]\\
+ & =\left\langle \left\langle \cW_{\bmu_{x_{1:t}},\bpsi\left(z_{t+1}\right)\mapsto\nabla},\bmu_{Z_{t}|x_{1:t}}\right\rangle ,\E_{p(Z_{t+1}|x_{1:T})}\left[\bpsi\left(z_{t+1}\right)\otimes T\left(Z_{t+1}\right)\right]\right\rangle \\
+ & =\left\langle \left\langle \cW_{\bmu_{x_{1:t}},\bpsi\left(z_{t+1}\right)\mapsto\nabla},\bmu_{Z_{t}|x_{1:t}}\right\rangle ,\cU_{z_{t+1}\mapsto\bpsi T}\bmu_{Z_{t+1}|x_{1:T}}\right\rangle 
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula 
+\begin{align*}
+\cW_{\bmu_{x_{1:t}},\bpsi\left(z_{t+1}\right)\mapsto\nabla} & :\ \bmu_{x_{1:t}},\bpsi\left(z_{t+1}\right)\xmapsto{z_{t},z_{t+1,}x_{1:t}}\nabla_{\theta_{f}}g\left(z_{t},\theta_{f}\right)\\
+\cU_{z_{t+1}\mapsto\bpsi T} & :\ \bpsi\left(z_{t+1}\right)\xmapsto{z_{t+1}}\bpsi\left(z_{t+1}\right)\otimes T\left(Z_{t+1}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first regression is DRD regression with a noisy gradient depending on
+ a single variable.
+ The second is a simple noiseless function approximation.
+\end_layout
+
 \begin_layout Subsection
 Hierarchical observation distribution
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Subsection
