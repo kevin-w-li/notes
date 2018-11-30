@@ -206,6 +206,12 @@ Kevin W Li
 \end_inset
 
 
+\begin_inset FormulaMacro
+\newcommand{\cV}{\mathcal{V}}
+{\mathcal{V}}
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2475,7 +2481,7 @@ We denote by
 \begin{align}
 \text{KBR:} &  & \bmu_{Z_{t}|x_{1:t}}= & \left[C_{Z_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]\left[C_{X_{t}X_{t}|Z_{t-1}}\bmu_{Z_{t-1}|x_{1:t-1}}\right]^{-1}\bphi(x_{t})\\
 \text{DRD:} &  & \bmu_{Z_{t}|x_{1:t}}= & \left\langle \cW,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle \\
- &  & \cW:\text{ \ } & \bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\xmapsto{x_{1:t},z_{t}}\bpsi(z_{t})\\
+ &  & \cW:\text{ \ } & \bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\xmapsto{p(x_{1:t},z_{t})}\bpsi(z_{t})\\
 \text{MMR:} &  & \tilde{\bmu}{}_{Z_{t}|x_{1:t}}= & \left\langle \cU,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle \\
  &  & \bmu{}_{Z_{t}|x_{1:t}}= & \frac{\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}{\mathbf{n}^{\intercal}\tilde{\bmu}{}_{Z_{t}|x_{1:t}}}
 \end{align}
@@ -2666,7 +2672,7 @@ The inner expectation can be trained from samples, and
 \begin_inset Formula 
 \begin{align*}
 \bmu_{Z_{t}-1|x_{1:t}} & =\left\langle \cW,\bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\right\rangle \\
-\cW:\text{ \ } & \bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\xmapsto{x_{1:t},z_{t-1}}\bpsi(z_{t-1})
+\cW:\text{ \ } & \bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\xmapsto{p(x_{1:t},z_{t-1})}\bpsi(z_{t-1})
 \end{align*}
 
 \end_inset
@@ -2677,6 +2683,345 @@ In fact, as we will need the one-step smoothing DDC
 
  for learning the generative model, this is the preferred filtering operation.
  
+\end_layout
+
+\begin_layout Subsubsection
+Sample-less training of the filtering operator
+\end_layout
+
+\begin_layout Standard
+It is possible to train the filtering operator without using samples under
+ some combinations of noise in the generative model and feature function
+ used.
+ To see this under DRD filtering, recall that the filtering operator is
+ 
+\begin_inset Formula 
+\begin{align*}
+\cW:\text{ \ } & \bmu{}_{Z_{t-1}|x_{1:t-1}}\otimes\bphi(x_{t})\xmapsto{p(x_{1:t},z_{t})}\bpsi(z_{t})\\
+\cW= & \argmin_{\cW}\E_{x_{1:t},z_{t}}\left[\left\Vert \sum_{jk}W_{ijk}\bmu_{j}\bphi_{k}-\bpsi_{i}\right\Vert ^{2}\right]
+\end{align*}
+
+\end_inset
+
+which implies that the following normal equation needs to hold for each
+ element of 
+\begin_inset Formula $\cW$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align}
+\nabla_{W_{ijk}}\E_{x_{1:t},z_{t}}\left[\left\Vert \sum_{jk}W_{ijk}\mu_{j}\phi_{k}-\psi_{i}\right\Vert ^{2}\right] & =0\nonumber \\
+\E_{x_{1:t},z_{t}}\left[\left(\sum_{j'k'}W_{ij'k'}\mu_{j'}\phi_{k'}-\psi_{i}\right)\mu_{j}\phi_{k}\right] & =0\nonumber \\
+\E_{x_{1:t-1}}\E_{z_{t},x_{t}|x_{1:t-1}}\left[\left(\sum_{j'k'}W_{ij'k'}\mu_{j'}\phi_{k'}-\psi_{i}\right)\mu_{j}\phi_{k}\right] & =0\nonumber \\
+\E_{x_{1:t-1}}\E_{z_{t},x_{t}|x_{1:t-1}}\left[\sum_{j'k'}W_{ij'k'}\mu_{j'}\mu_{j}\phi_{k'}\phi_{k}-\mu_{j}\phi_{k}\psi_{i}\right] & =0\nonumber \\
+\sum_{j'k'}W_{ij'k'}\E_{x_{1:t-1}}\left[\mu_{j'}\mu_{j}\E_{x_{t}|x_{1:t-1}}\left[\phi_{k'}\phi_{k}\right]\right]-\E_{x_{1:t-1}}\left[\mu_{j}\E_{z_{t},x_{t}|x_{1:t-1}}\left[\phi_{k}\psi_{i}\right]\right] & =0\label{eq:sampleless_DRD}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The necessary statistics are then, for each sequence 
+\begin_inset Formula $x_{1:t-1}$
+\end_inset
+
+, 
+\begin_inset Formula $\E_{x_{t}|x_{1:t-1}}\left[\bphi(x_{t})\otimes\bphi(x_{t})\right]$
+\end_inset
+
+ and 
+\begin_inset Formula $\E_{z_{t},x_{t}|x_{1:t-1}}\left[\bphi(x_{t})\otimes\bpsi_{i}(z_{t})\right]$
+\end_inset
+
+, which are predictive quantities that depends on 
+\begin_inset Formula $\bmu_{Z_{t-1}|x_{t-1}}$
+\end_inset
+
+.
+ The goal now is then to compute these statistics using the generative model
+ without sampling.
+ As we show below, this is possible whenever the distribution can be reparameter
+ised and the feature function 
+\begin_inset Formula $\bphi$
+\end_inset
+
+ and 
+\begin_inset Formula $\bpsi$
+\end_inset
+
+ are conjugate with this reparameterisation:
+\begin_inset Formula 
+\begin{align*}
+x|y & =g\left(f(y),\zeta\right)\\
+\E_{p(x|y)}\left[\bphi_{s}(x)\right] & =\bphi_{c(s,g,y)}\left(f(y)\right)
+\end{align*}
+
+\end_inset
+
+for some standard form of noise 
+\begin_inset Formula $\zeta$
+\end_inset
+
+, feature function depends on a parameter 
+\begin_inset Formula $s$
+\end_inset
+
+ and a conjugate function 
+\begin_inset Formula $c(s,g,y)$
+\end_inset
+
+.
+ For example, if 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $p(x|y)$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ is Gaussian
+\begin_inset Formula 
+\[
+p(x|y)=\cN\left(f(y),\Sigma(y)\right)\Leftrightarrow\begin{cases}
+x|y=g\left(f(y),\zeta\right)=f(y)+\Sigma^{1/2}(y)\zeta\\
+\zeta\sim\cN(0,\mathit{\boldsymbol{I}})
+\end{cases}
+\]
+
+\end_inset
+
+then there are at least two feature functions that are conjugate with this
+ kind of parameterisation
+\end_layout
+
+\begin_layout Enumerate
+Gaussian function 
+\begin_inset Formula $\phi_{x_{0},\Gamma}(x):=\exp\left[-\left(x-x_{0}\right)\Gamma\left(x-x_{0}\right)\right]\implies\E_{p(x|y)}\left[\bphi_{x_{0},s}(x)\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Gaussian CDF nonlinearity on linear map 
+\begin_inset Formula 
+\begin{equation}
+\phi_{s}(x):=\sigma_{s}\left(\rho x+b\right):=\E_{z\sim\cN(0,s)}1(z\le\rho x+b)\implies c(s,g,y)=s+\rho^{\intercal}\Sigma(y)\rho\label{eq:gaussian_cdf_conjugate}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+because 
+\begin_inset Formula 
+\begin{align*}
+\E_{p(x|y)}\left[\phi_{w,b,s}(x)\right] & =\E_{\zeta}\left[\sigma_{s}\left(\rho\left[f(y)+\Sigma^{1/2}(y)\zeta\right]+b\right)\right]\\
+ & =\E_{\zeta}\left[\E_{z\sim\cN(0,s)}1\left\{ z\le\rho\left[f(y)+\Sigma^{1/2}(y)\zeta\right]+b\right\} \right]\\
+ & =\E_{\zeta,z}\left[1\left\{ z-\rho\Sigma^{1/2}(y)\zeta\le\rho\left[f(y)\right]+b\right\} \right]\\
+ & =\sigma_{s+\rho^{\intercal}\Sigma(y)\rho}\left[\rho f(y)+b\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Once we can find the conditional expectations in closed form, which will
+ be a function of only the conditioning variable 
+\begin_inset Formula $y$
+\end_inset
+
+, we can approximate the required expectations in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:sampleless_DRD"
+
+\end_inset
+
+ using DDC basis functions.
+ Next, we show concretely how this can be done when the noises in the transition
+ and observation processes and the DDC features.
+ 
+\begin_inset Formula 
+\begin{align*}
+z_{t}|z_{t-1} & =f(z_{t-1})+\Sigma_{z}(z_{t-1})\zeta_{z}\\
+x_{t}|z_{t} & =g(z_{t})+\Sigma_{x}(z_{t})\zeta_{x}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We also use the Gaussian CDF nonlinearity as 
+\begin_inset Formula $\bphi(x)=\left[\sigma_{s}(\rho_{m}x+b_{m})\right]_{m=1}^{M}$
+\end_inset
+
+.
+ To compute 
+\begin_inset Formula $\E_{x_{t}|x_{1:t-1}}\left[\bphi_{s}(x_{t})\otimes\bphi_{s}(x_{t})\right]$
+\end_inset
+
+, the required statistics in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:sampleless_DRD"
+
+\end_inset
+
+, let us first approximate the tensor product using linear function approximatio
+n 
+\begin_inset Formula $\cV_{\bphi\mapsto\bphi^{2}}:\ \bphi\left(x_{t}\right)\xmapsto{x_{t}}\bphi\left(x_{t}\right)\otimes\bphi\left(x_{t}\right)$
+\end_inset
+
+, so that 
+\begin_inset Formula 
+\begin{equation}
+\E_{x_{t}|x_{1:t-1}}\left[\bphi_{s}\left(x_{t}\right)\otimes\bphi_{s}\left(x_{t}\right)\right]\approx\cV_{\bphi\mapsto\bphi^{2}}\E_{x_{t}|x_{1:t-1}}\left[\bphi_{s}\left(x_{t}\right)\right]\label{eq:tensor_approx}
+\end{equation}
+
+\end_inset
+
+and we only need to compute, for 
+\begin_inset Formula $m$
+\end_inset
+
+'th dimension of 
+\begin_inset Formula $\bphi$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\E_{x_{t}|x_{1:t-1}}\left[\phi_{s}\left(x_{t}\right)\right] & =\E_{x_{t}|x_{1:t-1}}\left[\phi_{s}\left(x_{t}\right)\right]\\
+ & =\E_{z_{t}|x_{1:t-1}}\left[\E_{x_{t}|z_{t}}\left[\phi_{s}\left(x_{t}\right)\right]\right]\\
+ & =\E_{z_{t}|x_{1:t-1}}\left[\phi_{s+\rho_{m}^{\intercal}\Sigma(z_{t})\rho_{m}}\left(f(z_{t})\right)\right]
+\end{align*}
+
+\end_inset
+
+where we used
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:gaussian_cdf_conjugate"
+
+\end_inset
+
+ in the last line.
+ By further approximating term inside the expectation using DDC 
+\begin_inset Formula 
+\[
+\cU_{\bpsi_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}:\ \bpsi(z_{t})\xmapsto{z_{t}}\left[\phi_{s+\rho_{m}^{\intercal}\Sigma(z_{t})\rho_{m}}\left(g(z_{t})\right)\right]_{m=1}^{M}
+\]
+
+\end_inset
+
+we can carry on the same expectation evaluation
+\begin_inset Formula 
+\begin{align*}
+\E_{x_{t}|x_{1:t-1}}\left[\phi_{s}\left(x_{t}\right)\right] & \approx\E_{z_{t}|x_{1:t-1}}\left[\cU_{z_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\bpsi(z_{t})\right]\\
+ & =\cU_{z_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\E_{z_{t}|x_{1:t-1}}\left[\bpsi(z_{t})\right]\\
+ & =\cU_{z_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\E_{z_{t-1}|x_{1:t-1}}\left[\E_{z_{t}|z_{t-1}}\left[\bpsi(z_{t})\right]\right]\\
+ & \approx\cU_{z_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\E_{z_{t-1}|x_{1:t-1}}\left[\cU_{z_{t-1}\mapsto\E\left[\bpsi_{t}|z_{t-1}\right]}\bpsi\left(z_{t-1}\right)\right]\\
+ & =\cU_{\bpsi_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\cU_{\bpsi_{t-1}\mapsto\E\left[\bpsi_{t}|z_{t-1}\right]}\E_{z_{t-1}|x_{1:t-1}}\left[\bpsi\left(z_{t-1}\right)\right]\\
+ & =\cU_{\bpsi_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\cU_{\bpsi_{t-1}\mapsto\E\left[\bpsi_{t}|z_{t-1}\right]}\bmu_{Z_{t-1}|x_{1:t-1}}
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula 
+\[
+\cU_{\bpsi_{t-1}\mapsto\E\left[\bpsi_{t-1}|z_{t-1}\right]}:\ \bpsi(z_{t-1})\xmapsto{z_{t-1}}\left[\phi_{s+\rho_{m}^{\intercal}\Sigma(z_{t-1})\rho_{m}}\left(f(z_{t-1})\right)\right]_{m=1}^{M}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+combine with 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:tensor_approx"
+
+\end_inset
+
+, we have 
+\begin_inset Formula 
+\[
+\E_{x_{t}|x_{1:t-1}}\left[\bphi_{s}\left(x_{t}\right)\otimes\bphi_{s}\left(x_{t}\right)\right]\approx\cV_{\bphi\mapsto\bphi^{2}}\cU_{\bpsi_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\cU_{\bpsi_{t-1}\mapsto\E\left[\bpsi_{t}|z_{t-1}\right]}\bmu_{Z_{t-1}|x_{1:t-1}}
+\]
+
+\end_inset
+
+In the above, all the function approximations are noiseless, and the tensor
+ expansion is done in the last step.
+ To compute the second statistics in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:sampleless_DRD"
+
+\end_inset
+
+, this expansion happens early but follows the same procedure.
+ 
+\begin_inset Formula 
+\[
+\E_{z_{t},x_{t}|x_{1:t-1}}\left[\bphi(x_{t})\otimes\bpsi_{i}(z_{t})\right]\approx\cU_{\bpsi_{t}\mapsto\E\left[\bphi_{t}|z_{t}\right]}\cV_{\bpsi\mapsto\bpsi^{2}}\cU_{\bpsi_{t-1}\mapsto\E\left[\bpsi_{t}|z_{t-1}\right]}\bmu_{Z_{t-1}|x_{1:t-1}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These two needs to be evaluated for each history 
+\begin_inset Formula $x_{1:t}$
+\end_inset
+
+ which are plugged into 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:sampleless_DRD"
+
+\end_inset
+
+.
+ Note that all the operators can be trained on a grid of data points instead
+ from samples drawn any distributions, and can be reused for all sequences.
+ On could perform closed form evaluation of the filtering operator, or perform
+ gradient updates.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2740,9 +3085,9 @@ Feature-gradient regression
 \begin_inset Formula 
 \begin{align*}
 \E\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),T\left(Z_{t}\right)\right\rangle \right] & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),\E_{Z_{t}|Z_{t-1},x_{t}}\left[T\left(Z_{t}\right)\right]\right\rangle \right]\\
- & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),\left\langle \cU_{z_{t-1},x_{t}\mapsto T}\bphi,(x_{t})\otimes\bpsi(z_{t-1})\right\rangle \right\rangle \right]\\
+ & \approx\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),\left\langle \cU_{z_{t-1},x_{t}\mapsto T}\bphi,(x_{t})\otimes\bpsi(z_{t-1})\right\rangle \right\rangle \right]\\
  & =\left\langle \E_{Z_{t-1}|x_{1:t}}\left[\nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right)\otimes\bpsi(z_{t-1})\right],\left\langle \cU_{z_{t-1},x_{t}\mapsto T},\bphi(x_{t})\right\rangle \right\rangle \\
- & =\left\langle \left\langle \cU_{z_{t-1}\mapsto\otimes},\bmu_{Z_{t-1}|x_{1:t}}\right\rangle ,\left\langle \cU_{z_{t-1},x_{t}\mapsto T},\bphi(x_{t})\right\rangle \right\rangle 
+ & \approx\left\langle \left\langle \cU_{z_{t-1}\mapsto\otimes},\bmu_{Z_{t-1}|x_{1:t}}\right\rangle ,\left\langle \cU_{z_{t-1},x_{t}\mapsto T},\bphi(x_{t})\right\rangle \right\rangle 
 \end{align*}
 
 \end_inset
@@ -2751,7 +3096,7 @@ where
 \begin_inset Formula 
 \begin{align*}
 \cU_{z_{t-1}\mapsto\otimes}: & \ \bpsi(z_{t-1})\xmapsto{z_{t-1}}\nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right)\otimes\bpsi(z_{t-1})\\
-\cU_{z_{t-1},x_{t}\mapsto T}: & \ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}T(z_{t})
+\cW_{z_{t-1},x_{t}\mapsto T}: & \ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}T(z_{t})
 \end{align*}
 
 \end_inset
@@ -2763,7 +3108,7 @@ Two additional regressions are required, in which the regressor of
  is trained to predict from feature to an outer product of this feature
  and gradients, and has deterministic target.
  On the other hand, the regressor of 
-\begin_inset Formula $\cU_{z_{t-1},x_{t}\mapsto T}$
+\begin_inset Formula $\cW_{z_{t-1},x_{t}\mapsto T}$
 \end_inset
 
  involves only 
@@ -2778,8 +3123,8 @@ Direct regression
 \begin_inset Formula 
 \begin{align*}
 \E\left[\left\langle \nabla_{\theta_{f}}g\left(Z_{t-1},\theta_{f}\right),T\left(Z_{t}\right)\right\rangle \right] & =\E_{Z_{t-1}|x_{1:t}}\left[\E_{Z_{t}|Z_{t-1},x_{t}}\left[\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle \right]\right]\\
- & =\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \cU_{z_{t-1},x_{t}\mapsto\nabla T},\bpsi(z_{t-1})\otimes\bphi(x_{t})\right\rangle \right]\\
- & =\left\langle \cU_{z_{t-1},x_{t}\mapsto\nabla T},\bmu_{Z_{t-1}|x_{1:t}}\otimes\bphi(x_{t})\right\rangle 
+ & \approx\E_{Z_{t-1}|x_{1:t}}\left[\left\langle \cW_{z_{t-1},x_{t}\mapsto\nabla T},\bpsi(z_{t-1})\otimes\bphi(x_{t})\right\rangle \right]\\
+ & =\left\langle \cW_{z_{t-1},x_{t}\mapsto\nabla T},\bmu_{Z_{t-1}|x_{1:t}}\otimes\bphi(x_{t})\right\rangle 
 \end{align*}
 
 \end_inset
@@ -2789,7 +3134,7 @@ Direct regression
 where 
 \begin_inset Formula 
 \[
-\cU_{z_{t-1},x_{t}\mapsto\nabla T}:\ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{z_{t-1},z_{t,}x_{t}}\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle 
+\cW_{z_{t-1},x_{t}\mapsto\nabla T}:\ \bpsi(z_{t-1}),\bphi(x_{t})\xmapsto{p(z_{t-1},z_{t,}x_{t})}\left\langle \nabla_{\theta_{f}}g\left(z_{t-1},\theta_{f}\right),T\left(z_{t}\right)\right\rangle 
 \]
 
 \end_inset
@@ -2907,7 +3252,7 @@ The smoothing operator is a mapping that is formed using filtering DDC
 \begin_inset Formula 
 \begin{align*}
 \bmu_{Z_{t}|x_{1:T}} & =\left\langle \cW,\bmu{}_{Z_{t}|x_{1:t}}\otimes\bmu{}_{Z_{t}|x_{1:T}}\right\rangle \\
-\cW: & \text{ \ }\bmu{}_{Z_{t}|x_{1:t}}\otimes\bpsi(z_{t+1})\xmapsto{x_{1:t},z_{t-1}}\bpsi(z_{t})
+\cW: & \text{ \ }\bmu{}_{Z_{t}|x_{1:t}}\otimes\bpsi(z_{t+1})\xmapsto{p(x_{1:t},z_{t-1})}\bpsi(z_{t})
 \end{align*}
 
 \end_inset
@@ -3013,10 +3358,6 @@ The first regression is DRD regression with a noisy gradient depending on
 
 \begin_layout Subsection
 Hierarchical observation distribution
-\end_layout
-
-\begin_layout Standard
-
 \end_layout
 
 \begin_layout Subsection
