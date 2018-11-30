@@ -1,0 +1,250 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\newcommand{\bx}{\mathbf{x}}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+A question on minimum squared error regression
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $p(X,Y)$
+\end_inset
+
+ be a probability distribution supported on 
+\begin_inset Formula $(\mathbb{R}^{D_{x}},\mathbb{R}^{D_{y}})$
+\end_inset
+
+.
+ Given a finite set of samples drawn from 
+\begin_inset Formula $p(X,Y)$
+\end_inset
+
+, 
+\begin_inset Formula $\left\{ x_{n},y_{n}\right\} _{n=1}^{N}$
+\end_inset
+
+, and for smooth vector-valued functions 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\phi(\cdot):\quad\mathbb{R}^{D_{x}}\to\mathbb{R}^{M_{x}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f(\cdot,\cdot):\quad(\mathbb{R}^{D_{x}},\mathbb{R}^{D_{y}})\to\mathbb{R}^{P}
+\]
+
+\end_inset
+
+we would like to find a linear regressor 
+\begin_inset Formula $\mathcal{W}_{N}:\mathbb{R}^{M_{x}}\to\mathbb{R}^{P}$
+\end_inset
+
+ that minimizes the squared error of predicting 
+\begin_inset Formula $f(x_{n},y_{n})$
+\end_inset
+
+ given 
+\begin_inset Formula $\phi(x_{n})$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\mathcal{W}_{N}:=\arg\min_{\mathcal{W}}\sum_{n=1}^{N}\left\Vert \mathcal{W}\phi(x_{n})-f(x_{n},y_{n})\right\Vert _{2}^{2}
+\]
+
+\end_inset
+
+As 
+\begin_inset Formula $N$
+\end_inset
+
+ increases, how well does 
+\begin_inset Formula $\mathcal{W}_{N}$
+\end_inset
+
+ approximate the 
+\begin_inset Quotes eld
+\end_inset
+
+conditional mean
+\begin_inset Quotes erd
+\end_inset
+
+ operator that maps 
+\begin_inset Formula $\phi(x^{*})$
+\end_inset
+
+ to 
+\begin_inset Formula $\mathbb{E}_{p(Y|X=x^{*})}\left[f(x^{*},Y)\right]$
+\end_inset
+
+ for some 
+\begin_inset Formula $x^{*}\in\mathbb{R}^{D_{x}}$
+\end_inset
+
+, where 
+\begin_inset Formula $p(Y|X)$
+\end_inset
+
+ is the conditional distribution implied by 
+\begin_inset Formula $p(X,Y)$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Standard
+In particular, think of 
+\begin_inset Formula $\phi(\cdot)$
+\end_inset
+
+ as the output of a single-layer neural network, then 
+\begin_inset Formula $\mathcal{W}\phi(x_{n})$
+\end_inset
+
+ is a two-layer neural network where the last layer is linear.
+ Also, 
+\begin_inset Formula $f(x,y)=\nabla_{\theta}p_{\theta}(x,y)$
+\end_inset
+
+ where now the joint distribuion is parameterized by 
+\begin_inset Formula $P$
+\end_inset
+
+-dimensional 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ We can assume that 
+\begin_inset Formula $\phi(\cdot)$
+\end_inset
+
+ forms a basis set of a universal function approximator (a set of sigmoidal
+ functions and 
+\begin_inset Formula $\phi(\cdot):\quad\mathbb{R}^{D_{x}}\to(0,1)^{M_{x}}$
+\end_inset
+
+).
+ It is likely that the answer will depend on the relative sizes of 
+\begin_inset Formula $D_{x},D_{y},M_{x}$
+\end_inset
+
+ and 
+\begin_inset Formula $P$
+\end_inset
+
+, among other things.
+\end_layout
+
+\begin_layout Paragraph*
+More background: 
+\end_layout
+
+\begin_layout Standard
+This question is related to an extention of the Helmholdz Machine (Hinton
+ et al, 1995, Science) which my group is currently working on.
+ Any idea to this question provides steps towards theoretical gaurantees
+ on our approach of learning a generative model whose simpliest realization
+ takes the factorization 
+\begin_inset Formula $p(X,Y)=p(X)p(Y|X)$
+\end_inset
+
+, given only observations on 
+\begin_inset Formula $X$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Thank you.
+\end_layout
+
+\end_body
+\end_document
