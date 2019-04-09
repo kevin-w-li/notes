@@ -78,6 +78,10 @@
 Literature review
 \end_layout
 
+\begin_layout Subsection
+Neural algorithms
+\end_layout
+
 \begin_layout Standard
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -167,6 +171,63 @@ description "neural particle filter (Kutschireiter et al., 2017)"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+General inference algorithms
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset FormulaMacro
+\newcommand{\w}{\mathbf{w}}
+{\mathbf{w}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\x}{\mathbf{x}}
+{\mathbf{x}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\y}{\mathbf{y}}
+{\mathbf{y}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\z}{\mathbf{z}}
+{\mathbf{z}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MarinoEtAl2018"
+
+\end_inset
+
+ studied a more general non-Markovian state-space model the joint distribution
+ factorises as 
+\begin_inset Formula $p(\x_{\le T},\z_{\le T}):=\prod_{t=1}^{T}p\left(\x_{t},\z_{t}|\x_{<t},\z_{<t}\right)=\prod_{t=1}^{T}p\left(\x_{t}|\x_{<t},\z_{\le t}\right)p(\z_{t}|\x_{<t},\z_{<t})$
+\end_inset
+
+.
+ Though it complicates full inference, the authors realise that the free
+ energy, when factorised over time, can be optimized for each time step
+ in the forward direction, permitting online filtering and learning.
+ In addition, at each time step, inference involves an inner loop of amortized
+ inference optimization that takes the posterior of previous time step as
+ prior and performs gradient updates on the free energy.
+ 
+\end_layout
+
+\begin_layout Standard
 \begin_inset CommandInset nomencl_print
 LatexCommand printnomenclature
 set_width "auto"
