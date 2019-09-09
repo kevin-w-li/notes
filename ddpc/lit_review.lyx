@@ -20,10 +20,13 @@
 
 % add your glossaries entries
 \newglossaryentry{linux}{name={linux},description={an open-source unix implementation}}
+\newglossaryentry{SSM}{name={SSM},description={State Space Model}}
 \newglossaryentry{LGSSM}{name={LGSSM},description={Linear Gaussian State Space Model}}
 \newglossaryentry{NPF}{name={NPF}, description={Neural Particle Filter by Kutschireiter et al. (2017)}}
 \newglossaryentry{PPC}{name={PPC}, description={Probabilistic population code}}
 \newglossaryentry{EFH}{name={EFH}, description={Exponential family harmonium}}
+\newglossaryentry{rEFH}{name={rEFH}, description={Recurrent Exponential family harmonium for filtering by Makin et al. (2015)}}
+\newglossaryentry{PPC-BR-EFH}{name={PPC-BR-EFH}, description={Probabilistic population code Bayes rule with exponential family harmonium by Sokoloski (2017)}}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -103,7 +106,7 @@
 \begin_layout Standard
 \begin_inset FormulaMacro
 \newcommand{\vfont}[1]{\mathbf{#1}}
-{\boldsymbol{#1}}
+{\mathbf{#1}}
 \end_inset
 
 
@@ -138,6 +141,24 @@
 
 \begin_layout Standard
 \begin_inset FormulaMacro
+\newcommand{\vw}{\vfont w}
+{\vfont w}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\vomega}{\boldsymbol{\omega}}
+{\boldsymbol{\omega}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
 \newcommand{\vx}{\vfont x}
 {\vfont x}
 \end_inset
@@ -149,6 +170,15 @@
 \begin_inset FormulaMacro
 \newcommand{\vz}{\vfont z}
 {\vfont z}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\vs}{\vfont s}
+{\vfont s}
 \end_inset
 
 
@@ -183,6 +213,24 @@
 
 \begin_layout Standard
 \begin_inset FormulaMacro
+\newcommand{\vf}{\vfont f}
+{\vfont f}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\vg}{\vfont g}
+{\vfont g}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
 \renewcommand{\vx}{\vfont x}
 {\vfont x}
 \end_inset
@@ -201,6 +249,15 @@
 
 \begin_layout Standard
 \begin_inset FormulaMacro
+\newcommand{\vR}{\rvfont R}
+{\rvfont R}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
 \renewcommand{\vx}{\vfont x}
 {\vfont x}
 \end_inset
@@ -212,6 +269,15 @@
 \begin_inset FormulaMacro
 \newcommand{\vpsi}{\boldsymbol{\psi}}
 {\boldsymbol{\psi}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\vzeta}{\boldsymbol{\zeta}}
+{\boldsymbol{\zeta}}
 \end_inset
 
 
@@ -248,6 +314,15 @@
 \begin_inset FormulaMacro
 \newcommand{\mM}{\mfont M}
 {\mfont M}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\mSigma}{\mfont{\Sigma}}
+{\mfont{\Sigma}}
 \end_inset
 
 
@@ -297,12 +372,420 @@
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\sigm}{\operatorname{sigm}}
+{\textrm{sigm}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\Pois}{\operatorname{Pois}}
+{\textrm{Pois}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\Bern}{\operatorname{Bern}}
+{\textrm{Bern}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\KL}{\operatorname{KL}}
+{\textrm{KL}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\NN}{\operatorname{NN}}
+{\textrm{NN}}
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Literature review
 \end_layout
 
 \begin_layout Subsection
-Neural algorithms
+Variational learning
+\end_layout
+
+\begin_layout Standard
+Consider a generative model described by a directed graph 
+\begin_inset Formula $\vZ_{0}\rightarrow\vZ_{2}\rightarrow\cdots\rightarrow\vZ_{L}$
+\end_inset
+
+, where 
+\begin_inset Formula $\vZ_{0}\sim p_{\theta_{0}}\left(\vz_{0}\right)$
+\end_inset
+
+ and each arrow suggests a parametric conditional distribution 
+\begin_inset Formula $p_{\theta_{l}}(\vZ_{l}|\vZ_{l-1}),l\in[1\dots,L]$
+\end_inset
+
+.
+ In addition, denote 
+\begin_inset Formula $\vX=\vZ_{L}$
+\end_inset
+
+, and 
+\begin_inset Formula $\vZ=\left\{ \vZ_{0},\cdots\vZ_{L-1}\right\} $
+\end_inset
+
+.
+ The goal is to fit the parameters 
+\begin_inset Formula $\theta=\{\theta_{l}\}_{l=1}^{L}$
+\end_inset
+
+ in order to maximize the likelihood of some observed data 
+\begin_inset Formula $\vx=\left\{ \vx_{n}\right\} _{n=1}^{N}\sim\Pi(\vx)$
+\end_inset
+
+ i.i.d from some unknown true distribution 
+\begin_inset Formula $\Pi(\vx)$
+\end_inset
+
+.
+ Although the set of conditional distributions implies a normalized joint
+ distribution 
+\begin_inset Formula $p_{\theta}(\vZ,\vX)=p_{\theta_{0}}\left(\vZ_{0}\right)\prod_{l=1}^{L}p_{\theta_{l}}\left(\vZ_{l}|\vZ_{l-1}\right)$
+\end_inset
+
+ , evaluating the likelihood of data 
+\begin_inset Formula $\mathcal{L}(\theta):=\log p_{\theta}(\vx)$
+\end_inset
+
+ involves the sum 
+\begin_inset Formula $\sum_{\vZ}p_{\theta}(\vZ,\vX)$
+\end_inset
+
+, which is computationally intractable.
+ Instead, we evaluate the free energy
+\begin_inset Formula 
+\begin{align*}
+\mathcal{F}(\theta,q): & =\E{q(\vZ|\vX)}{\log p_{\theta}(\vZ,\vX)-\log(q(\vZ|\vX))}\\
+ & =\mathcal{L}(\theta)-\KL\left[q(\vZ|\vX)\|p(\vZ\|\vX)\right]\\
+ & =\le\mathcal{L}(\theta)
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $q(\vZ|\vX)$
+\end_inset
+
+ is the variational distribution that can depend on 
+\begin_inset Formula $\vX$
+\end_inset
+
+.
+ It can be shown that the bound is tight if and only if 
+\begin_inset Formula $\KL\left[\log q\left(\vZ|\vX\right)\|\log p_{\theta}\left(\vZ|\vX\right)\right]=0$
+\end_inset
+
+.
+ Thus, maximizing 
+\begin_inset Formula $\mathcal{F}(\theta,q)$
+\end_inset
+
+ involves an iterative process that in each iteration alternates between
+\end_layout
+
+\begin_layout Enumerate
+(M-step) maximizing 
+\begin_inset Formula $\E{q(\vZ|\vX)}{\log p_{\theta}(\vZ,\vX))}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+(E-step) minimizing 
+\begin_inset Formula $\KL\left[\log q\left(\vZ|\vX\right)\|\log p_{\theta}\left(\vZ|\vX\right)\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By defining the joint distribution 
+\begin_inset Formula $q_{\phi}(\vZ,\vX):=q_{\phi}(\vZ|\vX)\Pi(\vX)$
+\end_inset
+
+, the M-step is also equivalent to
+\begin_inset Formula 
+\begin{equation}
+\min_{\theta}\KL\left[q_{\phi}(\vZ,\vX)\|p_{\theta}(\vZ,\vX)\right]\label{eq:M_step_joint_KL}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Helmholtz machine
+\end_layout
+
+\begin_layout Standard
+The wake-sleep algorithm by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "HintonEtAl1995"
+
+\end_inset
+
+, designed for the classical Helmholtz machine proposed by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "DayanEtAl1995"
+
+\end_inset
+
+, performs the M-step by samples from an approximate posterior 
+\begin_inset Formula $q_{\phi}(\vZ|\vX)$
+\end_inset
+
+, and the posterior samples are obtained from an inferential model using
+ fixed inferential parameters 
+\begin_inset Formula $\phi$
+\end_inset
+
+.
+ Because the generative model is Markov, the approximate (and true) posteriors
+ factorizes
+\begin_inset Formula 
+\[
+q_{\phi}(\vZ|\vX)=\prod_{l=0}^{L-1}q_{\phi_{l}}(\vZ_{l}|\vZ_{l+1})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus, posterior samples can be obtained by a sequence of conditional sampling:
+ given an input 
+\begin_inset Formula $\vx$
+\end_inset
+
+, draws 
+\begin_inset Formula $\vZ_{L-1}$
+\end_inset
+
+ given 
+\begin_inset Formula $\vx$
+\end_inset
+
+, and then draws 
+\begin_inset Formula $\vZ_{L-2}$
+\end_inset
+
+ conditioned on each a posterior sample 
+\begin_inset Formula $\vz_{L-1}|\vx$
+\end_inset
+
+, and so on.
+ Each factor 
+\begin_inset Formula $q_{\phi_{l}}(\vZ_{l}|\vZ_{l+1})$
+\end_inset
+
+ is implemented as a distribution with tractable sampling routine and flexible
+ parameterisation, such as an exponential family distribution with parameters
+ that are output of neural networks.
+ For example, if 
+\begin_inset Formula $\vZ$
+\end_inset
+
+ is binary, then we may choose conditionally independent posterior 
+\begin_inset Formula $q_{\phi_{l}}(\vZ_{l}|\vz_{l+1})=\prod_{d}q_{\phi_{l,d}}(Z_{l,d}|\vz_{l+1})$
+\end_inset
+
+, 
+\begin_inset Formula $q_{\phi_{l}}(Z_{l,d}|\vz_{l+1})=\Bern(Z_{l,d}|\NN(\vz_{l+1};\phi_{l,d}))$
+\end_inset
+
+, which in addition assumes conditional independence.
+ To train 
+\begin_inset Formula $\phi_{l}$
+\end_inset
+
+, generative samples 
+\begin_inset Formula $\left\{ \vz_{l},\vz_{l+1}\right\} $
+\end_inset
+
+are drawn from 
+\begin_inset Formula $p_{\theta}(\vZ_{l},\vZ_{l+1})$
+\end_inset
+
+ by ancestral sampling, and the objective is to maximize the likelihood
+ of 
+\begin_inset Formula $\vz_{l}$
+\end_inset
+
+ given 
+\begin_inset Formula $\vz_{l+1}$
+\end_inset
+
+, averaged over different 
+\begin_inset Formula $\vz_{l+1}$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\max_{\phi_{l}}\E{p_{\theta}(\vZ_{l},\vZ_{l+1})}{\log q_{\phi_{l}}(\vZ_{l}|\vZ_{l+1})}
+\]
+
+\end_inset
+
+When the same procedure is used for all layers, it can be shown that this
+ process is equivalent to minimizing the average reverse KL divergence 
+\begin_inset Formula 
+\[
+\min_{\phi}\E{p_{\theta}(\vX)}{\KL\left[p_{\theta}(\vZ|\vX)\|q_{\phi}(\vZ|\vX)\right]}
+\]
+
+\end_inset
+
+Or equivalently, by defining the joint distribution 
+\begin_inset Formula $q_{\phi}(\vZ,\vX):=q_{\phi}(\vZ|\vX)\Pi(\vX)$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\min_{\phi}\KL\left[p_{\theta}(\vZ,\vX)\|q_{\phi}(\vZ,\vX)\right]
+\]
+
+\end_inset
+
+This step of using generated sample to train the inferential model is known
+ as the 
+\begin_inset Quotes eld
+\end_inset
+
+sleep phase
+\begin_inset Quotes erd
+\end_inset
+
+ .
+ Note that the objective been minimized here is different from the KL in
+ the usual E-step.
+\end_layout
+
+\begin_layout Standard
+In the 
+\begin_inset Quotes eld
+\end_inset
+
+wake phase
+\begin_inset Quotes erd
+\end_inset
+
+, the inferential model takes real observations 
+\begin_inset Formula $\vX\sim\Pi(\vx)$
+\end_inset
+
+ and produces posterior samples from 
+\begin_inset Formula $q_{\phi}(\vZ|\vX)$
+\end_inset
+
+.
+ These samples are used to perform the usual M-step, which corresponds to
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:M_step_joint_KL"
+
+\end_inset
+
+.
+ Therefore, the wake-sleep algorithm does not optimize a consistent divergence,
+ although if 
+\begin_inset Formula $p_{\theta}(\vZ,\vX)=q_{\phi}(\vZ,\vX)$
+\end_inset
+
+, both losses are at global minimum 0.
+\end_layout
+
+\begin_layout Standard
+Particular instances of Helmholtz machine are biologically attractive.
+ When 
+\begin_inset Formula $p_{\theta_{l}}(\vZ_{l}|\vZ_{l-1})$
+\end_inset
+
+ and 
+\begin_inset Formula $q_{\phi_{l}}(\vZ_{l}|\vZ_{l+1})$
+\end_inset
+
+ is in the exponential family, conditionally independent, and each factor
+ is parameterized by its conditional mean in the form of the canonical link
+ function on 
+\begin_inset Formula $\vz_{l+1}$
+\end_inset
+
+ (a generalized linear model), then the gradient of 
+\begin_inset Formula $\E{q(\vZ|\vX)}{\log p_{\theta}(\vZ,\vX))}$
+\end_inset
+
+ w.r.t 
+\begin_inset Formula $\theta$
+\end_inset
+
+ and the gradient of 
+\begin_inset Formula $\E{p(\vZ,\vX)}{\log q_{\phi}(\vZ|\vX)}$
+\end_inset
+
+ w.r.t 
+\begin_inset Formula $\phi$
+\end_inset
+
+ only depend on local samples, so learning in the generative and inferential
+ model can be done using the biologically plausible learning rule.
+ This is the case for the sigmoid belief net 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+ in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "DayanEtAl1995"
+
+\end_inset
+
+ and generalisations in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "DayanHinton1996"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Neural filtering algorithms
 \end_layout
 
 \begin_layout Standard
@@ -362,25 +845,160 @@ key "KutschireiterEtAl2017"
 
 \end_inset
 
- follows the sampling hypothesis and is an ansatz derived from the filtering
- equation 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Kushner1964"
+ is a sample-based filtering algorithm for continuous time 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+gls{SSM}
+\end_layout
 
 \end_inset
 
- for continuous-time SDE.
- Each particle evolves according to dynamics which depends on the prediction
- error similar to the dynamics of the posterior mean in the Kalman filter,
- with the gain computed using the ensemble of particles.
- By avoiding the need for particle weights as in common particle filters,
+:
+\begin_inset Formula 
+\begin{align*}
+d\vz_{t} & =\vf(\vz_{t})+\mSigma_{z}^{1/2}d\vomega_{t}^{(z)}\\
+d\vx_{t} & =\vg(\vz_{t})+\mSigma_{x}^{1/2}d\vomega_{t}^{(x)}
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $\vomega_{t}^{(\cdot)}$
+\end_inset
+
+ is the standard Brownian motion.
+ The filtered posterior is represented by a set of unweighted samples 
+\begin_inset Formula $\left\{ \vz_{t}^{(s)}\right\} _{s}$
+\end_inset
+
+, and the evolution of each particle is motivated by the Kushner equation
+ given below, denoting 
+\begin_inset Formula $\E{p(\vz_{t}|\vx_{1:t})}{\cdot}$
+\end_inset
+
+ by 
+\begin_inset Formula $\langle\cdot\rangle$
+\end_inset
+
+ and let 
+\begin_inset Formula $\phi(\cdot)$
+\end_inset
+
+ be an arbitrary function on 
+\begin_inset Formula $\vz$
+\end_inset
+
+ :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+d\langle\phi\rangle=\langle\vf\rangle dt+\text{cov}(\phi,\vg)\mSigma_{x}^{-1}\left(d\vx_{t}-\left\langle \vg\right\rangle dt\right)\label{eq:NPF_kushner}
+\end{equation}
+
+\end_inset
+
+.
+ When 
+\begin_inset Formula $\vg$
+\end_inset
+
+ is linear and 
+\begin_inset Formula $\phi(\vz)=\vz$
+\end_inset
+
+, it recovers the SDE governing the posterior mean in continuous-time Kalman
+ filtering.
+ Although this equation is exact, we still do not know the higher moments
+ 
+\begin_inset Formula $\text{cov}(\phi,\vg)$
+\end_inset
+
+ and thus direct implementation is impossible (closure problem).
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{NPF}
+\end_layout
+
+\end_inset
+
+ proposes to remedy this issue with two design choices.
+ First, each particle 
+\begin_inset Formula $\vz_{t}^{(s)}$
+\end_inset
+
+ evolves according to 
+\begin_inset Formula 
+\begin{equation}
+d\vz_{t}^{(s)}=\vf(\vz_{t}^{(s)})dt+\mW_{t}\left(d\vx_{t}-\left\langle \vg\right\rangle dt\right)+\mSigma_{x}^{1/2}d\vomega_{t}^{(z)}\label{eq:NPF_sample_evolution}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\mW_{t}=\hat{\text{cov}}(\vz,\vg)\mSigma_{x}^{-1}$
+\end_inset
+
+ with 
+\begin_inset Formula $\hat{\text{cov}}(\vz,\vg)$
+\end_inset
+
+ begin the empirically estimated using all samples.
+ We can see 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:NPF_sample_evolution"
+
+\end_inset
+
+ is similar to 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:NPF_kushner"
+
+\end_inset
+
+ when 
+\begin_inset Formula $\phi(\vz)=\vz$
+\end_inset
+
+ except for the last noise term.
+ Therefore, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{NPF}
+\end_layout
+
+\end_inset
+
+ tries to avoid the closure problem by employing a population of samples
+ that follow the trajectory for the mean, replacing 
+\begin_inset Formula $\text{cov}(\vz,\vg)$
+\end_inset
+
+ with the sample estimate.
+ 
+\end_layout
+
+\begin_layout Standard
+By avoiding the need for particle weights as in common particle filters,
  it is made biologically plausible and a neural circuits implementation
  was proposed.
- It is interesting that the evolution of each particle according to the
- mean resulted in good posterior estimates collectively for the ensemble.
- In their experiments, inference was shown to estimate the posterior mean
- well.
  By training the network weights using maximum likelihood, the model was
  able to learn the parameters of the observations density.
  The latent dynamics was not considered as joint samples of adjacent time
@@ -406,9 +1024,70 @@ curse of dimensionality
 \begin_inset Quotes erd
 \end_inset
 
-, but its latent dynamics were independent, although the linear mixing of
- observation may create correlation.
+, requires much fewer particles than the conventional bootstrap particle
+ filter for higher-dimensional problems.
+\end_layout
+
+\begin_layout Standard
+It remains a question as to why the 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:NPF_sample_evolution"
+
+\end_inset
+
+ worked at all, as it is not obvious why (approximately) following the trajector
+y of the mean allows the particles to be distributed correctly.
+ Intuitively, the first term on the RHS of 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:NPF_sample_evolution"
+
+\end_inset
+
+ is the dynamics contribution, the second term is the correction from observatio
+n.
  
+\begin_inset Formula $\mW_{t}$
+\end_inset
+
+ would be the correct gain if 
+\begin_inset Formula $\hat{\text{cov}}(\vz,\vg)$
+\end_inset
+
+ were exact, and the amount of correction is determined by the posterior
+ variance.
+ If the third noise term is absent and the particles are initially correctly
+ distributed, then all the particles would move closer to the mean after
+ infinitesimal amount of filtering time, and 
+\begin_inset Formula $\hat{\text{cov}}(\vz,\vg)$
+\end_inset
+
+ is then an underestimate of the true covariance, resulting in a smaller
+ correction for future time.
+ Since there is a noise term, 
+\begin_inset Formula $\left\{ \vz_{t}^{(s)}\right\} _{s}$
+\end_inset
+
+ are pushed away from the mean which increases 
+\begin_inset Formula $\text{cov}(\phi,\vg)$
+\end_inset
+
+ and hence the correction.
+ The correct amount of 
+\begin_inset Quotes eld
+\end_inset
+
+push
+\begin_inset Quotes erd
+\end_inset
+
+ is the uncertainty induced by data and likely correlated, reflecting explaining
+-away, instead of the independent prior noise.
+ Thus, it may be the case that the full distribution is different from the
+ true posterior, but the posterior mean estimated from these particles are
+ close to the correct value.
+ The authors did not show full distribution of the posteriors.
 \end_layout
 
 \begin_layout Subsubsection
@@ -424,7 +1103,62 @@ gls{PPC}
 
 \end_inset
 
- and recurrent 
+ implementation of the Kalman filter 
+\end_layout
+
+\begin_layout Subsubsection
+Recurrent exponential family harmonium (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+Hard-wiring the neurons to implement/approximate optimal statistical computation
+s, as done in some 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ literature, 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "BeckEtAl2007,BeckEtAl2011"
+
+\end_inset
+
+, is not biologically plausible, as the brain does not receive such fine-grained
+ supervisions to construct the wiring.
+ 
+\end_layout
+
+\begin_layout Standard
+Viewing inference and learning as a density estimation operation, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MakinEtAl2013"
+
+\end_inset
+
+ proposed to use the exponential family harmonium 
 \begin_inset ERT
 status open
 
@@ -437,10 +1171,382 @@ gls{EFH}
 
 \end_inset
 
+, a restricted Boltzmann machine-like fully-connected graphical model, to
+ implement a 
+\emph on
+model
+\emph default
+ joint distribution of observation 
+\begin_inset Formula $\vX$
+\end_inset
 
+ and latent code 
+\begin_inset Formula $\vR$
+\end_inset
+
+, 
+\begin_inset Formula $q(\vx,\vr)$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{align*}
+q(\vr|\vx) & =\prod_{i=1}^{\Dim R}\Bern\left[r_{i}|\sigm\left(\mM_{RX}\vx+\vtheta_{R}\right)\right]\\
+q(\vx|\vr) & =\prod_{i=1}^{\Dim X}\Pois\left[x_{i}|\exp\left(\mM_{RX}^{\intercal}\vr+\vtheta_{X}\right)\right]
+\end{align*}
+
+\end_inset
+
+The choices of 
+\begin_inset Formula $\sigm$
+\end_inset
+
+ and 
+\begin_inset Formula $\exp$
+\end_inset
+
+ are the canonical link functions for Bernoulli and Poisson, respectively,
+ that allow modulation of the natural parameters through linear transformation
+ of the conditioning variable.
+ The latent code is a sample drawn from 
+\begin_inset Formula $\vR|\vx$
+\end_inset
+
+, or just its mean rate.
+ In fact, the observation 
+\begin_inset Formula $\vX$
+\end_inset
+
+ is spike count generated by Poisson neurons with Gaussian tuning functions
+ over some unobserved variable 
+\begin_inset Formula $\vZ$
+\end_inset
+
+, yielding a 
+\emph on
+generative
+\emph default
+ joint
+\emph on
+ 
+\emph default
+distribution 
+\begin_inset Formula $p(\vz,\vx)$
+\end_inset
+
+.
+ Learning entails maximizing the spike count log likelihood 
+\begin_inset Formula $\E{p(\vx)}{\log q(\vx)}$
+\end_inset
+
+ using the standard contrastive divergence for 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+, similar to one more commonly known for training restricted Boltzmann machines.
+ 
+\end_layout
+
+\begin_layout Standard
+Now it is clear that 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ is a density estimation approach to model 
+\begin_inset Formula $p(\vx)$
+\end_inset
+
+.
+ Different from other density estimation approach to model natural stimuli
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Lewicki2002,LewickiOlshausen1999,LewickiSejnowski2000"
+
+\end_inset
+
+, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ is a fully connected graph rather than a directed graph, and inference
+ produces conditionally independent 
+\emph on
+code
+\emph default
+ 
+\begin_inset Formula $\vr$
+\end_inset
+
+ rather than the latent variables 
+\begin_inset Formula $\vr$
+\end_inset
+
+.
+ However, the latent code 
+\begin_inset Formula $\vr$
+\end_inset
+
+ is some abstract feature to describe 
+\begin_inset Formula $\vx$
+\end_inset
+
+ and is not associated directly with the latent variables 
+\begin_inset Formula $\vZ$
+\end_inset
+
+ in the generative model, and thus the uncertainty in the posterior cannot
+ be interrogated straightforwardly.
+ Indeed, to evaluate the performance of this model by decoding, 
+\begin_inset Formula $\vr$
+\end_inset
+
+ is first used to evaluate the conditional expected spike count 
+\begin_inset Formula $\E{q(\vx|\vr)}{\vx}$
+\end_inset
+
+ under the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ model, assuming there is no loss of information; then, the mean and covariance
+ of 
+\begin_inset Formula $\vz$
+\end_inset
+
+ are approximately decoded according to the generative joint 
+\begin_inset Formula $p(\vz,\vx)$
+\end_inset
+
+, pretending
+\begin_inset Formula $\E{q(\vx|\vr)}{\vx}$
+\end_inset
+
+ is evaluated under 
+\begin_inset Formula $p(\vz,\vx)$
+\end_inset
+
+.
+ Using this approach, one can in principle decoded posterior distribution
+ that are more complicated than a Gaussian using, for example, histograms.
+\end_layout
+
+\begin_layout Standard
+Later on, the same authors 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MakinEtAl2015"
+
+\end_inset
+
+ applied the same principle to build a recurrent 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+ for filtering.
+ In this model, the latent code from the previous time step 
+\begin_inset Formula $\vR_{t-1}$
+\end_inset
+
+ and the spike observation 
+\begin_inset Formula $\vX_{t}$
+\end_inset
+
+ are concatenated, which is used to form an 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+ with a latent code distribution 
+\begin_inset Formula $\vR_{t}$
+\end_inset
+
+.
+ The latent code for next time step is then the conditional sample 
+\begin_inset Formula $\vr_{t}\sim\vR_{t}|\vr_{t-1},\vx_{t}$
+\end_inset
+
+, and the same construction of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+ continues, giving the recurrent 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+.
+ The learning algorithm is the 1-step contrastive divergence performed at
+ each time step, which maximises the log likelihood of 
+\begin_inset Formula $\left[\vr_{t-1},\vx_{t}\right]$
+\end_inset
+
+, treating the previous latent code 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula $\vr_{t-1}$
+\end_inset
+
+ as an 
+\emph on
+observation
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Although the learning rule is local and thus biologically plausible, the
+ underlying cost function is unclear; as the authors also pointed out, the
+ justification for treating 
+\begin_inset Formula $\vr_{t-1}$
+\end_inset
+
+ as an observation is missing.
+ By copying 
+\begin_inset Formula $\vr_{t-1}$
+\end_inset
+
+ to the next time step, no latent dynamics is explicitly modelled and needs
+ to be learned by the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+ at each time step.
+ As the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+ also needs to incorporate new evidence, it is conceivable that the class
+ of transition dynamics and emission may be restrictive.
+ Indeed, the experiments conducted all had linear Gaussian latent dynamics.
 \end_layout
 
 \begin_layout Subsubsection
+PPC Bayes rule and EFH (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC-BR-EFH}
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Sokoloski2017"
+
+\end_inset
+
+ proposed a neural filtering algorithm that combines 
 \begin_inset ERT
 status open
 
@@ -466,17 +1572,19 @@ gls{EFH}
 
 \end_inset
 
- for exact evidence incorporation
-\end_layout
-
-\begin_layout Standard
+ 
 \begin_inset CommandInset citation
 LatexCommand citet
-key "Sokoloski2017"
+key "WellingEtAl2005"
 
 \end_inset
 
- proposed a neural filtering algorithm that combines 
+.
+ By extensive use of properties of the exponential family distributions,
+ the theory suggests that evidence from observation can be more or less
+ exactly incorporated into the belief of the latent, that is, Bayes rule
+ can be implemented exactly.
+ Here, I refer to this approach as the 
 \begin_inset ERT
 status open
 
@@ -489,7 +1597,7 @@ gls{PPC}
 
 \end_inset
 
- and the exponential family harmonium 
+ Bayes rule with 
 \begin_inset ERT
 status open
 
@@ -502,19 +1610,23 @@ gls{EFH}
 
 \end_inset
 
- 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "WellingEtAl2005"
+(
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC-BR-EFH}
+\end_layout
 
 \end_inset
 
-.
- By extensive use of properties of the exponential family distributions,
- the theory suggests that evidence from observation can be more or less
- exactly incorporated into the belief of the latent.
- The latent dynamics is not explicitly modeled, but the mapping of natural
- parameter of the posterior 
+).
+ Forming the prior for the next time step from the previous belief requires
+ knowledge about the transition dynamics, which is not explicitly modeled;
+ nonetheless, the mapping of natural parameter of the posterior 
 \begin_inset Formula $p(\vz_{t-1}|\vx_{1:t-1})$
 \end_inset
 
@@ -522,8 +1634,7 @@ key "WellingEtAl2005"
 \begin_inset Formula $p(\vz_{t}|\vx_{1:t-1})$
 \end_inset
 
- was modeled as a neural network function, implicitly capturing rich transition
- dynamics.
+ was modeled as a neural network function.
  Although the neural network needs to be trained by the non-plausible back-propa
 gation, and only Gaussian posterior is allowed in practice, the theory itself
  is interesting and is thoroughly reviewed here.
@@ -551,7 +1662,7 @@ This framework has two parts.
 \end_inset
 
 , and the belief update on these natural parameters.
- In short, the requirement for conjugacy is to maintain consistency of neural
+ In short, the purpose for conjugacy is to maintain consistency of neural
  representation as PPC for the latent variable.
 \end_layout
 
@@ -593,7 +1704,7 @@ In first part, a conjugacy between prior and posterior
  
 \begin_inset Formula 
 \begin{equation}
-p(\vz)=\frac{1}{Z_{Z}(\vtheta_{z})}\exp\left[\vtheta_{z}\cdot\vpsi(\vz)\right]\label{eq:NBR_prior}
+p(\vz)=\frac{1}{Z_{Z}(\vtheta_{Z})}\nu_{Z}(\vz)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)\right]\label{eq:NBR_prior}
 \end{equation}
 
 \end_inset
@@ -616,34 +1727,62 @@ denote the set of exponential family distributions with sufficient statistics
 \begin_inset Formula $\vZ=\vz$
 \end_inset
 
- with rate that follows tuning curves 
-\begin_inset Formula $f_{i}(\vz),\ i\in\N_{\Dim X}$
+ with Gaussian-shaped tuning curves 
+\begin_inset Formula $f_{i}(\vz)=\gamma\exp\left(-\frac{\left(z_{i}-z_{i}^{0}\right)^{2}}{2\sigma^{2}}\right),\ i\in\N_{\Dim X}$
 \end_inset
 
- 
+, where homogeneous gain 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ and tuning width 
+\begin_inset Formula $\sigma$
+\end_inset
+
+.
+ The likelihood of a given firing pattern 
+\begin_inset Formula $\vx$
+\end_inset
+
+ is
 \begin_inset Formula 
 \begin{align}
 p(\vx|\vz) & =\prod_{i=1}^{\Dim X}\exp\left[-f_{i}(\vz)\right]\frac{f_{i}(\vz)^{x_{i}}}{x_{i}!}\nonumber \\
- & =\frac{1}{\exp\left(\sum_{i=1}^{\Dim X}f_{i}(\vz)\right)}\exp\left[\sum_{i=1}^{\Dim X}\log f_{i}(\vz)x_{i}-\log x_{i}!\right]\nonumber \\
- & =\frac{1}{\exp\left(\sum_{i=1}^{\Dim X}f_{i}(\vz)\right)}\exp\left[\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{x}\cdot\vx-\sum_{i=1}^{\Dim X}\log x_{i}!\right]\label{eq:NBR_poisson}
+ & =\frac{1}{\exp\left(\sum_{i=1}^{\Dim X}f_{i}(\vz)\right)\prod_{i=1}^{\Dim X}(x_{i}!)}\exp\left[\sum_{i=1}^{\Dim X}\log f_{i}(\vz)x_{i}\right]\nonumber \\
+ & =\frac{1}{\exp\left(\Phi_{X}(\vz)\right)}\nu_{X}(\vx)\exp\left[\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]\label{eq:NBR_poisson}
 \end{align}
 
 \end_inset
 
 where 
-\begin_inset Formula $\vpsi(\vz)\cdot\mtheta_{XN}$
+\begin_inset Formula $\vpsi(\vz)$
+\end_inset
+
+, 
+\begin_inset Formula $\mM_{ZX}$
 \end_inset
 
  and 
-\begin_inset Formula $\vtheta_{x}$
+\begin_inset Formula $\vtheta_{X}$
 \end_inset
 
  are related to the tuning functions 
 \begin_inset Formula $f_{i}$
 \end_inset
 
+
+\begin_inset Formula 
+\begin{align*}
+\nu_{X}(\vx) & =1/\prod_{i=1}^{\Dim X}x_{i}!\\
+\vpsi(\vz) & =\left[\vz;\vz^{2}\right]\\
+\mM_{ZX} & =\left[\frac{I\vz^{0}}{\sigma^{2}};-\frac{I}{2\sigma^{2}}\right]\\
+\vtheta_{X} & =\left[\log\gamma-\frac{\left(\vz^{0}\right)^{2}}{2\sigma^{2}}\right]
+\end{align*}
+
+\end_inset
+
 , and 
-\begin_inset Formula $\sum_{i=1}^{\Dim X}f_{i}(\vz)$
+\begin_inset Formula $\Phi_{X}(\vz)$
 \end_inset
 
  is the log normaliser of 
@@ -653,13 +1792,13 @@ where
 
 \begin_inset Formula 
 \begin{equation}
-\exp\left[\sum_{i=1}^{\Dim X}f_{i}(\vz)\right]=\sum_{\vx}\exp\left(\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{x}\cdot\vx-\sum_{i=1}^{\Dim X}\log x_{i}!\right)\label{eq:NBR_poisson_logZ}
+\Phi_{X}(\vz)=\sum_{i=1}^{\Dim X}f_{i}(\vz)=\log\sum_{\vx}\nu_{X}(\vx)\exp\left(\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right)\label{eq:NBR_poisson_logZ}
 \end{equation}
 
 \end_inset
 
 where 
-\begin_inset Formula $\mW_{XN}$
+\begin_inset Formula $\mM_{ZX}$
 \end_inset
 
  denotes the the weights for 
@@ -691,7 +1830,7 @@ reference "eq:NBR_prior"
 \end_inset
 
  and 
-\begin_inset Formula $\vN$
+\begin_inset Formula $X$
 \end_inset
 
 .
@@ -699,7 +1838,7 @@ reference "eq:NBR_prior"
 \end_layout
 
 \begin_layout Standard
-Suppose now we would like the posterior 
+Now we would like the posterior 
 \begin_inset Formula $p(\vz|\vx)$
 \end_inset
 
@@ -707,7 +1846,8 @@ Suppose now we would like the posterior
 \begin_inset Formula $\sM_{\psi}$
 \end_inset
 
-, how to achieve this? The author proposes to character
+.
+ The author proposes a form of density function of
 \begin_inset Formula $\vZ$
 \end_inset
 
@@ -715,7 +1855,7 @@ Suppose now we would like the posterior
 \begin_inset Formula $\vN$
 \end_inset
 
- using an 
+ that is an 
 \begin_inset ERT
 status open
 
@@ -728,14 +1868,14 @@ gls{EFH}
 
 \end_inset
 
- that permits Poisson 
-\begin_inset Formula $p(\vN|\vZ)$
+ permitting Poisson 
+\begin_inset Formula $p(\vz|\vx)$
 \end_inset
 
- pdf
+ 
 \begin_inset Formula 
 \[
-p_{0}(\vz,\vx)\propto\exp\left[\vtheta_{z}\cdot\vpsi(\vz)+\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{x}\cdot\vx-\sum_{i=1}^{\Dim X}\log x_{i}!\right]
+p_{0}(\vz,\vx)\propto\nu_{Z}(\vz)\nu_{X}(\vx)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]
 \]
 
 \end_inset
@@ -748,7 +1888,7 @@ reference "eq:NBR_poisson_logZ"
 
 \end_inset
 
-, we can normalized out 
+, we can sum out 
 \begin_inset Formula $\vx$
 \end_inset
 
@@ -759,21 +1899,16 @@ reference "eq:NBR_poisson_logZ"
 ,
 \begin_inset Formula 
 \begin{align}
-p_{0}(\vz) & \propto\exp\left[\vtheta_{z}\cdot\vpsi(\vz)+\sum_{i=1}^{\Dim X}f_{i}(\vz)\right]\label{eq:NBR_true_prior}\\
-p_{0}(\vx) & \propto\nu(\vx)\exp\left[\vtheta_{x}\cdot\vx+Z_{Z}(\vtheta_{z}+\mM_{ZX}\cdot\vx)\right]\label{eq:NBR_true_lik}
+p_{0}(\vz) & \propto\nu_{Z}(\vz)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\Phi_{Z}(\vz)\right]\label{eq:NBR_true_prior}\\
+p_{0}(\vx) & \propto\nu_{X}(\vx)\exp\left[\vtheta_{X}\cdot\vx+\log Z_{Z}(\vtheta_{Z}+\mM_{ZX}\cdot\vx)\right]\label{eq:NBR_true_lik}
 \end{align}
 
 \end_inset
 
-where 
-\begin_inset Formula $\nu(\vx)=1/\prod_{i=1}^{\Dim X}x_{i}!$
-\end_inset
-
-.
- The implied posterior distribution is
+.The implied posterior distribution is
 \begin_inset Formula 
 \begin{equation}
-p_{0}(\vz|\vx)\propto\exp\left(\vpsi(\vz)\cdot\left[\mM_{ZX}\cdot\vx+\vtheta_{z}\right]\right)\label{eq:NBR_true_posterior}
+p_{0}(\vz|\vx)\propto\nu_{Z}(\vz)\exp\left(\vpsi(\vz)\cdot\left[\mM_{ZX}\cdot\vx+\vtheta_{Z}\right]\right)\label{eq:NBR_true_posterior}
 \end{equation}
 
 \end_inset
@@ -792,7 +1927,7 @@ and
 \end_inset
 
  but off by 
-\begin_inset Formula $\sum_{i=1}^{\Dim X}f_{i}(\vz)$
+\begin_inset Formula $\Phi_{Z}(\vz)=\sum_{i=1}^{\Dim X}f_{i}(\vz)$
 \end_inset
 
  in the log density.
@@ -829,7 +1964,7 @@ the likelihood
 \begin_inset Formula $p(\vx|\vz)$
 \end_inset
 
- is independent Poisson with mean rate depending on arbitrary tuning functions
+ is independent Poisson with mean rate depending on Gaussian tuning functions
  
 \begin_inset Formula $f_{i}$
 \end_inset
@@ -852,7 +1987,7 @@ Given these properties, the next question is how to encode these distributions
 \begin_inset Formula $\sum_{i=1}^{\Dim X}f_{i}(\vz)$
 \end_inset
 
- is a constant, it is assumed that two separate populations with rates 
+ is a constant, two separate populations with rates 
 \begin_inset Formula $\vr_{X}$
 \end_inset
 
@@ -860,11 +1995,11 @@ Given these properties, the next question is how to encode these distributions
 \begin_inset Formula $\vr_{Z|X}$
 \end_inset
 
- encodes the prior 
+ encode the prior 
 \begin_inset Formula $p_{0}(\vz)$
 \end_inset
 
- and posterior beliefs 
+ and posterior 
 \begin_inset Formula $p_{0}(\vz|\vx)$
 \end_inset
 
@@ -941,8 +2076,8 @@ reference "eq:NBR_ppc_posterior"
 , we have
 \begin_inset Formula 
 \begin{align}
-\mW_{Z}\cdot\vr_{Z} & =\vtheta_{z}\label{eq:NBR_ppc_prior_np}\\
-\mW_{Z|X}\cdot\vr_{Z|X} & =\mM_{ZX}\cdot\vx+\vtheta_{z}
+\mW_{Z}\cdot\vr_{Z} & =\vtheta_{Z}\label{eq:NBR_ppc_prior_np}\\
+\mW_{Z|X}\cdot\vr_{Z|X} & =\mM_{ZX}\cdot\vx+\vtheta_{Z}
 \end{align}
 
 \end_inset
@@ -955,7 +2090,7 @@ which gives
 
 \end_inset
 
-to express 
+.To express 
 \begin_inset Formula $\vr_{Z|X}$
 \end_inset
 
@@ -967,7 +2102,7 @@ to express
 \begin_inset Formula $\vx$
 \end_inset
 
-, the author directly assumes (akin to 
+, the author further assumes (akin to 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "BeckEtAl2007"
@@ -989,7 +2124,7 @@ key "BeckEtAl2007"
  through linear recoding
 \begin_inset Formula 
 \begin{align}
-\mM_{ZX} & =\mW_{Z|X}\mfont V{}_{Z|X\to M}\nonumber \\
+\mM_{ZX} & =\mW_{Z|X}\mfont V{}_{Z|X\to ZX}\nonumber \\
 \mW_{Z} & =\mW_{Z|X}\mfont V{}_{Z|X\to Z}\label{eq:NBR_W_map}
 \end{align}
 
@@ -1010,7 +2145,7 @@ Finally, the encoding for the posterior
 
 \begin_inset Formula 
 \[
-\vr_{Z|X}=\mfont V{}_{Z|X\to M}\vx+\mfont V{}_{Z|X\to Z}\vr_{Z}
+\vr_{Z|X}=\mfont V{}_{Z|X\to ZX}\vx+\mfont V{}_{Z|X\to Z}\vr_{Z}
 \]
 
 \end_inset
@@ -1151,7 +2286,7 @@ gls{PPC}
 \end_inset
 
  and 
-\begin_inset Formula $\vtheta_{x}$
+\begin_inset Formula $\vtheta_{X}$
 \end_inset
 
  in 
@@ -1172,12 +2307,11 @@ reference "eq:NBR_poisson"
 \begin_inset Formula $t$
 \end_inset
 
- to define the prior for the latent at 
+ as the that of the prior at 
 \begin_inset Formula $t+1$
 \end_inset
 
 .
- 
 \end_layout
 
 \begin_layout Paragraph
@@ -1248,7 +2382,7 @@ gls{PPC}
 \begin_inset Formula $p(\vz_{t}|\vx_{1:t})$
 \end_inset
 
- at each single time 
+ at each time 
 \begin_inset Formula $t$
 \end_inset
 
@@ -1297,7 +2431,7 @@ key "Sokoloski2017"
 \begin_inset Formula $\mW_{\phi}$
 \end_inset
 
-, which is learned on data.
+, which is learned on data to optimize the likelihood objective (see below).
  Thus, 
 \begin_inset Formula $\mW_{\phi}$
 \end_inset
@@ -1314,8 +2448,8 @@ key "Sokoloski2017"
 \end_layout
 
 \begin_layout Standard
-For learning, it turns out that some parameters are bound by practical use
- of 
+For learning, it turns out that some parameters are restricted by practical
+ use of 
 \begin_inset ERT
 status open
 
@@ -1329,7 +2463,7 @@ gls{PPC}
 \end_inset
 
  Bayes rule.
- First, recursive use of posterior as prior results in 
+ The authors restrict 
 \begin_inset Formula $\mW_{Z}=\mW_{Z|X}$
 \end_inset
 
@@ -1343,7 +2477,7 @@ gls{PPC}
 \end_inset
 
  and 
-\begin_inset Formula $\vtheta_{x}$
+\begin_inset Formula $\vtheta_{X}$
 \end_inset
 
  are determined by tuning parameters of 
@@ -1400,7 +2534,7 @@ reference "eq:NBR_ppc_prior_np"
 \end_inset
 
  but with a different natural parameter 
-\begin_inset Formula $\vtheta_{z}$
+\begin_inset Formula $\vtheta_{Z}$
 \end_inset
 
  which is encoded by 
@@ -1429,7 +2563,7 @@ reference "eq:NBR_true_lik"
 , and adding the time indices, the log likelihood is 
 \begin_inset Formula 
 \begin{align*}
-p_{0}(\vx_{t}|\vx_{1:t-1};\mW_{\phi}) & \propto\nu(\vx_{t})\exp\left[\vtheta_{x}\cdot\vx_{t}+Z_{Z}(\mW_{Z}\cdot\phi_{t-1}(\mW_{\phi})+\mM_{ZX}\cdot\vx_{t})\right]
+p_{0}(\vx_{t}|\vx_{1:t-1};\mW_{\phi}) & \propto\nu(\vx_{t})\exp\left[\vtheta_{X}\cdot\vx_{t}+Z_{Z}(\mW_{Z}\cdot\phi_{t-1}(\mW_{\phi})+\mM_{ZX}\cdot\vx_{t})\right]
 \end{align*}
 
 \end_inset
@@ -1570,11 +2704,239 @@ key "BeckEtAl2011"
 Then it may not be so surprising that, the restrictive encoding of uncertainty
  (second moment) in the naive code may be very sub-optimal, which is what
  the author observed in experiments.
+ Interestingly, it is reported that when treating 
+\begin_inset Formula $\vr_{t-1|t-1}$
+\end_inset
+
+ as a constant in order to avoid backpropagation through time, the model
+ cannot discover second-order latent variables, such as velocity when observing
+ the position of an oscillatory signal.
  
 \end_layout
 
-\begin_layout Subsection
-General inference algorithms
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC-BR-EFH}
+\end_layout
+
+\end_inset
+
+ is related to the recurrent 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "MakinEtAl2015"
+
+\end_inset
+
+ but are fundamentally different.
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ takes a density density estimation approach and treats the latent code
+ 
+\begin_inset Formula $\vr_{t}$
+\end_inset
+
+ as features, but not an explicit encoding of the latent variables 
+\begin_inset Formula $\vz_{t}$
+\end_inset
+
+ as in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC-BR-EFH}
+\end_layout
+
+\end_inset
+
+ which does encode natural parameter of the posterior, a 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC-BR-EFH}
+\end_layout
+
+\end_inset
+
+ allows arbitrary transition dynamics to learned by back propagation; whereas
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ does not explicitly learn any transition dynamics, but the overall learning
+ uses the more biologically plausible contrastive divergence rule.
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC-BR-EFH}
+\end_layout
+
+\end_inset
+
+ maximizes the incremental log likelihood of 
+\begin_inset Formula $\log p(\vx_{t}|\vx_{1:t-1})$
+\end_inset
+
+, whereas 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ does not optimize any principled cost function.
+ 
+\end_layout
+
+\begin_layout Standard
+The only part common to both approaches is the choice of likelihood via
+ Gaussian-tuned Poisson neurons, which is subsumed by the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{EFH}
+\end_layout
+
+\end_inset
+
+ framework.
+ Nonetheless, this choice may be important for 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC-BR-EFH}
+\end_layout
+
+\end_inset
+
+ to admit the approximation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:NBR_const_total_rate"
+
+\end_inset
+
+, but less so for 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+, as the density estimation formulation is agnostic to the generative model,
+ as long as the support of observation distribution in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{rEFH}
+\end_layout
+
+\end_inset
+
+ include the data support.
+\end_layout
+
+\begin_layout Subsubsection
+General machine learning algorithms
 \end_layout
 
 \begin_layout Standard
