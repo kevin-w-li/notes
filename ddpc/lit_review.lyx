@@ -2011,13 +2011,15 @@ Given these properties, the next question is how to encode these distributions
  
 \begin_inset Formula 
 \begin{align}
-q(\vz|\vr_{X}) & \propto\exp\left[\vpsi(\vz)\cdot\mW_{Z}\cdot\vr_{Z}\right]\label{eq:NBR_ppc_prior}\\
-q(\vz|\vr_{Z|X}) & \propto\exp\left[\vpsi(\vz)\cdot\mW_{Z|X}\cdot\vr_{Z|X}\right]\label{eq:NBR_ppc_posterior}
+q(\vz) & \propto\exp\left[\vpsi(\vz)\cdot\mW_{Z}\cdot\vr_{Z}\right]\label{eq:NBR_ppc_prior}\\
+q(\vz|\vx) & \propto\exp\left[\vpsi(\vz)\cdot\mW_{Z|X}\cdot\vr_{Z|X}\right]\label{eq:NBR_ppc_posterior}
 \end{align}
 
 \end_inset
 
-It is desirable for 
+This encoding allows more neurons than parameters to encode a distribution,
+ and thus allows noise in the representation.
+ For exact Bayes rule, it is desirable for 
 \begin_inset Formula $q(\vz|\vr_{X})=p(\vz)$
 \end_inset
 
@@ -2037,7 +2039,7 @@ It is desirable for
 \begin_inset Formula $\vx$
 \end_inset
 
-, the neural representations for the prior and observation.
+.
  By matching the natural parameters between 
 \begin_inset CommandInset ref
 LatexCommand eqref
@@ -2077,7 +2079,7 @@ reference "eq:NBR_ppc_posterior"
 \begin_inset Formula 
 \begin{align}
 \mW_{Z}\cdot\vr_{Z} & =\vtheta_{Z}\label{eq:NBR_ppc_prior_np}\\
-\mW_{Z|X}\cdot\vr_{Z|X} & =\mM_{ZX}\cdot\vx+\vtheta_{Z}
+\mW_{Z|X}\cdot\vr_{Z|X} & =\vtheta_{Z}+\mM_{ZX}\cdot\vx
 \end{align}
 
 \end_inset
@@ -2085,12 +2087,12 @@ reference "eq:NBR_ppc_posterior"
 which gives 
 \begin_inset Formula 
 \[
-\mW_{Z|X}\cdot\vr_{Z|X}=\mM_{ZX}\cdot\vx+\mW_{Z}\cdot\vr_{Z}
+\mW_{Z|X}\cdot\vr_{Z|X}=\mW_{Z}\cdot\vr_{Z}+\mM_{ZX}\cdot\vx.
 \]
 
 \end_inset
 
-.To express 
+To express 
 \begin_inset Formula $\vr_{Z|X}$
 \end_inset
 
@@ -2124,8 +2126,8 @@ key "BeckEtAl2007"
  through linear recoding
 \begin_inset Formula 
 \begin{align}
-\mM_{ZX} & =\mW_{Z|X}\mfont V{}_{Z|X\to ZX}\nonumber \\
-\mW_{Z} & =\mW_{Z|X}\mfont V{}_{Z|X\to Z}\label{eq:NBR_W_map}
+\mM_{ZX} & =\mW_{Z|X}\mfont V_{X}\nonumber \\
+\mW_{Z} & =\mW_{Z|X}\mfont V{}_{Z}\label{eq:NBR_W_map}
 \end{align}
 
 \end_inset
@@ -2145,7 +2147,7 @@ Finally, the encoding for the posterior
 
 \begin_inset Formula 
 \[
-\vr_{Z|X}=\mfont V{}_{Z|X\to ZX}\vx+\mfont V{}_{Z|X\to Z}\vr_{Z}
+\vr_{Z|X}=\mfont V_{X}\vx+\mfont V{}_{Z}\vr_{Z}
 \]
 
 \end_inset
@@ -2181,6 +2183,15 @@ key "Sokoloski2017"
 \end_inset
 
 .
+ If the same encoding is used for prior and posterior, meaning 
+\begin_inset Formula $\mW_{Z}=\mW_{Z|X}$
+\end_inset
+
+, then 
+\begin_inset Formula $\mfont V{}_{Z}$
+\end_inset
+
+ is the identity.
  Compared to 
 \begin_inset ERT
 status open
@@ -2209,7 +2220,7 @@ the prior
 \begin_inset Formula $p(\vz)$
 \end_inset
 
- is not flat for decoding and is explicitly represented by a neural population
+ is explicitly represented by a neural population
 \end_layout
 
 \begin_layout Enumerate
@@ -2238,7 +2249,7 @@ gls{EFH}
 
 \begin_layout Standard
 We note here that the observations 
-\begin_inset Formula $\vz$
+\begin_inset Formula $\vx$
 \end_inset
 
  is implied by the 
@@ -2281,7 +2292,8 @@ gls{PPC}
 \begin_inset Formula $f_{i}$
 \end_inset
 
- are used in all experiments, which means that 
+ are used in all experiments, which means that the prior and posteriors
+ are all Gaussian, and 
 \begin_inset Formula $\mM_{ZX}$
 \end_inset
 
@@ -2301,17 +2313,23 @@ reference "eq:NBR_poisson"
 \end_inset
 
 .
- Nonetheless, using this construction, belief update of the latent can be
- achieved by recursively using the natural parameter of the posterior at
- time 
-\begin_inset Formula $t$
+ While it may be the case that other choices of tuning curve allows more
+ flexible prior and posterior distributions, this is largely unexplored
+ in the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
 \end_inset
 
- as the that of the prior at 
-\begin_inset Formula $t+1$
-\end_inset
-
-.
+ literature.
+ 
 \end_layout
 
 \begin_layout Paragraph
@@ -2332,7 +2350,8 @@ gls{PPC}
 \end_layout
 
 \begin_layout Standard
-In filtering, we would like to infer the latent state 
+In filtering, we would like to recursively infer the distribution of latent
+ state 
 \begin_inset Formula $\vz_{t}$
 \end_inset
 
@@ -2344,20 +2363,8 @@ In filtering, we would like to infer the latent state
 \begin_inset Formula $\vr_{t|t}:=\vr_{Z_{t}|X_{1:t}}$
 \end_inset
 
-; moreover, the parameters of the internal model that relates 
-\begin_inset Formula $\vz_{t}$
-\end_inset
-
-, 
-\begin_inset Formula $\vx_{t}$
-\end_inset
-
- and rates 
-\begin_inset Formula $\vr$
-\end_inset
-
-'s should be adjusted to statistics of incoming data.
- 
+.
+ The unknown latent dynamics should also be updated to incoming statistics.
 \end_layout
 
 \begin_layout Standard
@@ -2375,26 +2382,26 @@ gls{PPC}
 \end_inset
 
  Bayes rule facilitates evidence incorporation that updates 
-\begin_inset Formula $p(\vz_{t}|\vx_{1:t-1})$
+\begin_inset Formula $q(\vz_{t}|\vx_{1:t-1})$
 \end_inset
 
  to 
-\begin_inset Formula $p(\vz_{t}|\vx_{1:t})$
+\begin_inset Formula $q(\vz_{t}|\vx_{1:t})$
 \end_inset
 
  at each time 
 \begin_inset Formula $t$
 \end_inset
 
-, but it does not tell how to compute the predictive distribution 
-\begin_inset Formula $p(\vz_{t}|\vx_{1:t-1})$
+, but the step from the previous posterior 
+\begin_inset Formula $q(\vz_{t-1}|\vx_{1:t-1})$
 \end_inset
 
- from the previous posterior 
-\begin_inset Formula $p(\vz_{t-1}|\vx_{1:t-1})$
+ to the predictive distribution 
+\begin_inset Formula $q(\vz_{t}|\vx_{1:t-1})$
 \end_inset
 
-; that is, in terms of PPC, how to map from 
+ is missing; that is, in terms of PPC, how to map from 
 \begin_inset Formula $\vr_{t-1|t-1}$
 \end_inset
 
@@ -2403,20 +2410,38 @@ gls{PPC}
 \end_inset
 
 .
- In 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "BeckEtAl2011"
+ If the true latent process is Markovian, then there exists a mapping from
+ 
+\begin_inset Formula $q(\vz_{t-1}|\vx_{1:t-1})$
+\end_inset
+
+ to 
+\begin_inset Formula $q(\vz_{t}|\vx_{1:t-1})$
+\end_inset
+
+, which is a multiplication by the true transition dynamics 
+\begin_inset Formula $p(\vz_{t}|\vz_{t-1})$
+\end_inset
+
+ followed by marginalisation of 
+\begin_inset Formula $\vz_{t-1}$
+\end_inset
+
+.
+ It may be possible to realise these operations in the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
 
 \end_inset
 
-, the dynamics in 
-\begin_inset Formula $\vx_{t}$
-\end_inset
-
- considered is a continuous time stationary Markov process, the solution
- derived there is specific to the linear drift.
- Instead, 
+ code, so 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Sokoloski2017"
@@ -2427,29 +2452,19 @@ key "Sokoloski2017"
 \begin_inset Formula $\phi(\cdot;\mW_{\phi})$
 \end_inset
 
- , parameterised by 
+, parameterised by 
 \begin_inset Formula $\mW_{\phi}$
 \end_inset
 
-, which is learned on data to optimize the likelihood objective (see below).
- Thus, 
+, to perform approximate this mapping.
+ 
 \begin_inset Formula $\mW_{\phi}$
 \end_inset
 
- is a generative parameter of 
-\begin_inset Formula $p_{\phi}(\vz_{t}|\vz_{1:t-1})$
-\end_inset
-
- which approximates an arbitrary true dyanmics 
-\begin_inset Formula $p(\vz_{t}|\vz_{1:t-1})$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-For learning, it turns out that some parameters are restricted by practical
- use of 
+ can then be seen as a generative parameter that approximates the unknown
+ true dynamics, which may be nonlinear and non-Gaussian.
+ The predictive distribution still needs to be well approximated by a Gaussian
+ as required by 
 \begin_inset ERT
 status open
 
@@ -2463,16 +2478,11 @@ gls{PPC}
 \end_inset
 
  Bayes rule.
- The authors restrict 
-\begin_inset Formula $\mW_{Z}=\mW_{Z|X}$
-\end_inset
+\end_layout
 
-, so
-\begin_inset Formula $\mfont V{}_{Z|X\to Z}$
-\end_inset
-
- is the identity matrix.
- In addition, given the Gaussian tuning curve restrictions, 
+\begin_layout Standard
+For learning, first note that some parameters are restricted.
+ Given the Gaussian tuning curve restrictions, 
 \begin_inset Formula $\mM_{ZX}$
 \end_inset
 
@@ -2485,20 +2495,20 @@ gls{PPC}
 \end_inset
 
 .
+ The authors set 
+\begin_inset Formula $\mW_{Z}=\mW_{Z|X}$
+\end_inset
+
+, so
+\begin_inset Formula $\mfont V{}_{Z}$
+\end_inset
+
+ is the identity matrix.
  So the only free parameters are 
 \begin_inset Formula $\mW_{Z|X}$
 \end_inset
 
- and the tuning parameters, and the recoder 
-\begin_inset Formula $\mfont V{}_{Z|X\to M}$
-\end_inset
-
- is constrained.
- Ideally, one can optimize all these free parameters and 
-\begin_inset Formula $\mW_{Z|X}$
-\end_inset
-
-, as well as 
+ and 
 \begin_inset Formula $\mW_{\phi}$
 \end_inset
 
@@ -2514,16 +2524,35 @@ key "Sokoloski2017"
 \begin_inset Formula $\mW_{Z|X}$
 \end_inset
 
- and only trains 
-\begin_inset Formula $\mW_{\phi}$
+ to one of the two choices:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\mW_{Z|X}=\mM_{ZX}$
 \end_inset
 
-.
+ (naive code), implying projections along the centres of the Gaussian tuning
+ functions; 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\mW_{Z|X}$
+\end_inset
+
+ with rows that are orthonormal to each other and also to the 1-vector (orthonor
+mal code), as laid out in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "BeckEtAl2011"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 The objective for online learning is the conditional likelihood 
-\begin_inset Formula $p(\vx_{t}|\vx_{1:t-1})$
+\begin_inset Formula $q(\vx_{t}|\vx_{1:t-1})$
 \end_inset
 
 , which is similar to 
@@ -2533,11 +2562,11 @@ reference "eq:NBR_ppc_prior_np"
 
 \end_inset
 
- but with a different natural parameter 
+ but with prior natural parameter 
 \begin_inset Formula $\vtheta_{Z}$
 \end_inset
 
- which is encoded by 
+ encoded by 
 \begin_inset Formula $\vr_{t|t-1}=\phi(\vr_{t-1|t-1};\mW_{\phi})=:\phi_{t-1}(\mW_{\phi})$
 \end_inset
 
@@ -2560,10 +2589,10 @@ reference "eq:NBR_true_lik"
 
 \end_inset
 
-, and adding the time indices, the log likelihood is 
+, and adding the time indices, the likelihood is 
 \begin_inset Formula 
 \begin{align*}
-p_{0}(\vx_{t}|\vx_{1:t-1};\mW_{\phi}) & \propto\nu(\vx_{t})\exp\left[\vtheta_{X}\cdot\vx_{t}+Z_{Z}(\mW_{Z}\cdot\phi_{t-1}(\mW_{\phi})+\mM_{ZX}\cdot\vx_{t})\right]
+q(\vx_{t}|\vx_{1:t-1};\mW_{\phi}) & \propto\nu(\vx_{t})\exp\left[\vtheta_{X}\cdot\vx_{t}+Z_{Z}(\mW_{Z}\cdot\vr_{t|t-1}+\mM_{ZX}\cdot\vx_{t})\right]
 \end{align*}
 
 \end_inset
@@ -2600,7 +2629,7 @@ gls{EFH}
  is
 \begin_inset Formula 
 \begin{equation}
-\nabla_{\mW_{\phi}}\log p_{0}(\vx_{t}|\vx_{1:t-1};\mW_{\phi})=\left[\E{q(\vz_{t}|x_{1:t})}{\vpsi(\vz_{t})}-\E{q(\vz_{t}|x_{1:t-1})}{\vpsi(\vz_{t})}\right]\cdot\mW_{Z}\cdot\nabla_{\mW_{\phi}}\vr_{t|t-1}\label{eq:NBR_learning}
+\nabla_{\mW_{\phi}}\log q(\vx_{t}|\vx_{1:t-1};\mW_{\phi})=\left[\E{q(\vz_{t}|x_{1:t})}{\vpsi(\vz_{t})}-\E{q(\vz_{t}|x_{1:t-1})}{\vpsi(\vz_{t})}\right]\cdot\mW_{Z}\cdot\nabla_{\mW_{\phi}}\vr_{t|t-1}\label{eq:NBR_learning}
 \end{equation}
 
 \end_inset
@@ -2628,82 +2657,62 @@ gls{EFH}
 \end_inset
 
  as a constant, which avoids back-propagation through time.
+ The first expectation can be computed exactly as it is Gaussian.
  The two expectations can be evaluated either by 
 \end_layout
 
 \begin_layout Enumerate
-Gibbs sampling, assuming Gaussian posterior 
-\begin_inset Formula $p_{0}(\vz_{t}|\vx_{t},\vx_{1:t-1})$
+Gibbs sampling from 
+\begin_inset Formula $p_{0}(\vz_{t},\vx_{t}|\vx_{1:t-1})$
 \end_inset
 
- induced by Gaussian tuning curves, or 
+
 \end_layout
 
 \begin_layout Enumerate
-direct computation of Gaussian mean parameters for both terms, assuming
- 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:NBR_const_total_rate"
-
+direct computation of mean parameters from 
+\begin_inset Formula $\vr_{t|t-1}$
 \end_inset
 
-.
+ assuming 
+\begin_inset Formula $q(\vz_{t}|\vx_{1:t-1})$
+\end_inset
+
+ is Gaussian.
 \end_layout
 
 \begin_layout Standard
-In the experiments, the author tested the performance of learning the transition
- dynamics by evaluating the log likelihood of data.
- In addition to testing the two ways of approximating the expectations in
- 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:NBR_learning"
+Overall, this framework can approximate unknown latent dynamics in the latent
+ space, and the conditioning can be done exactly using 
+\begin_inset ERT
+status open
 
-\end_inset
+\begin_layout Plain Layout
 
-, two choices of 
-\begin_inset Formula $\mW_{Z|X}$
-\end_inset
 
- was also compared,
+\backslash
+gls{PPC}
 \end_layout
 
-\begin_layout Enumerate
-\begin_inset Formula $\mW_{Z|X}=\mM_{ZX}$
 \end_inset
 
- (naive code), which implies that the first row, which projects 
-\begin_inset Formula $\psi_{1}(\vz)=\vz$
-\end_inset
+ Bayes rule.
+ However, realisation of the generic 
+\begin_inset ERT
+status open
 
-, is proportional to the centres of the Gaussian tuning functions; and the
- second row, which projects 
-\begin_inset Formula $\psi_{2}(\vz)=\vz\vz^{\intercal}$
-\end_inset
+\begin_layout Plain Layout
 
-, is a constant vector; 
+
+\backslash
+gls{EFH}
 \end_layout
 
-\begin_layout Enumerate
-\begin_inset Formula $\mW_{Z|X}$
 \end_inset
 
- with rows that are orthonormal to each other and also to the 1-vector (orthonor
-mal code), as laid out in 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "BeckEtAl2011"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Then it may not be so surprising that, the restrictive encoding of uncertainty
- (second moment) in the naive code may be very sub-optimal, which is what
- the author observed in experiments.
+ theory is restricted to Gaussian prior and posteriors by the use of Gaussian-sh
+aped tuning curves, which restricts the range of possible transition dynamics
+ that can be well approximated.
  Interestingly, it is reported that when treating 
 \begin_inset Formula $\vr_{t-1|t-1}$
 \end_inset
@@ -2786,7 +2795,7 @@ gls{PPC-BR-EFH}
 
 \end_inset
 
- which does encode natural parameter of the posterior, a 
+ which encodes natural parameter of the posterior, a 
 \begin_inset ERT
 status open
 
@@ -2816,8 +2825,8 @@ gls{PPC-BR-EFH}
 
 \end_inset
 
- allows arbitrary transition dynamics to learned by back propagation; whereas
- 
+ allows arbitrary transition dynamics to be learned by back propagation;
+ whereas 
 \begin_inset ERT
 status open
 
@@ -2871,21 +2880,8 @@ gls{rEFH}
 
 \begin_layout Standard
 The only part common to both approaches is the choice of likelihood via
- Gaussian-tuned Poisson neurons, which is subsumed by the 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-gls{EFH}
-\end_layout
-
-\end_inset
-
- framework.
- Nonetheless, this choice may be important for 
+ Gaussian tuning curves.
+ This choice may be important for 
 \begin_inset ERT
 status open
 
@@ -2932,7 +2928,7 @@ gls{rEFH}
 
 \end_inset
 
- include the data support.
+ include the data.
 \end_layout
 
 \begin_layout Subsubsection
