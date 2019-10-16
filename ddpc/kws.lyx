@@ -1,0 +1,428 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\noindent
+Amortised learning
+\end_layout
+
+\begin_layout Author
+\noindent
+Kevin W Li
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset FormulaMacro
+\newcommand{\bphi}{\bm{\phi}}
+{\bm{\phi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bmu}{\bm{\mu}}
+{\bm{\mu}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bSigma}{\bm{\Sigma}}
+{\bm{\Sigma}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bI}{\bm{I}}
+{I}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\w}{\mathbf{w}}
+{\mathbf{w}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\x}{\mathbf{x}}
+{\mathbf{x}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\y}{\mathbf{y}}
+{\mathbf{y}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\E}{\mathbb{E}}
+{\mathbb{E}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\H}{\mathbb{H}}
+{\mathbb{H}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bpsi}{\bm{\psi}}
+{\bm{\psi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cW}{\mathcal{W}}
+{\mathcal{W}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\m}{\mathbf{m}}
+{\mathbf{m}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bxi}{\bm{\xi}}
+{\bm{\xi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cH}{\mathcal{H}}
+{\mathcal{H}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cF}{\mathcal{F}}
+{\mathcal{F}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cG}{\mathcal{G}}
+{\mathcal{G}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cC}{\mathcal{C}}
+{\mathcal{C}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cU}{\mathcal{U}}
+{\mathcal{U}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cN}{\mathcal{N}}
+{\mathcal{N}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cV}{\mathcal{V}}
+{\mathcal{V}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\GP}{\mathcal{GP}}
+{\mathcal{GP}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cD}{\mathcal{D}}
+{\mathcal{D}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vk}{\boldsymbol{k}}
+{\boldsymbol{k}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mK}{\mathbf{K}}
+{\mathbf{K}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mI}{\mathbf{I}}
+{\mathbf{I}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mSigma}{\boldsymbol{\Sigma}}
+{\boldsymbol{\Sigma}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vm}{\boldsymbol{m}}
+{\boldsymbol{m}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vb}{\boldsymbol{b}}
+{\boldsymbol{b}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\lotimes}{\Large{\otimes}}
+{\Large{\otimes}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\bnu}{\bm{\nu}}
+{\bm{\nu}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\argmin}{\operatornamewithlimits{arg\,min}}
+{\textrm{arg min}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mA}{\mathbf{A}}
+{\mathbf{A}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mB}{\mathbf{B}}
+{\mathbf{B}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\valpha}{\bm{\alpha}}
+{\bm{\alpha}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Gaussian process
+\end_layout
+
+\begin_layout Standard
+Suppose we have data 
+\begin_inset Formula $\cD=\left\{ x_{n,}y_{n}\right\} _{n=1}^{N}$
+\end_inset
+
+ and we would like to perform regression to find a function 
+\begin_inset Formula $f$
+\end_inset
+
+ such that 
+\begin_inset Formula $f(x_{i})$
+\end_inset
+
+ is produces good prediction on the label 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+.
+ If the function is Gaussian process 
+\begin_inset Formula $f\sim\GP(0,k(\cdot,\cdot))$
+\end_inset
+
+ induced by the zero mean function and covariance kernel 
+\begin_inset Formula $k$
+\end_inset
+
+, then there are various ways to condition on data and obtain posterior
+ process.
+ Assume for now that the likelihood is a Gaussian distribution 
+\begin_inset Formula $p(y|x,f)=\cN(y|f(x),\sigma^{2})$
+\end_inset
+
+, then we have the following closed form predictive posterior for a new
+ test input 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{gather*}
+f|\cD\sim\GP\left(\mu^{q}(\cdot),k^{q}(\cdot,\cdot)\right)\\
+\mu^{k}(x)=\vk_{xX}\left(\mK_{XX}+\sigma^{2}\mI\right)^{-1}\y\\
+k^{q}(x,x')=k(x,x')-\vk_{xX}\left(\mK_{XX}+\sigma^{2}\mI\right)^{-1}\vk_{Xx'}
+\end{gather*}
+
+\end_inset
+
+where 
+\begin_inset Formula $k_{xX,i}=k(x,x_{i})$
+\end_inset
+
+ and 
+\begin_inset Formula $\mK_{XX,ij}=k(x_{i},x_{j})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If taking the inverse is impractical due to large 
+\begin_inset Formula $N$
+\end_inset
+
+, then one may assume that the posterior is a GP induced by a smaller number
+ of 
+\begin_inset Formula $M$
+\end_inset
+
+ inducing points 
+\begin_inset Formula $\left\{ z_{m}\right\} _{m=1}^{M}$
+\end_inset
+
+.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Titsias2009"
+
+\end_inset
+
+, the following form of posterior GP is proposed:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\mu^{k}(x) & =\vk_{x,Z}\mK_{ZZ}\vb\\
+k^{q}(x,x') & =k(x,x')-\vk_{xZ}\mK_{ZZ}^{-1}\vk_{Zx'}+\vk_{xZ}\mK_{ZZ}^{-1}\mA\mK_{ZZ}^{-1}\vk_{Zx'}
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $\vb$
+\end_inset
+
+ and 
+\begin_inset Formula $\mA$
+\end_inset
+
+ are variational parameters, which are fit to maximise the ELBO.
+ 
+\end_layout
+
+\begin_layout Standard
+Using amortised learning, one can use a more generic form of the posterior
+ function.
+ For example, the following stochastic function may be used 
+\begin_inset Formula 
+\[
+f=\sum_{m}\alpha_{m}k(z_{m},\cdot),\quad\valpha\sim\cN(\vb,\mA)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "ref"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
