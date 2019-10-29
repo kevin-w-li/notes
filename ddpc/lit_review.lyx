@@ -1869,13 +1869,13 @@ gls{EFH}
 \end_inset
 
  permitting Poisson 
-\begin_inset Formula $p(\vz|\vx)$
+\begin_inset Formula $p(\vx|\vz)$
 \end_inset
 
  
 \begin_inset Formula 
 \[
-p_{0}(\vz,\vx)\propto\nu_{Z}(\vz)\nu_{X}(\vx)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]
+kp_{0}(\vz,\vx)\propto\nu_{Z}(\vz)\nu_{X}(\vx)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]
 \]
 
 \end_inset
@@ -1899,13 +1899,13 @@ reference "eq:NBR_poisson_logZ"
 ,
 \begin_inset Formula 
 \begin{align}
-p_{0}(\vz) & \propto\nu_{Z}(\vz)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\Phi_{Z}(\vz)\right]\label{eq:NBR_true_prior}\\
-p_{0}(\vx) & \propto\nu_{X}(\vx)\exp\left[\vtheta_{X}\cdot\vx+\log Z_{Z}(\vtheta_{Z}+\mM_{ZX}\cdot\vx)\right]\label{eq:NBR_true_lik}
+p_{0}(\vz) & \propto\nu_{Z}(\vz)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\Phi_{X}(\vz)\right]\label{eq:NBR_true_prior}\\
+p_{0}(\vx) & \propto\nu_{X}(\vx)\exp\left[\vtheta_{X}\cdot\vx+\log Z_{Z}(\vtheta_{Z}+\mM_{ZX}\cdot\vx)\right].\label{eq:NBR_true_lik}
 \end{align}
 
 \end_inset
 
-.The implied posterior distribution is
+The implied posterior distribution is
 \begin_inset Formula 
 \begin{equation}
 p_{0}(\vz|\vx)\propto\nu_{Z}(\vz)\exp\left(\vpsi(\vz)\cdot\left[\mM_{ZX}\cdot\vx+\vtheta_{Z}\right]\right)\label{eq:NBR_true_posterior}
@@ -1927,13 +1927,13 @@ and
 \end_inset
 
  but off by 
-\begin_inset Formula $\Phi_{Z}(\vz)=\sum_{i=1}^{\Dim X}f_{i}(\vz)$
+\begin_inset Formula $\Phi_{X}(\vz)=\sum_{i=1}^{\Dim X}f_{i}(\vz)$
 \end_inset
 
  in the log density.
  If one assumes that this sum, which is the total firing rate for any given
- stimulus 
-\begin_inset Formula $z$
+ 
+\begin_inset Formula $\vz$
 \end_inset
 
 , is a constant, 
