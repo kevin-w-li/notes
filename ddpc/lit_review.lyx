@@ -1684,27 +1684,27 @@ gls{PPC}
 
 \begin_layout Standard
 In first part, a conjugacy between prior and posterior 
-\begin_inset Formula $\vz$
+\begin_inset Formula $z$
 \end_inset
 
- with Poisson likelihood 
-\begin_inset Formula $p(\vx|\vz)$
+ (consider a scalar latent for simplicity) with Poisson likelihood 
+\begin_inset Formula $p(\vx|z)$
 \end_inset
 
  is established.
  Let the prior of sensory input 
-\begin_inset Formula $\vZ$
+\begin_inset Formula $z$
 \end_inset
 
  follow some generic exponential family distribution with sufficient statistics
  
-\begin_inset Formula $\vpsi(\vz)$
+\begin_inset Formula $\vpsi(z)$
 \end_inset
 
  
 \begin_inset Formula 
 \begin{equation}
-p(\vz)=\frac{1}{Z_{Z}(\vtheta_{Z})}\nu_{Z}(\vz)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)\right]\label{eq:NBR_prior}
+p(z)=\frac{1}{Z_{Z}(\vtheta_{Z})}\nu_{Z}(z)\exp\left[\vtheta_{Z}\cdot\vpsi(z)\right]\label{eq:NBR_prior}
 \end{equation}
 
 \end_inset
@@ -1724,14 +1724,18 @@ denote the set of exponential family distributions with sufficient statistics
 \end_inset
 
  that is assumed to be independent Poisson conditioned on a particular 
-\begin_inset Formula $\vZ=\vz$
+\begin_inset Formula $Z=z$
 \end_inset
 
  with Gaussian-shaped tuning curves 
-\begin_inset Formula $f_{i}(\vz)=\gamma\exp\left(-\frac{\left(z_{i}-z_{i}^{0}\right)^{2}}{2\sigma^{2}}\right),\ i\in\N_{\Dim X}$
+\begin_inset Formula 
+\[
+f_{i}(z)=\gamma\exp\left(-\frac{\left(z-z_{i}^{0}\right)^{2}}{2\sigma^{2}}\right),\ i\in\N_{\Dim X},
+\]
+
 \end_inset
 
-, where homogeneous gain 
+where homogeneous gain 
 \begin_inset Formula $\gamma$
 \end_inset
 
@@ -1747,15 +1751,15 @@ denote the set of exponential family distributions with sufficient statistics
  is
 \begin_inset Formula 
 \begin{align}
-p(\vx|\vz) & =\prod_{i=1}^{\Dim X}\exp\left[-f_{i}(\vz)\right]\frac{f_{i}(\vz)^{x_{i}}}{x_{i}!}\nonumber \\
- & =\frac{1}{\exp\left(\sum_{i=1}^{\Dim X}f_{i}(\vz)\right)\prod_{i=1}^{\Dim X}(x_{i}!)}\exp\left[\sum_{i=1}^{\Dim X}\log f_{i}(\vz)x_{i}\right]\nonumber \\
- & =\frac{1}{\exp\left(\Phi_{X}(\vz)\right)}\nu_{X}(\vx)\exp\left[\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]\label{eq:NBR_poisson}
+p(\vx|z) & =\prod_{i=1}^{\Dim X}\exp\left[-f_{i}(z)\right]\frac{f_{i}(z)^{x_{i}}}{x_{i}!}\nonumber \\
+ & =\frac{1}{\exp\left(\sum_{i=1}^{\Dim X}f_{i}(z)\right)\prod_{i=1}^{\Dim X}(x_{i}!)}\exp\left[\sum_{i=1}^{\Dim X}\log f_{i}(z)x_{i}\right]\nonumber \\
+ & =\frac{1}{\exp\left(\Phi_{X}(z)\right)}\nu_{X}(\vx)\exp\left[\vpsi(z)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]\label{eq:NBR_poisson}
 \end{align}
 
 \end_inset
 
 where 
-\begin_inset Formula $\vpsi(\vz)$
+\begin_inset Formula $\vpsi(z)$
 \end_inset
 
 , 
@@ -1774,25 +1778,25 @@ where
 \begin_inset Formula 
 \begin{align*}
 \nu_{X}(\vx) & =1/\prod_{i=1}^{\Dim X}x_{i}!\\
-\vpsi(\vz) & =\left[\vz;\vz^{2}\right]\\
-\mM_{ZX} & =\left[\frac{I\vz^{0}}{\sigma^{2}};-\frac{I}{2\sigma^{2}}\right]\\
-\vtheta_{X} & =\left[\log\gamma-\frac{\left(\vz^{0}\right)^{2}}{2\sigma^{2}}\right]
+\vpsi(z) & =\left[z;z^{2}\right]\\
+\mM_{ZX} & =\left[\frac{z^{0\intercal}}{\sigma^{2}};-\frac{\mathbf{\mathbf{1}}^{\intercal}}{2\sigma^{2}}\right]\\
+\vtheta_{X} & =\left[\log\gamma-\frac{\left(z^{0}\right)^{2}}{2\sigma^{2}}\right],
 \end{align*}
 
 \end_inset
 
-, and 
-\begin_inset Formula $\Phi_{X}(\vz)$
+and 
+\begin_inset Formula $\Phi_{X}(z)$
 \end_inset
 
  is the log normaliser of 
-\begin_inset Formula $p(\vx|\vz)$
+\begin_inset Formula $p(\vx|z)$
 \end_inset
 
 
 \begin_inset Formula 
 \begin{equation}
-\Phi_{X}(\vz)=\sum_{i=1}^{\Dim X}f_{i}(\vz)=\log\sum_{\vx}\nu_{X}(\vx)\exp\left(\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right)\label{eq:NBR_poisson_logZ}
+\Phi_{X}(z)=\sum_{i=1}^{\Dim X}f_{i}(z)=\log\sum_{\vx}\nu_{X}(\vx)\exp\left(\vpsi(z)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right)\label{eq:NBR_poisson_logZ}
 \end{equation}
 
 \end_inset
@@ -1806,7 +1810,7 @@ where
 interaction
 \emph default
  of 
-\begin_inset Formula $\vz$
+\begin_inset Formula $z$
 \end_inset
 
  and 
@@ -1822,11 +1826,11 @@ reference "eq:NBR_prior"
 \end_inset
 
 , 
-\begin_inset Formula $p(\vx|\vz)$
+\begin_inset Formula $p(\vx|z)$
 \end_inset
 
  defines a joint distribution between 
-\begin_inset Formula $\vZ$
+\begin_inset Formula $z$
 \end_inset
 
  and 
@@ -1839,7 +1843,7 @@ reference "eq:NBR_prior"
 
 \begin_layout Standard
 Now we would like the posterior 
-\begin_inset Formula $p(\vz|\vx)$
+\begin_inset Formula $p(z|\vx)$
 \end_inset
 
  to be conjugate, meaning that it is also in 
@@ -1848,7 +1852,7 @@ Now we would like the posterior
 
 .
  The author proposes a form of density function of
-\begin_inset Formula $\vZ$
+\begin_inset Formula $z$
 \end_inset
 
  and 
@@ -1869,13 +1873,13 @@ gls{EFH}
 \end_inset
 
  permitting Poisson 
-\begin_inset Formula $p(\vx|\vz)$
+\begin_inset Formula $p(\vx|z)$
 \end_inset
 
  
 \begin_inset Formula 
 \[
-kp_{0}(\vz,\vx)\propto\nu_{Z}(\vz)\nu_{X}(\vx)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\vpsi(\vz)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]
+kp_{0}(z,\vx)\propto\nu_{Z}(z)\nu_{X}(\vx)\exp\left[\vtheta_{Z}\cdot\vpsi(z)+\vpsi(z)\cdot\mM_{ZX}\cdot\vx+\vtheta_{X}\cdot\vx\right]
 \]
 
 \end_inset
@@ -1893,13 +1897,13 @@ reference "eq:NBR_poisson_logZ"
 \end_inset
 
  and obtain (unnormalised) 
-\begin_inset Formula $p_{0}(\vz)$
+\begin_inset Formula $p_{0}(z)$
 \end_inset
 
 ,
 \begin_inset Formula 
 \begin{align}
-p_{0}(\vz) & \propto\nu_{Z}(\vz)\exp\left[\vtheta_{Z}\cdot\vpsi(\vz)+\Phi_{X}(\vz)\right]\label{eq:NBR_true_prior}\\
+p_{0}(z) & \propto\nu_{Z}(z)\exp\left[\vtheta_{Z}\cdot\vpsi(z)+\Phi_{X}(z)\right]\label{eq:NBR_true_prior}\\
 p_{0}(\vx) & \propto\nu_{X}(\vx)\exp\left[\vtheta_{X}\cdot\vx+\log Z_{Z}(\vtheta_{Z}+\mM_{ZX}\cdot\vx)\right].\label{eq:NBR_true_lik}
 \end{align}
 
@@ -1908,18 +1912,18 @@ p_{0}(\vx) & \propto\nu_{X}(\vx)\exp\left[\vtheta_{X}\cdot\vx+\log Z_{Z}(\vtheta
 The implied posterior distribution is
 \begin_inset Formula 
 \begin{equation}
-p_{0}(\vz|\vx)\propto\nu_{Z}(\vz)\exp\left(\vpsi(\vz)\cdot\left[\mM_{ZX}\cdot\vx+\vtheta_{Z}\right]\right)\label{eq:NBR_true_posterior}
+p_{0}(z|\vx)\propto\nu_{Z}(z)\exp\left(\vpsi(z)\cdot\left[\mM_{ZX}\cdot\vx+\vtheta_{Z}\right]\right)\label{eq:NBR_true_posterior}
 \end{equation}
 
 \end_inset
 
 and 
-\begin_inset Formula $p_{0}(\vz|\vx)\in\sM$
+\begin_inset Formula $p_{0}(z|\vx)\in\sM$
 \end_inset
 
 .
  Thus, 
-\begin_inset Formula $p_{0}(\vz)$
+\begin_inset Formula $p_{0}(z)$
 \end_inset
 
  is almost in 
@@ -1927,25 +1931,25 @@ and
 \end_inset
 
  but off by 
-\begin_inset Formula $\Phi_{X}(\vz)=\sum_{i=1}^{\Dim X}f_{i}(\vz)$
+\begin_inset Formula $\Phi_{X}(z)=\sum_{i=1}^{\Dim X}f_{i}(z)$
 \end_inset
 
  in the log density.
  If one assumes that this sum, which is the total firing rate for any given
  
-\begin_inset Formula $\vz$
+\begin_inset Formula $z$
 \end_inset
 
 , is a constant, 
 \begin_inset Formula 
 \begin{equation}
-\sum_{i=1}^{\Dim X}f_{i}(\vz)=\lambda\label{eq:NBR_const_total_rate}
+\sum_{i=1}^{\Dim X}f_{i}(z)=\lambda\label{eq:NBR_const_total_rate}
 \end{equation}
 
 \end_inset
 
 then 
-\begin_inset Formula $p_{0}\left(\vz,\vx\right)=p\left(\vz,\vx\right)$
+\begin_inset Formula $p_{0}\left(z,\vx\right)=p\left(z,\vx\right)$
 \end_inset
 
 , and we obtain a model that has the following properties:
@@ -1953,7 +1957,7 @@ then
 
 \begin_layout Enumerate
 the prior 
-\begin_inset Formula $p(\vz)\in\sM_{\psi}$
+\begin_inset Formula $p(z)\in\sM_{\psi}$
 \end_inset
 
 
@@ -1961,7 +1965,7 @@ the prior
 
 \begin_layout Enumerate
 the likelihood 
-\begin_inset Formula $p(\vx|\vz)$
+\begin_inset Formula $p(\vx|z)$
 \end_inset
 
  is independent Poisson with mean rate depending on Gaussian tuning functions
@@ -1974,7 +1978,7 @@ the likelihood
 
 \begin_layout Enumerate
 the posterior 
-\begin_inset Formula $p(\vz|\vx)\in\sM_{\psi}$
+\begin_inset Formula $p(z|\vx)\in\sM_{\psi}$
 \end_inset
 
 
@@ -1984,7 +1988,7 @@ the posterior
 Given these properties, the next question is how to encode these distributions
  into neural populations.
  Following PPC, and assuming that 
-\begin_inset Formula $\sum_{i=1}^{\Dim X}f_{i}(\vz)$
+\begin_inset Formula $\sum_{i=1}^{\Dim X}f_{i}(z)$
 \end_inset
 
  is a constant, two separate populations with rates 
@@ -1996,23 +2000,23 @@ Given these properties, the next question is how to encode these distributions
 \end_inset
 
  encode the prior 
-\begin_inset Formula $p_{0}(\vz)$
+\begin_inset Formula $p_{0}(z)$
 \end_inset
 
  and posterior 
-\begin_inset Formula $p_{0}(\vz|\vx)$
+\begin_inset Formula $p_{0}(z|\vx)$
 \end_inset
 
 , respectively, about 
-\begin_inset Formula $\vz$
+\begin_inset Formula $z$
 \end_inset
 
 .
  
 \begin_inset Formula 
 \begin{align}
-q(\vz) & \propto\exp\left[\vpsi(\vz)\cdot\mW_{Z}\cdot\vr_{Z}\right]\label{eq:NBR_ppc_prior}\\
-q(\vz|\vx) & \propto\exp\left[\vpsi(\vz)\cdot\mW_{Z|X}\cdot\vr_{Z|X}\right]\label{eq:NBR_ppc_posterior}
+q(z) & \propto\exp\left[\vpsi(z)\cdot\mW_{Z}\cdot\vr_{Z}\right]\label{eq:NBR_ppc_prior}\\
+q(z|\vx) & \propto\exp\left[\vpsi(z)\cdot\mW_{Z|X}\cdot\vr_{Z|X}\right]\label{eq:NBR_ppc_posterior}
 \end{align}
 
 \end_inset
@@ -2020,11 +2024,11 @@ q(\vz|\vx) & \propto\exp\left[\vpsi(\vz)\cdot\mW_{Z|X}\cdot\vr_{Z|X}\right]\labe
 This encoding allows more neurons than parameters to encode a distribution,
  and thus allows noise in the representation.
  For exact Bayes rule, it is desirable for 
-\begin_inset Formula $q(\vz|\vr_{X})=p(\vz)$
+\begin_inset Formula $q(z|\vr_{X})=p(z)$
 \end_inset
 
 , 
-\begin_inset Formula $q(\vz|\vr_{Z|X})=p(\vz|\vx)$
+\begin_inset Formula $q(z|\vr_{Z|X})=p(z|\vx)$
 \end_inset
 
  and 
@@ -2217,14 +2221,14 @@ key "BeckEtAl2007"
 
 \begin_layout Enumerate
 the prior 
-\begin_inset Formula $p(\vz)$
+\begin_inset Formula $p(z)$
 \end_inset
 
  is explicitly represented by a neural population
 \end_layout
 
 \begin_layout Enumerate
-\begin_inset Formula $\vz$
+\begin_inset Formula $z$
 \end_inset
 
  and 
