@@ -5,6 +5,9 @@
 \save_transient_properties true
 \origin unavailable
 \textclass article
+\begin_preamble
+\input{math_commands.tex}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -27,9 +30,10 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -53,6 +57,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -72,12 +80,7 @@
 
 \begin_layout Title
 \noindent
-Amortised learning
-\end_layout
-
-\begin_layout Author
-\noindent
-Kevin W Li
+Sparse Stochastic Processes
 \end_layout
 
 \begin_layout Standard
@@ -120,6 +123,12 @@ Kevin W Li
 
 \begin_inset FormulaMacro
 \newcommand{\y}{\mathbf{y}}
+{\mathbf{y}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vy}{\mathbf{y}}
 {\mathbf{y}}
 \end_inset
 
@@ -203,6 +212,12 @@ Kevin W Li
 
 
 \begin_inset FormulaMacro
+\newcommand{\cL}{\mathcal{L}}
+{\mathcal{L}}
+\end_inset
+
+
+\begin_inset FormulaMacro
 \newcommand{\GP}{\mathcal{GP}}
 {\mathcal{GP}}
 \end_inset
@@ -221,8 +236,14 @@ Kevin W Li
 
 
 \begin_inset FormulaMacro
-\newcommand{\mK}{\mathbf{K}}
-{\mathbf{K}}
+\newcommand{\mK}{\boldsymbol{K}}
+{\boldsymbol{K}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mS}{\boldsymbol{S}}
+{\boldsymbol{S}}
 \end_inset
 
 
@@ -269,14 +290,14 @@ Kevin W Li
 
 
 \begin_inset FormulaMacro
-\newcommand{\mA}{\mathbf{A}}
-{\mathbf{A}}
+\newcommand{\mA}{\boldsymbol{A}}
+{\boldsymbol{A}}
 \end_inset
 
 
 \begin_inset FormulaMacro
-\newcommand{\mB}{\mathbf{B}}
-{\mathbf{B}}
+\newcommand{\mB}{\boldsymbol{B}}
+{\boldsymbol{B}}
 \end_inset
 
 
@@ -286,15 +307,22 @@ Kevin W Li
 \end_inset
 
 
+\begin_inset FormulaMacro
+\newcommand{\vmu}{\bm{\mu}}
+{\bm{\mu}}
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
-Gaussian process
+Stochastic Processes from RHKS functions
 \end_layout
 
 \begin_layout Standard
-Suppose we have data 
-\begin_inset Formula $\cD=\left\{ x_{n,}y_{n}\right\} _{n=1}^{N}$
+Suppose we have i.i.d.
+ data 
+\begin_inset Formula $\gD=\left\{ x_{n,}y_{n}\right\} _{n=1}^{N}$
 \end_inset
 
  and we would like to perform regression to find a function 
@@ -305,123 +333,221 @@ Suppose we have data
 \begin_inset Formula $f(x_{i})$
 \end_inset
 
- is produces good prediction on the label 
+ is close to 
 \begin_inset Formula $y_{i}$
 \end_inset
 
 .
- If the function is Gaussian process 
-\begin_inset Formula $f\sim\GP(0,k(\cdot,\cdot))$
+ Let 
+\begin_inset Formula $f$
 \end_inset
 
- induced by the zero mean function and covariance kernel 
-\begin_inset Formula $k$
+ be in the RKHS induced by positive-definite kernel 
+\begin_inset Formula $k(\cdot,\cdot)$
 \end_inset
 
-, then there are various ways to condition on data and obtain posterior
- process.
- Assume for now that the likelihood is a Gaussian distribution 
+.
+ If we minimise the squared error between 
+\begin_inset Formula $f(x)_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+ under RKHS-norm regularisation, then, according to the Riesz representation
+ theorem, the solution takes the form 
+\begin_inset Formula $f=\sum_{n=1}^{N}\alpha_{n}k(z_{n},\cdot)$
+\end_inset
+
+.
+ To reduce computational cost, the Nystrom approximation is often used which
+ corresponds to the following approximation 
+\begin_inset Formula 
+\begin{equation}
+f=\sum_{m=1}^{M}\alpha_{m}k(z_{m},\cdot),\label{eq:process}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $z_{m}$
+\end_inset
+
+ are inducing points that, 
+\begin_inset Formula $M\le N$
+\end_inset
+
+ and 
+\begin_inset Formula $\valpha$
+\end_inset
+
+ are coefficients to be determined by the objective function.
+ A stochastic process may be defined by making 
+\begin_inset Formula $\valpha$
+\end_inset
+
+ a random variable parametrised by some hyper-parameters.
+ 
+\end_layout
+
+\begin_layout Section
+Sparse Gaussian processes
+\end_layout
+
+\begin_layout Standard
+Given a GP prior on 
+\begin_inset Formula $f\text{\textasciitilde\GP(\mu(\cdot),\Sigma(\cdot,\cdot))}$
+\end_inset
+
+ and Gaussian likelihood 
 \begin_inset Formula $p(y|x,f)=\cN(y|f(x),\sigma^{2})$
 \end_inset
 
-, then we have the following closed form predictive posterior for a new
- test input 
-\begin_inset Formula $x^{*}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
+, the posterior is a GP with the following parameters
 \begin_inset Formula 
-\begin{gather*}
-f|\cD\sim\GP\left(\mu^{q}(\cdot),k^{q}(\cdot,\cdot)\right)\\
-\mu^{k}(x)=\vk_{xX}\left(\mK_{XX}+\sigma^{2}\mI\right)^{-1}\y\\
-k^{q}(x,x')=k(x,x')-\vk_{xX}\left(\mK_{XX}+\sigma^{2}\mI\right)^{-1}\vk_{Xx'}
-\end{gather*}
+\begin{gather}
+f|\cD\sim\GP\left(\mu^{q}(\cdot),\Sigma^{q}(\cdot,\cdot)\right)\label{eq:full_post_gp}\\
+\mu^{q}(x)=\mSigma_{X}^{\intercal}(x)\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)^{-1}\left[\y-\vmu_{x}\right]\label{eq:full_post_mean}\\
+\Sigma^{q}(x,x')=\Sigma(x,x')-\mSigma_{X}^{\intercal}(x)\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)^{-1}\mSigma_{X}(x').\label{eq:full_gp_post}
+\end{gather}
 
 \end_inset
 
 where 
-\begin_inset Formula $k_{xX,i}=k(x,x_{i})$
+\begin_inset Formula $\vmu_{x,i}=\mu(x_{i})$
+\end_inset
+
+ 
+\begin_inset Formula $\Sigma_{X,i}(x)=\Sigma(x,x_{i})$
 \end_inset
 
  and 
-\begin_inset Formula $\mK_{XX,ij}=k(x_{i},x_{j})$
+\begin_inset Formula $\Sigma_{XX,ij}=\Sigma(x_{i},x_{j})$
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-If taking the inverse is impractical due to large 
-\begin_inset Formula $N$
-\end_inset
-
-, then one may assume that the posterior is a GP induced by a smaller number
- of 
-\begin_inset Formula $M$
-\end_inset
-
- inducing points 
-\begin_inset Formula $\left\{ z_{m}\right\} _{m=1}^{M}$
-\end_inset
-
-.
- In 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Titsias2009"
-
-\end_inset
-
-, the following form of posterior GP is proposed:
-\end_layout
-
-\begin_layout Standard
+ The marginal likelihood (evidence) is 
 \begin_inset Formula 
-\begin{align*}
-\mu^{k}(x) & =\vk_{x,Z}\mK_{ZZ}\vb\\
-k^{q}(x,x') & =k(x,x')-\vk_{xZ}\mK_{ZZ}^{-1}\vk_{Zx'}+\vk_{xZ}\mK_{ZZ}^{-1}\mA\mK_{ZZ}^{-1}\vk_{Zx'}
-\end{align*}
+\begin{equation}
+\cL=-\frac{N}{2}\log(2\pi)-\frac{1}{2}\log\left|\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)\right|-\frac{1}{2}\vy^{\intercal}\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)\vy.\label{eq:full_gp_evidence}
+\end{equation}
 
 \end_inset
 
-where 
-\begin_inset Formula $\vb$
+The matrix inversions in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:full_post_gp"
+
 \end_inset
 
- and 
-\begin_inset Formula $\mA$
+, 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:full_gp_post"
+
 \end_inset
 
- are variational parameters, which are fit to maximise the ELBO.
+ costs 
+\begin_inset Formula $N^{3}$
+\end_inset
+
+ and is very expensive for large datasets.
  
 \end_layout
 
 \begin_layout Standard
-Using amortised learning, one can use a more generic form of the posterior
- function.
- For example, the following stochastic function may be used 
+The costs can be reduced using the formuation in the previous section.
+ If 
+\begin_inset Formula $\valpha\sim\cN(\vm,\mS)$
+\end_inset
+
+, 
+\begin_inset Formula $f$
+\end_inset
+
+ in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:process"
+
+\end_inset
+
+ is a GP with a mean function 
+\begin_inset Formula $\mu^{sp}(x)=\valpha^{\intercal}\vk_{Z}(x)$
+\end_inset
+
+ and a low-rank covariance function 
+\begin_inset Formula $\Sigma^{sp}(x,x')=\vk_{Z}^{\intercal}(x)\mS\vk_{Z}(x')$
+\end_inset
+
+ where 
+\begin_inset Formula $k_{Z,i}(x)=k(z_{i},x)$
+\end_inset
+
+.
+ In this case, the inversions in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:full_post_gp"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:full_gp_post"
+
+\end_inset
+
+ can be calculated in a more efficient way using the Woodbury matrix inversion
+ lemma
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
-f=\sum_{m}\alpha_{m}k(z_{m},\cdot),\quad\valpha\sim\cN(\vb,\mA)
+\left(\mSigma_{XX}^{sp}+\sigma^{2}\mI_{N}\right)^{-1}=\left(\mK_{XZ}\mS\mK_{ZX}+\sigma^{2}\mI_{N}\right)^{-1}=\frac{1}{\sigma^{2}}\left[\mI_{N}-\mK_{XZ}\left(\sigma^{2}\mS^{-1}+\mK_{ZX}\mK_{XZ}\right)^{-1}\mK_{ZX}\right],
 \]
 
 \end_inset
 
+where 
+\begin_inset Formula $K_{XZ,ij}=k(x_{i},z_{j})$
+\end_inset
 
-\end_layout
+, which costs 
+\begin_inset Formula $M^{3}+NM^{2}$
+\end_inset
 
-\begin_layout Standard
-\begin_inset CommandInset bibtex
-LatexCommand bibtex
-bibfiles "ref"
-options "plain"
+.
+ The matrix determinant term in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:full_gp_evidence"
 
 \end_inset
 
+ can also be computed with the matrix determinant lemma as
+\begin_inset Formula 
+\[
+\log\left|\mSigma_{XX}^{sp}+\sigma^{2}\mI_{N}\right|=\log\left|\mK_{XZ}\mS\mK_{ZX}+\sigma^{2}\mI_{N}\right|=\log\left|\mS^{-1}+\sigma^{2}\mK_{ZX}\mK_{XZ}\right|+\log\left|\mS\right|+N\log(\sigma^{2}).
+\]
 
+\end_inset
+
+which costs 
+\begin_inset Formula $M^{3}$
+\end_inset
+
+.
+ These costs are comparable to that for computing the free energy with sparse
+ 
+\emph on
+posterior
+\emph default
+ GP being the variational distribution.
 \end_layout
 
 \end_body
