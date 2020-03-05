@@ -1,15 +1,16 @@
-#LyX 2.2 created this file. For more info see http://www.lyx.org/
-\lyxformat 508
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
 \begin_document
 \begin_header
 \save_transient_properties true
 \origin unavailable
-\textclass article
+\textclass extreport
 \begin_preamble
 \setcitestyle{round}
 % call the glossaries package
 \usepackage[nonumberlist]{glossaries} 
 \usepackage{hyperref}
+\usepackage{cleveref}
 % activate the glossaries building
 \renewcommand*{\glstextformat}{\textbf}
 \makeglossaries
@@ -29,6 +30,10 @@
 \newglossaryentry{PPC-BR-EFH}{name={PPC-BR-EFH}, description={Probabilistic population code Bayes rule with exponential family harmonium by Sokoloski (2017)}}
 \end_preamble
 \use_default_options true
+\begin_modules
+theorems-ams-chap-bytype
+theorems-ams-extended-chap-bytype
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -44,6 +49,8 @@
 \font_osf false
 \font_sf_scale 100 100
 \font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -51,7 +58,16 @@
 \index_command default
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry false
 \use_package amsmath 1
@@ -73,6 +89,7 @@
 \suppress_date false
 \justification true
 \use_refstyle 0
+\use_minted 0
 \index Index
 \shortcut idx
 \color #008000
@@ -81,7 +98,10 @@
 \tocdepth 3
 \paragraph_separation indent
 \paragraph_indentation default
-\quotes_language english
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
@@ -177,6 +197,15 @@
 
 \begin_layout Standard
 \begin_inset FormulaMacro
+\newcommand{\vh}{\vfont h}
+{\vfont h}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
 \newcommand{\vs}{\vfont s}
 {\vfont s}
 \end_inset
@@ -233,15 +262,6 @@
 \begin_inset FormulaMacro
 \renewcommand{\vx}{\vfont x}
 {\vfont x}
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset FormulaMacro
-\newcommand{\vr}{\vfont r}
-{\vfont r}
 \end_inset
 
 
@@ -417,8 +437,321 @@
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\vectorfont}[1]{\boldsymbol{#1}}
+{\boldsymbol{#1}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\setfont}[1]{\mathbb{#1}}
+{\mathbb{#1}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\matrixfont}[1]{\mathbf{#1}}
+{\mathbf{#1}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\graphfont}[1]{\mathcal{#1}}
+{\mathcal{#1}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\renewcommand{\vz}{\vectorfont z}
+{\vectorfont z}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\vx}{\vectorfont x}
+{\vectorfont x}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vy}{\vectorfont y}
+{\vectorfont y}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\vz}{\vectorfont z}
+{\vectorfont z}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\vphi}{\vectorfont{\phi}}
+{\vectorfont{\phi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\valpha}{\vectorfont{\alpha}}
+{\vectorfont{\alpha}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\vpsi}{\vectorfont{\psi}}
+{\vectorfont{\psi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\vf}{\vectorfont f}
+{\vectorfont f}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\vtheta}{\vectorfont{\theta}}
+{\vectorfont{\theta}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vgamma}{\vectorfont{\gamma}}
+{\vectorfont{\gamma}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vepsilon}{\vectorfont{\epsilon}}
+{\vectorfont{\epsilon}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vb}{\vectorfont b}
+{\vectorfont b}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\softplus}{\textrm{softplus}}
+{\textrm{softplus}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\vw}{\vectorfont w}
+{\vectorfont w}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vm}{\vectorfont m}
+{\vectorfont m}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vmu}{\vectorfont{\mu}}
+{\vectorfont{\mu}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vr}{\vectorfont r}
+{\vectorfont r}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\va}{\vectorfont a}
+{\vectorfont a}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\vv}{\vectorfont v}
+{\vectorfont v}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\mY}{\matrixfont Y}
+{\matrixfont Y}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mI}{\matrixfont I}
+{\matrixfont I}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\mSigma}{\matrixfont{\Sigma}}
+{\matrixfont{\Sigma}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mPhi}{\matrixfont{\Phi}}
+{\matrixfont{\Phi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\mPsi}{\matrixfont{\Psi}}
+{\matrixfont{\Psi}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\renewcommand{\mW}{\matrixfont W}
+{\matrixfont W}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\gH}{\graphfont H}
+{\graphfont H}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gN}{\graphfont N}
+{\graphfont N}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gD}{\graphfont D}
+{\graphfont D}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gU}{\graphfont U}
+{\graphfont U}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gF}{\graphfont F}
+{\graphfont F}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gG}{\graphfont G}
+{\graphfont G}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gQ}{\graphfont Q}
+{\graphfont Q}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gR}{\graphfont R}
+{\graphfont R}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\sR}{\setfont R}
+{\setfont R}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\renewcommand{\E}[2]{\mathbb{E}_{#1}\left[#2\right]}
+{\mathbb{E}{}_{#1}\left[#2\right]}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\argmin}{\operatorname*{\arg\min}}
+{\textrm{argmin}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\Dx}{\Delta_{\vtheta}(\vx)}
+{\Delta_{\vtheta}(\vx)}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\Dxt}{\Delta_{\vtheta_{t}}(\vx)}
+{\Delta_{\vtheta_{t}}(\vx)}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\renewcommand{\KL}{\mathrm{KL}}
+{\mathrm{KL}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\renewcommand{\NN}{\mathrm{NN}}
+{\mathrm{NN}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
 Literature review
+\end_layout
+
+\begin_layout Section
+Approximate inference and learning 
 \end_layout
 
 \begin_layout Subsection
@@ -480,7 +813,7 @@ Consider a generative model described by a directed graph
 \begin{align*}
 \mathcal{F}(\theta,q): & =\E{q(\vZ|\vX)}{\log p_{\theta}(\vZ,\vX)-\log(q(\vZ|\vX))}\\
  & =\mathcal{L}(\theta)-\KL\left[q(\vZ|\vX)\|p(\vZ\|\vX)\right]\\
- & =\le\mathcal{L}(\theta)
+ & \le\mathcal{L}(\theta)
 \end{align*}
 
 \end_inset
@@ -547,6 +880,7 @@ The wake-sleep algorithm by
 \begin_inset CommandInset citation
 LatexCommand citet
 key "HintonEtAl1995"
+literal "true"
 
 \end_inset
 
@@ -554,6 +888,7 @@ key "HintonEtAl1995"
 \begin_inset CommandInset citation
 LatexCommand citet
 key "DayanEtAl1995"
+literal "true"
 
 \end_inset
 
@@ -771,6 +1106,7 @@ Particular instances of Helmholtz machine are biologically attractive.
 \begin_inset CommandInset citation
 LatexCommand citep
 key "DayanEtAl1995"
+literal "true"
 
 \end_inset
 
@@ -778,13 +1114,1179 @@ key "DayanEtAl1995"
 \begin_inset CommandInset citation
 LatexCommand citep
 key "DayanHinton1996"
+literal "true"
 
 \end_inset
 
 .
 \end_layout
 
+\begin_layout Section
+Neural representation of uncertainty
+\end_layout
+
 \begin_layout Subsection
+Probabilistic population code (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+The probabilistic population code was proposed by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MaPouget2006Bayesian,BeckEtAl2007"
+literal "false"
+
+\end_inset
+
+ as a way for representing a distribution by a group of noisy neurons.
+ It considers how neuronal activities 
+\begin_inset Formula $\vr\in\mathcal{R}$
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+not to be confused with the real domain 
+\begin_inset Formula $\mathbb{R}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ could represent a stimulus 
+\begin_inset Formula $x\in\mathcal{X}$
+\end_inset
+
+ (assumed to be scalar for simplicity), and how this representation could
+ be used for a variety of tasks.
+ The following main claims were made in the initial proposal 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "MaPouget2006Bayesian,BeckEtAl2007"
+literal "false"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Enumerate
+neuronal variability encodes probability distributions over 
+\begin_inset Formula $x$
+\end_inset
+
+;
+\end_layout
+
+\begin_layout Enumerate
+probabilistic computations, such as cue combination, can be carried out
+ by simple operations in 
+\begin_inset Formula $\mathcal{R}$
+\end_inset
+
+;
+\end_layout
+
+\begin_layout Enumerate
+the above properties hold for arbitrary tuning curves.
+\end_layout
+
+\begin_layout Standard
+I remark each of these claims as I reproduce the PPC theory.
+ Given a stimulus 
+\begin_inset Formula $x$
+\end_inset
+
+, Poisson-like neural population with tuning functions 
+\begin_inset Formula $\vphi(x)$
+\end_inset
+
+ encodes 
+\begin_inset Formula $x$
+\end_inset
+
+ by a likelihood function 
+\begin_inset Formula 
+\begin{equation}
+p(\vr|x)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr\right].\label{eq:PPC_lik}
+\end{equation}
+
+\end_inset
+
+A typical example is the Poisson firing neurons for which 
+\begin_inset Formula $\vh(x)$
+\end_inset
+
+ is the set of the logarithms of tuning functions, also known as the response
+ kernel.
+ Under the uniform prior over 
+\begin_inset Formula $x$
+\end_inset
+
+, this likelihood imples the following unnormalised posterior distribution
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+p(x|\vr)\propto\frac{1}{Z(x)}\exp\left[\vh(x)\cdot\vr\right],\label{eq:PPC_post}
+\end{equation}
+
+\end_inset
+
+which belongs to the exponential family with 
+\begin_inset Formula $\vh(x)$
+\end_inset
+
+ being the sufficient statistics, and 
+\begin_inset Formula $\vr$
+\end_inset
+
+ is the natural parameter.
+ Note that, although the tuning curves may form a rich set of basis functions,
+ their logarithm 
+\begin_inset Formula $\vh(x)$
+\end_inset
+
+ may not.
+ An example is that Gaussian-shaped 
+\begin_inset Formula $\vphi(x)$
+\end_inset
+
+ always implies a Gaussian 
+\begin_inset Formula $p(x|\vr)$
+\end_inset
+
+.
+ Based on the encoding construction 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_lik"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and the decoded posterior 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_post"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, I make the following remarks: 
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Uncertainty encoded by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+The stimulus 
+\begin_inset Formula $x$
+\end_inset
+
+ is in fact deterministic with no uncertainty.
+ The uncertainty in the posterior 
+\begin_inset Formula $p(x|\vr)$
+\end_inset
+
+ in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_post"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is induced in decoding through the likelihood 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_lik"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ while incorporating a uniform prior 
+\begin_inset Formula $p(s)$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ as sub-optimal decoding
+\end_layout
+
+\end_inset
+
+We may take 
+\begin_inset Formula $p(x|\vr)$
+\end_inset
+
+ as Bayesian decoding of what is encoded about 
+\begin_inset Formula $x$
+\end_inset
+
+ by a particular firing pattern 
+\begin_inset Formula $\vr$
+\end_inset
+
+.
+ Optimal decoding requires that the brain have the exact represents for
+ 
+\begin_inset Formula $p(\vr|s)$
+\end_inset
+
+ and of 
+\begin_inset Formula $p(s)$
+\end_inset
+
+.
+ While the former depends on the property of neurons and hence may be known
+ by the brain, the latter is usually not flat even for visual orientations
+ (oblique effect), not to mension higher dimensional stimuli, such as images.
+ Thus, decoding with a flat prior to obtain 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_post"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ implies sub-optimality in the uncertainty represented, meaning if may not
+ reflect the real distribution of 
+\begin_inset Formula $s$
+\end_inset
+
+ in the environment that causes 
+\begin_inset Formula $\vr$
+\end_inset
+
+.
+ One may hope that 
+\begin_inset Formula $p(s)$
+\end_inset
+
+ can be acquired through experience, but learning is largely ignored by
+ the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ literature.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "rem:PPC_suboptimal_decoding"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ as log linear codes
+\end_layout
+
+\end_inset
+
+We can interpret PPC defined by 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_post"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ as a log linear encoding of distribution with basis functions 
+\begin_inset Formula $\vh(x)$
+\end_inset
+
+ and linear weight, or natural parameters, 
+\begin_inset Formula $\vr$
+\end_inset
+
+ and base measure 
+\begin_inset Formula $\frac{1}{Z(x)}$
+\end_inset
+
+.
+ A generic base measure may render 
+\begin_inset Formula $p(x|\vr)$
+\end_inset
+
+ not a known exponential family.
+ This can be aleviated with further assumption about the tuning curves.
+ For example, for Poisson neurons, 
+\begin_inset Formula $Z(x)$
+\end_inset
+
+ is more or less independent of 
+\begin_inset Formula $x$
+\end_inset
+
+ if the firing rates of all neurons sum to a constant for any 
+\begin_inset Formula $x$
+\end_inset
+
+, which can be realised by neurons with densely arranged translation-invarant
+ tuning functions.
+ Under the log linear code interpretation, the source of uncertainty is
+ simply from the definition.
+\end_layout
+
+\begin_layout Standard
+PPC can be used to perform cue combination.
+ Consider two neural populations with responses described by 
+\begin_inset Formula 
+\begin{align*}
+p(\vr_{a},\vr_{b}|x) & =\frac{1}{Z_{ab}(x)}\nu_{ab}(\vr_{a},\vr_{b})\exp\left[\vh_{a}(x)\cdot\vr_{a}+\vh_{b}(x)\cdot\vr_{b}\right].
+\end{align*}
+
+\end_inset
+
+This likelihood implies a posterior 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p(x|\vr_{a},\vr_{b})\propto\frac{1}{Z_{ab}(x)}\exp\left[\vh_{a}(x)\cdot\vr_{a}+\vh_{b}(x)\cdot\vr_{b}\right].
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that 
+\begin_inset Formula $\vr_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vr_{b}$
+\end_inset
+
+ may not be independent conditioned on 
+\begin_inset Formula $s$
+\end_inset
+
+.
+ For cue combination, it is desirable for a downstream population to combine
+ the messages into activity 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+, such that 
+\begin_inset Formula $p(x|\vr_{c})=p(x|\vr_{a},\vr_{b})$
+\end_inset
+
+.
+ Suppose that this population has response kernel 
+\begin_inset Formula $\vh_{c}(s)$
+\end_inset
+
+.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "BeckEtAl2007"
+literal "false"
+
+\end_inset
+
+ shows that this is possible if 
+\begin_inset Formula $\vh_{c}(x)\cdot\vr_{c}=\vh_{a}(x)\cdot\vr_{a}+\vh_{b}(x)\cdot\vr_{b}$
+\end_inset
+
+.
+ One way to ensure this holds is to construct the response kernels of the
+ two upstream populations by
+\begin_inset Formula 
+\begin{equation}
+\vh_{d}(x)=\mW_{d}\vh_{c}(x),\quad d\in\left\{ a,b\right\} \label{eq:PPC_shared_basis}
+\end{equation}
+
+\end_inset
+
+This allows cue combinations to be performed easily with
+\begin_inset Formula 
+\begin{equation}
+\vr_{c}=\mW_{a}^{\intercal}\vr_{a}+\mW_{b}^{\intercal}\vr_{b}\label{eq:PPC_cue_combination}
+\end{equation}
+
+\end_inset
+
+ with implied decoded posterior 
+\begin_inset Formula 
+\[
+p(x|\vr_{c})\propto\frac{1}{Z_{ab}(x)}\exp\left[\vh_{c}(x)\cdot\vr_{c}\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ for cue combination
+\end_layout
+
+\end_inset
+
+ The shared basis in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_shared_basis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ allows PPC to implement cue combination with simple addition of the codes.
+ However, it also means that 
+\begin_inset Formula $\vh_{c}$
+\end_inset
+
+ should in general be more flexible than 
+\begin_inset Formula $\vh_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vh_{b}$
+\end_inset
+
+.
+ This is against usual concept that response properties of downstream population
+ is derived from upstream neurons.
+ For example, V4 neurons have wider tuning widths than V1 neurons as they
+ pool responses from V1.
+ For a cascade of cue combination tasks, higher areas should have response
+ kernel that is the most diverse, which may be even more counter-intuitive.
+\end_layout
+
+\begin_layout Standard
+In addition to cue combination, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "BeckPouget2011Marginalization"
+literal "false"
+
+\end_inset
+
+ proposed how marginalisation could be implemented by PPC.
+ The authors considered addition of two random variables: 
+\begin_inset Formula $x_{3}=x_{1}+x_{2}$
+\end_inset
+
+, and restricted the discussions to all variables being Gaussian distributed,
+ 
+\begin_inset Formula $x_{i}\sim\gN(\mu_{i},\Sigma_{i})$
+\end_inset
+
+.
+ In such specific case, PPCs 
+\begin_inset Formula $\vr_{i}$
+\end_inset
+
+ encode the natural parameters of these Gaussians, with corresponding response
+ kernel 
+\begin_inset Formula $\vh_{d}(x)=[\frac{-x^{2}}{2\vv_{d}};x\vm]^{\intercal}$
+\end_inset
+
+ where 
+\begin_inset Formula $d\in\left\{ a,b,c\right\} $
+\end_inset
+
+ and 
+\begin_inset Formula $a_{d,i}\in\sR_{+}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{d,i}\in\sR$
+\end_inset
+
+ are derived from properties of Gaussian-shaped tuning functions.
+ Since means and precisions simply add for addition of Gaussian random variables
+, we use the following to find an expression for 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{equation}
+\frac{\vm_{c}\cdot\vr_{c}}{\vv_{c}\cdot\vr_{c}}=\frac{\vm_{a}\cdot\vr_{a}}{\vv_{a}\cdot\vr_{a}}+\frac{\vm_{b}\cdot\vr_{b}}{\vv_{b}\cdot\vr_{b}}\quad\frac{1}{\vv_{c}\cdot\vr_{c}}=\frac{1}{\vv_{a}\cdot\vr_{a}}+\frac{1}{\vv_{b}\cdot\vr_{b}}.\label{eq:PPC_gaussian_addition}
+\end{equation}
+
+\end_inset
+
+This is a underdetermined system, as it only constrains projections of 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+ along 
+\begin_inset Formula $\vv_{c}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vm_{c}$
+\end_inset
+
+.
+ One solution can be obtained by first finding orthonormal basis 
+\begin_inset Formula $\vv_{c}^{\dagger}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vm_{c}^{\dagger}$
+\end_inset
+
+ such that 
+\begin_inset Formula $\vv_{c}^{\dagger}\cdot\vv_{c}=\vm_{c}^{\dagger}\cdot\vm_{c}=1;\vv_{c}^{\dagger}\cdot\vm_{c}=\vm_{c}^{\dagger}\cdot\vv_{c}=0$
+\end_inset
+
+, and then express 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+ using these basis.
+ 
+\begin_inset Formula 
+\begin{equation}
+\vr_{c}=\frac{\left[\left(\vm_{a}\cdot\vr_{a}\right)\left(\vv_{b}\cdot\vr_{b}\right)+\left(\vm_{b}\cdot\vr_{b}\right)\left(\vv_{a}\cdot\vr_{a}\right)\right]}{\vv_{a}\cdot\vr_{a}+\vv_{b}\cdot\vr_{b}}\vm_{c}^{\dagger}+\frac{\left(\vv_{a}\cdot\vr_{a}\right)\left(\vv_{b}\cdot\vr_{b}\right)}{\vv_{a}\cdot\vr_{a}+\vv_{b}\cdot\vr_{b}}\vv_{c}^{\dagger}\label{eq:PPC_divisive_subspace}
+\end{equation}
+
+\end_inset
+
+which can be written in computationally inefficient but biologically plausible
+ form by expanding the dot products 
+\begin_inset Formula 
+\begin{equation}
+r_{c,k}=\frac{\sum_{ij}w_{ijk}r_{a,i}r_{b,j}}{\vv_{a}\cdot\vr_{a}+\vv_{b}\cdot\vr_{b}},\quad w_{ijk}=\left(m_{a,i}v_{b,j}+m_{b,i}v_{a,j}\right)m_{c,k}^{\dagger}+v_{a,i}v_{b,j}v_{c,k}^{\dagger}.\label{eq:PPC_divisive}
+\end{equation}
+
+\end_inset
+
+The authors noted that this is similar to divisive normalisation that is
+ thought to underlie many cortical computation 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "CarandiniHeeger2012Normalization"
+literal "false"
+
+\end_inset
+
+.
+ Divisive normalisation is then used as a component for computing nonlinear
+ interactions of non-Gaussian variables encoded by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+, with weights 
+\begin_inset Formula $\vw$
+\end_inset
+
+ trained by supervised learning.
+ Across tasks, it was found that a network with normalisation nonliearity
+ can form a posterior (by linear decoding) very close to the true posterior
+ , and was better than networks without normalisation or with ReLU nonlinearity
+ instead.
+ In addition, to test whether 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+ is a 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ representation, the authors used a criterion that is how close is the posterior
+ readout from 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+ to the true posterior, independent of a nuisance features (contrast).
+ Indeed, this criteron holds for 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+ computed in many tasks.
+ 
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Constrained space of 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ The simpler expression 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_divisive_subspace"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ suggests that 
+\begin_inset Formula $\vr_{c}$
+\end_inset
+
+ only lives on the plane defined by 
+\begin_inset Formula $\vm_{c}^{\dagger}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vv_{c}^{\dagger}$
+\end_inset
+
+, which is a rather constrained space for neural activities.
+ Note that 
+\begin_inset Formula $\vr_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vr_{b}$
+\end_inset
+
+ does not have such constraints.
+ For example, if they are Poisson variables, their covariance matrices are
+ full rank for typical tuning curves.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Divisive normalisation for optimal performance
+\end_layout
+
+\end_inset
+
+ Although the divisive normalisation is derived the summation of Gaussian
+ variables, empirically it seems to be important in many nonlinear problems
+ with non-Gaussian variables.
+ This finding agrees with the literature that uses local gain control to
+ improve performance on a wide range of tasks involving images 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "BalleSimoncelli2016Density,LaparraSimoncelli2017Perceptually,BalleSimoncelli2017End"
+literal "false"
+
+\end_inset
+
+.
+ However, the true posteriors in the experiments are arguably close to a
+ Gaussian distribution, and is symmetric and unimodal.
+ A stronger test would be a task where the posterior is skewed or multimodal.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Contrast invariance
+\end_layout
+
+\end_inset
+
+ Contrast is the only instance of nuisance variable in all experiments,
+ in which case it only scales the tuning curves and thus does not affect
+ 
+\begin_inset Formula $p(x|\vr)$
+\end_inset
+
+.
+ Other nuisance variables, such as spatial frequency and phase, may affect
+ tuning curves in other ways.
+ Therefore, using contrast invariance as the criterion for a 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ representation is sufficient only in a rather limited context.
+ 
+\end_layout
+
+\begin_layout Standard
+The principled solutions for cue combination 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_cue_combination"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and linear addition 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_divisive"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are exact and easy to implement by two different types of neural circuits.
+ The assumptions of shared basis 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_shared_basis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, Gaussian addition 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_gaussian_addition"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and the subspace hypothesis 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_divisive_subspace"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are quite strong, as the uncertain beliefs involved in real-world and biologica
+lly relevant situations may be more complicated.
+ Although divisive normalisation inspired by 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_divisive"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is empirically demonstrated to be accurate for some tasks, implementation
+ for other problems using 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ is analytically challenging to derive from first principles.
+ As shown in later work, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ implementation for causal inference 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "MaRahmati2013Towards"
+literal "false"
+
+\end_inset
+
+ , visual search 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "MaPouget2011Behavior"
+literal "false"
+
+\end_inset
+
+ and visual categorisation 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "QamarMa2013Trial"
+literal "false"
+
+\end_inset
+
+ all involve specific circuitries, and has computations that are intractable
+ and/or implausible.
+ An overview of these circuitries can be found at 
+\begin_inset CommandInset citation
+LatexCommand citep
+after "Eqs. 5-17"
+key "OrhanMa2017Efficient"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+PPC for generic computation
+\end_layout
+
+\end_inset
+
+ Since PPC represents probability distributions by their natural parameters,
+ it is in general challenging to derive exact or approximate algorithms
+ using PPC, and the implementation may not be plausible.
+ However, in specific settings, it may be possible to arrive at tractable
+ and plausible form of solutions.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "rem:PPC_intractable"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For completeness, I briefly go through the three tasks and illustrate why
+ Remark 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "rem:PPC_intractable"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ holds.
+ In visual search 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "MaPouget2011Behavior"
+literal "false"
+
+\end_inset
+
+, for each trial, a single oriented bar with orientation 
+\begin_inset Formula $s_{T}\in[0,\pi)$
+\end_inset
+
+ appears at random locations of the screen.
+ There are also 
+\begin_inset Formula $N$
+\end_inset
+
+ distractors bars with orientation distributed according to 
+\begin_inset Formula $p_{d}(s)$
+\end_inset
+
+ and location uniformly distributed on the screen.
+ It is also assumed that each stimulus generates a neural pattern 
+\begin_inset Formula $\vr_{i}$
+\end_inset
+
+ with tuning kernel 
+\begin_inset Formula $\vh_{i}$
+\end_inset
+
+.
+ It can be shown that the log likelihood ratio for the decision is
+\begin_inset Formula 
+\begin{equation}
+d=\log\frac{1}{N}\sum_{i=1}^{N}e^{d_{i}},\quad d_{i}=\vh_{i}(s_{T})\cdot\vr_{i}-\log\int_{0}^{\pi}\exp\left[\vh_{i}(s_{i})\cdot\vr_{i}\right]dp_{d}(s_{i})\label{eq:PPC_visual_search}
+\end{equation}
+
+\end_inset
+
+Intuitively, the decision variable 
+\begin_inset Formula $d$
+\end_inset
+
+ is an accumulation of the log odds that the target 
+\begin_inset Formula $s_{T}$
+\end_inset
+
+ is present at the 
+\begin_inset Formula $i$
+\end_inset
+
+'the location.
+ 
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Intractable integral
+\end_layout
+
+\end_inset
+
+ If 
+\begin_inset Formula $p_{d}(s_{i})$
+\end_inset
+
+ is a delta function at 
+\begin_inset Formula $s_{D}$
+\end_inset
+
+, then 
+\begin_inset Formula $d_{i}=\left[\vh_{i}(s_{T})-\vh_{i}(s_{D})\right]\cdot\vr_{i}$
+\end_inset
+
+, and 
+\begin_inset Formula $d$
+\end_inset
+
+ can be implemented easiy by neural circuits.
+ However, for a generic 
+\begin_inset Formula $p_{d}(s_{i})$
+\end_inset
+
+, it is not known how neural circuits can compute or approximate the integral
+ in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:PPC_visual_search"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Importantly, it depends on 
+\begin_inset Formula $p_{d}(s_{i})$
+\end_inset
+
+ that is not represented by or learned through 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+.
+ Even assuming 
+\begin_inset Formula $p_{d}(s_{i})$
+\end_inset
+
+ is uniform (as suggested in Remark 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "rem:PPC_suboptimal_decoding"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ for decoding) does not help with this computation.
+\end_layout
+
+\begin_layout Standard
+Finally, almost all the literature 
+\end_layout
+
+\begin_layout Subsubsection
 Neural filtering algorithms
 \end_layout
 
@@ -792,6 +2294,7 @@ Neural filtering algorithms
 \begin_inset CommandInset citation
 LatexCommand citet
 key "WilsonFinkel2009"
+literal "true"
 
 \end_inset
 
@@ -800,6 +2303,7 @@ key "WilsonFinkel2009"
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Zhang1996"
+literal "true"
 
 \end_inset
 
@@ -814,6 +2318,7 @@ key "Zhang1996"
 \begin_inset CommandInset citation
 LatexCommand citet
 key "SclarFreeman1982"
+literal "true"
 
 \end_inset
 
@@ -842,6 +2347,7 @@ gls{NPF}
 \begin_inset CommandInset citation
 LatexCommand citep
 key "KutschireiterEtAl2017"
+literal "true"
 
 \end_inset
 
@@ -1090,7 +2596,7 @@ push
  The authors did not show full distribution of the posteriors.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Paragraph
 \begin_inset ERT
 status open
 
@@ -1106,7 +2612,7 @@ gls{PPC}
  implementation of the Kalman filter 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Paragraph
 Recurrent exponential family harmonium (
 \begin_inset ERT
 status open
@@ -1142,6 +2648,7 @@ gls{PPC}
 \begin_inset CommandInset citation
 LatexCommand citep
 key "BeckEtAl2007,BeckEtAl2011"
+literal "true"
 
 \end_inset
 
@@ -1155,6 +2662,7 @@ Viewing inference and learning as a density estimation operation,
 \begin_inset CommandInset citation
 LatexCommand citet
 key "MakinEtAl2013"
+literal "true"
 
 \end_inset
 
@@ -1281,6 +2789,7 @@ gls{rEFH}
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Lewicki2002,LewickiOlshausen1999,LewickiSejnowski2000"
+literal "true"
 
 \end_inset
 
@@ -1373,6 +2882,7 @@ Later on, the same authors
 \begin_inset CommandInset citation
 LatexCommand citet
 key "MakinEtAl2015"
+literal "true"
 
 \end_inset
 
@@ -1522,7 +3032,7 @@ gls{EFH}
  Indeed, the experiments conducted all had linear Gaussian latent dynamics.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Paragraph
 PPC Bayes rule and EFH (
 \begin_inset ERT
 status open
@@ -1543,6 +3053,7 @@ gls{PPC-BR-EFH}
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Sokoloski2017"
+literal "true"
 
 \end_inset
 
@@ -1576,6 +3087,7 @@ gls{EFH}
 \begin_inset CommandInset citation
 LatexCommand citet
 key "WellingEtAl2005"
+literal "true"
 
 \end_inset
 
@@ -1666,7 +3178,7 @@ This framework has two parts.
  representation as PPC for the latent variable.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 \begin_inset ERT
 status open
 
@@ -2112,6 +3624,7 @@ To express
 \begin_inset CommandInset citation
 LatexCommand citep
 key "BeckEtAl2007"
+literal "true"
 
 \end_inset
 
@@ -2178,6 +3691,7 @@ referred to as neural Bayes rule by
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Sokoloski2017"
+literal "true"
 
 \end_inset
 
@@ -2213,6 +3727,7 @@ gls{PPC}
 \begin_inset CommandInset citation
 LatexCommand citet
 key "BeckEtAl2007"
+literal "true"
 
 \end_inset
 
@@ -2336,7 +3851,7 @@ gls{PPC}
  
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 Forward inference and learning using 
 \begin_inset ERT
 status open
@@ -2449,6 +3964,7 @@ gls{PPC}
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Sokoloski2017"
+literal "true"
 
 \end_inset
 
@@ -2521,6 +4037,7 @@ For learning, first note that some parameters are restricted.
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Sokoloski2017"
+literal "true"
 
 \end_inset
 
@@ -2548,6 +4065,7 @@ mal code), as laid out in
 \begin_inset CommandInset citation
 LatexCommand citet
 key "BeckEtAl2011"
+literal "true"
 
 \end_inset
 
@@ -2757,6 +4275,7 @@ gls{rEFH}
 \begin_inset CommandInset citation
 LatexCommand citep
 key "MakinEtAl2015"
+literal "true"
 
 \end_inset
 
@@ -2935,7 +4454,7 @@ gls{rEFH}
  include the data.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Paragraph
 General machine learning algorithms
 \end_layout
 
@@ -2971,6 +4490,7 @@ General machine learning algorithms
 \begin_inset CommandInset citation
 LatexCommand citet
 key "MarinoEtAl2018"
+literal "true"
 
 \end_inset
 
@@ -3005,6 +4525,7 @@ The Kalman VAE
 \begin_inset CommandInset citation
 LatexCommand citet
 key "FraccaroEtAl2017"
+literal "true"
 
 \end_inset
 
@@ -3092,6 +4613,7 @@ ng inferential tractability, provided that the observations were encoded
 LatexCommand nomenclature
 symbol "LGSSM"
 description " "
+literal "true"
 
 \end_inset
 
