@@ -1,0 +1,122 @@
+%% LyX 2.2.2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\input{math_commands.tex}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+
+\title{\noindent Sparse Stochastic Processes}
+
+\maketitle
+\noindent \global\long\def\bphi{\bm{\phi}}
+\global\long\def\bmu{\bm{\mu}}
+\global\long\def\bSigma{\bm{\Sigma}}
+\global\long\def\bI{\bm{I}}
+\global\long\def\w{\mathbf{w}}
+\global\long\def\x{\mathbf{x}}
+\global\long\def\y{\mathbf{y}}
+\global\long\def\vy{\mathbf{y}}
+\global\long\def\E{\mathbb{E}}
+\global\long\def\H{\mathbb{H}}
+\global\long\def\bpsi{\bm{\psi}}
+\global\long\def\cW{\mathcal{W}}
+\global\long\def\m{\mathbf{m}}
+\global\long\def\bxi{\bm{\xi}}
+\global\long\def\cH{\mathcal{H}}
+\global\long\def\cF{\mathcal{F}}
+\global\long\def\cG{\mathcal{G}}
+\global\long\def\cC{\mathcal{C}}
+\global\long\def\cU{\mathcal{U}}
+\global\long\def\cN{\mathcal{N}}
+\global\long\def\cV{\mathcal{V}}
+\global\long\def\cL{\mathcal{L}}
+\global\long\def\GP{\mathcal{GP}}
+\global\long\def\cD{\mathcal{D}}
+\global\long\def\vk{\boldsymbol{k}}
+\global\long\def\mK{\boldsymbol{K}}
+\global\long\def\mS{\boldsymbol{S}}
+\global\long\def\mI{\mathbf{I}}
+\global\long\def\mSigma{\boldsymbol{\Sigma}}
+\global\long\def\vm{\boldsymbol{m}}
+\global\long\def\vb{\boldsymbol{b}}
+\global\long\def\lotimes{\Large{\otimes}}
+\global\long\def\bnu{\bm{\nu}}
+\global\long\def\argmin{\operatornamewithlimits{arg\,min}}
+\global\long\def\mA{\boldsymbol{A}}
+\global\long\def\mB{\boldsymbol{B}}
+\global\long\def\valpha{\bm{\alpha}}
+\global\long\def\vmu{\bm{\mu}}
+
+
+\section{Stochastic Processes from RHKS functions}
+
+Suppose we have i.i.d. data $\gD=\left\{ x_{n,}y_{n}\right\} _{n=1}^{N}$
+and we would like to perform regression to find a function $f$ such
+that $f(x_{i})$ is close to $y_{i}$. Let $f$ be in the RKHS induced
+by positive-definite kernel $k(\cdot,\cdot)$. If we minimise the
+squared error between $f(x)_{i}$ and $y_{i}$ under RKHS-norm regularisation,
+then, according to the Riesz representation theorem, the solution
+takes the form $f=\sum_{n=1}^{N}\alpha_{n}k(z_{n},\cdot)$. To reduce
+computational cost, the Nystrom approximation is often used which
+corresponds to the following approximation 
+\begin{equation}
+f=\sum_{m=1}^{M}\alpha_{m}k(z_{m},\cdot),\label{eq:process}
+\end{equation}
+where $z_{m}$ are inducing points that, $M\le N$ and $\valpha$
+are coefficients to be determined by the objective function. A stochastic
+process may be defined by making $\valpha$ a random variable parametrised
+by some hyper-parameters. 
+
+\section{Sparse Gaussian processes}
+
+Given a GP prior on $f\text{\textasciitilde\ensuremath{\GP}(\ensuremath{\mu}(\ensuremath{\cdot}),\ensuremath{\Sigma}(\ensuremath{\cdot},\ensuremath{\cdot}))}$
+and Gaussian likelihood $p(y|x,f)=\cN(y|f(x),\sigma^{2})$, the posterior
+is a GP with the following parameters
+\begin{gather}
+f|\cD\sim\GP\left(\mu^{q}(\cdot),\Sigma^{q}(\cdot,\cdot)\right)\label{eq:full_post_gp}\\
+\mu^{q}(x)=\mSigma_{X}^{\intercal}(x)\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)^{-1}\left[\y-\vmu_{x}\right]\label{eq:full_post_mean}\\
+\Sigma^{q}(x,x')=\Sigma(x,x')-\mSigma_{X}^{\intercal}(x)\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)^{-1}\mSigma_{X}(x').\label{eq:full_gp_post}
+\end{gather}
+where $\vmu_{x,i}=\mu(x_{i})$ $\Sigma_{X,i}(x)=\Sigma(x,x_{i})$
+and $\Sigma_{XX,ij}=\Sigma(x_{i},x_{j})$. The marginal likelihood
+(evidence) is 
+\begin{equation}
+\cL=-\frac{N}{2}\log(2\pi)-\frac{1}{2}\log\left|\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)\right|-\frac{1}{2}\vy^{\intercal}\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)\vy.\label{eq:full_gp_evidence}
+\end{equation}
+The matrix inversions in (\ref{eq:full_post_gp}), (\ref{eq:full_gp_post})
+costs $N^{3}$ and is very expensive for large datasets. 
+
+The costs can be reduced using the formuation in the previous section.
+If $\valpha\sim\cN(\vm,\mS)$, $f$ in (\ref{eq:process}) is a GP
+with a mean function $\mu^{sp}(x)=\valpha^{\intercal}\vk_{Z}(x)$
+and a low-rank covariance function $\Sigma^{sp}(x,x')=\vk_{Z}^{\intercal}(x)\mS\vk_{Z}(x')$
+where $k_{Z,i}(x)=k(z_{i},x)$. In this case, the inversions in (\ref{eq:full_post_gp})
+and (\ref{eq:full_gp_post}) can be calculated in a more efficient
+way using the Woodbury matrix inversion lemma
+
+\[
+\left(\mSigma_{XX}^{sp}+\sigma^{2}\mI_{N}\right)^{-1}=\left(\mK_{XZ}\mS\mK_{ZX}+\sigma^{2}\mI_{N}\right)^{-1}=\frac{1}{\sigma^{2}}\left[\mI_{N}-\mK_{XZ}\left(\sigma^{2}\mS^{-1}+\mK_{ZX}\mK_{XZ}\right)^{-1}\mK_{ZX}\right],
+\]
+where $K_{XZ,ij}=k(x_{i},z_{j})$, which costs $M^{3}+NM^{2}$. The
+matrix determinant term in (\ref{eq:full_gp_evidence}) can also be
+computed with the matrix determinant lemma as
+\[
+\log\left|\mSigma_{XX}^{sp}+\sigma^{2}\mI_{N}\right|=\log\left|\mK_{XZ}\mS\mK_{ZX}+\sigma^{2}\mI_{N}\right|=\log\left|\mS^{-1}+\sigma^{2}\mK_{ZX}\mK_{XZ}\right|+\log\left|\mS\right|+N\log(\sigma^{2}).
+\]
+which costs $M^{3}$. These costs are comparable to that for computing
+the free energy with sparse \emph{posterior} GP being the variational
+distribution.
+\end{document}
