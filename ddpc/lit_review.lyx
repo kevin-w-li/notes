@@ -1233,7 +1233,8 @@ p(\vr|x)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr\right].\label{eq:PPC_lik
 
 \end_inset
 
-A typical example is the Poisson firing neurons for which 
+This distribution depends on the nature of neuronal firing.
+ A typical example is the Poisson firing neurons for which 
 \begin_inset Formula $h_{m}(x)=\log\phi_{m}(x)$
 \end_inset
 
@@ -1242,13 +1243,22 @@ A typical example is the Poisson firing neurons for which
 \begin_inset Formula $x$
 \end_inset
 
-, this likelihood imples the following unnormalised posterior distribution
+
+\begin_inset Formula 
+\begin{equation}
+p(x)\propto1,\label{eq:PPC_uniform_prior}
+\end{equation}
+
+\end_inset
+
+the likelihood implies the following posterior distribution, referred to
+ as PPC 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-p(x|\vr)\propto\frac{1}{Z(x)}\exp\left[\vh(x)\cdot\vr\right],\label{eq:PPC_post}
+p^{\text{PPC}}(x|\vr)\propto\frac{1}{Z(x)}\exp\left[\vh(x)\cdot\vr\right],\label{eq:PPC_post}
 \end{equation}
 
 \end_inset
@@ -1268,12 +1278,24 @@ which belongs to the exponential family with
 \end_inset
 
  may not.
- An example is that Gaussian-shaped 
+ For instance, a set of Gaussian-shaped 
 \begin_inset Formula $\vphi(x)$
 \end_inset
 
- always implies a Gaussian 
-\begin_inset Formula $p(x|\vr)$
+ is a rich basis on 
+\begin_inset Formula $\gX$
+\end_inset
+
+, it only implies a Gaussian 
+\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
+\end_inset
+
+ as 
+\begin_inset Formula $\vh(x)$
+\end_inset
+
+ is quadratic in 
+\begin_inset Formula $x$
 \end_inset
 
 .
@@ -1287,7 +1309,7 @@ noprefix "false"
 
 \end_inset
 
- and the decoded posterior 
+ and the induced posterior 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:PPC_post"
@@ -1329,7 +1351,7 @@ The stimulus
 
  is in fact deterministic with no uncertainty.
  The uncertainty in the posterior 
-\begin_inset Formula $p(x|\vr)$
+\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
 \end_inset
 
  in 
@@ -1412,50 +1434,6 @@ noprefix "false"
 \end_inset
 
 .
- A generic base measure may complicate downsteram computations.
- This can be aleviated with further assumption about the tuning curves.
- For example, for Poisson neurons with that encodes 
-\begin_inset Formula $x$
-\end_inset
-
- by 
-\begin_inset Formula 
-\[
-p(x|\vr)\propto p(\vr|x)=\prod_{n=1}^{N}\text{Pois}\left(r_{m}|\phi_{m}(x)\right)\propto\frac{1}{\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)}\exp\left(\vr\cdot\vh(\vx)\right),
-\]
-
-\end_inset
-
-under the condition that the total firing rate is independent of 
-\begin_inset Formula $x$
-\end_inset
-
-
-\begin_inset Formula 
-\begin{equation}
-\sum_{m=1}^{M}\phi_{m}(x)\approx C(\vphi),\label{eq:PPC_total_firing_rate}
-\end{equation}
-
-\end_inset
-
-the inverse base measure 
-\begin_inset Formula $Z(x)=\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)$
-\end_inset
-
- can be assumed to be a constant for any 
-\begin_inset Formula $x$
-\end_inset
-
-.
- This is possible if 
-\begin_inset Formula $\vphi$
-\end_inset
-
- is densely arranged on 
-\begin_inset Formula $\gX$
-\end_inset
-
- and translation-invarant.
  Under the log linear code interpretation, the source of uncertainty is
  simply from the definition and depends on 
 \begin_inset Formula $\vh$
@@ -1463,6 +1441,10 @@ the inverse base measure
 
  and 
 \begin_inset Formula $Z$
+\end_inset
+
+, instead of depending on the firing likelihood 
+\begin_inset Formula $p(\vr|x)$
 \end_inset
 
 .
@@ -1498,7 +1480,7 @@ gls{PPC}
 \end_inset
 
 We may take 
-\begin_inset Formula $p(x|\vr)$
+\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
 \end_inset
 
  as Bayesian decoding of what is encoded about 
@@ -1521,9 +1503,19 @@ We may take
 
 .
  While the former depends on the property of neurons and hence may be known
- by the brain, the latter is usually not flat even for visual orientations
+ by the brain, the latter is usually not uniform even for visual orientations
  (oblique effect), not to mension higher dimensional stimuli, such as images.
- Thus, decoding with a flat prior to obtain 
+ Thus, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_uniform_prior"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ does not usually hold, and decoding with a flat prior to obtain 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:PPC_post"
@@ -1533,12 +1525,12 @@ noprefix "false"
 
 \end_inset
 
- implies sub-optimality in the uncertainty represented, meaning if may not
+ is sub-optimal in the uncertainty represented, meaning that it does not
  reflect the real distribution of 
 \begin_inset Formula $s$
 \end_inset
 
- in the environment that causes 
+ in the environment that can cause 
 \begin_inset Formula $\vr$
 \end_inset
 
@@ -1569,7 +1561,105 @@ name "rem:PPC_suboptimal_decoding"
 
 \end_inset
 
+.
+ 
+\end_layout
 
+\begin_layout Standard
+A generic base measure 
+\begin_inset Formula $\frac{1}{Z(x)}$
+\end_inset
+
+ in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_post"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ may complicate downsteram computations.
+ This can be aleviated with further assumptions on tuning functions 
+\begin_inset Formula $\vphi(x)$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Making 
+\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
+\end_inset
+
+ weakly dependent on 
+\begin_inset Formula $Z$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+For Poisson neurons with likelihood 
+\begin_inset Formula $\text{Pois}\left(r_{m}|\phi_{m}(x)\right)$
+\end_inset
+
+, under the uniform prior assumption 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_uniform_prior"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, the PPC representation 
+\begin_inset Formula 
+\[
+p^{\text{PPC}}(x|\vr)\propto p(\vr|x)=\prod_{n=1}^{N}\text{Pois}\left(r_{m}|\phi_{m}(x)\right)\propto\frac{1}{\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)}\exp\left(\vr\cdot\vh(\vx)\right).
+\]
+
+\end_inset
+
+Under the condition that the total firing rate is independent of 
+\begin_inset Formula $x$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\sum_{m=1}^{M}\phi_{m}(x)\approx C(\vphi),\label{eq:PPC_total_firing_rate}
+\end{equation}
+
+\end_inset
+
+the inverse base measure 
+\begin_inset Formula $Z(x)=\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)$
+\end_inset
+
+ can be assumed to be a constant for any 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ This is possible if 
+\begin_inset Formula $\vphi$
+\end_inset
+
+ is densely arranged on 
+\begin_inset Formula $\gX$
+\end_inset
+
+ and translation-invarant.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1590,7 +1680,7 @@ noprefix "false"
  that enter the likelihood through an additional term in the exponent
 \begin_inset Formula 
 \[
-p(\vr|x,c)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr+g(\vr,c)\right].
+p^{\text{PPC}}(\vr|x,c)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr+g(\vr,c)\right].
 \]
 
 \end_inset
@@ -1598,12 +1688,20 @@ p(\vr|x,c)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr+g(\vr,c)\right].
 Then decoding by Bayes rule gives 
 \begin_inset Formula 
 \[
-p(x|\vr,c)=\frac{p(\vr|x,c)p(x|c)}{p(\vr|c)}\propto p(x|c)\frac{1}{Z(x)}
+p^{\text{PPC}}(x|\vr,c)=\frac{p(\vr|x,c)p(x|c)}{p(\vr|c)}\propto\frac{p(x|c)}{Z(x)}\exp\left[\vh(x)\cdot\vr\right]
 \]
 
 \end_inset
 
+under the additional assumption that 
+\begin_inset Formula $x$
+\end_inset
 
+ and 
+\begin_inset Formula $c$
+\end_inset
+
+ are 
 \end_layout
 
 \begin_layout Standard
