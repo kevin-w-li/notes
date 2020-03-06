@@ -197,15 +197,6 @@ theorems-ams-extended-chap-bytype
 
 \begin_layout Standard
 \begin_inset FormulaMacro
-\newcommand{\vh}{\vfont h}
-{\vfont h}
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset FormulaMacro
 \newcommand{\vs}{\vfont s}
 {\vfont s}
 \end_inset
@@ -582,6 +573,12 @@ theorems-ams-extended-chap-bytype
 \end_inset
 
 
+\begin_inset FormulaMacro
+\newcommand{\vh}{\vectorfont h}
+{\vectorfont h}
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -678,6 +675,12 @@ theorems-ams-extended-chap-bytype
 \begin_inset FormulaMacro
 \newcommand{\gR}{\graphfont R}
 {\graphfont R}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\gX}{\graphfont X}
+{\graphfont X}
 \end_inset
 
 
@@ -1153,7 +1156,7 @@ literal "false"
 
  as a way for representing a distribution by a group of noisy neurons.
  It considers how neuronal activities 
-\begin_inset Formula $\vr\in\mathcal{R}$
+\begin_inset Formula $\vr:=\left[r_{m}\right]_{m=1}^{M},r_{m}\in\mathcal{R}$
 \end_inset
 
 
@@ -1215,7 +1218,7 @@ I remark each of these claims as I reproduce the PPC theory.
 \end_inset
 
 , Poisson-like neural population with tuning functions 
-\begin_inset Formula $\vphi(x)$
+\begin_inset Formula $\vphi(x):=\left[\phi_{m}(x)\right]_{m}^{M}$
 \end_inset
 
  encodes 
@@ -1231,11 +1234,10 @@ p(\vr|x)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr\right].\label{eq:PPC_lik
 \end_inset
 
 A typical example is the Poisson firing neurons for which 
-\begin_inset Formula $\vh(x)$
+\begin_inset Formula $h_{m}(x)=\log\phi_{m}(x)$
 \end_inset
 
- is the set of the logarithms of tuning functions, also known as the response
- kernel.
+ , also known as the response kernel.
  Under the uniform prior over 
 \begin_inset Formula $x$
 \end_inset
@@ -1382,6 +1384,114 @@ gls{PPC}
 
 \end_inset
 
+ as log linear codes
+\end_layout
+
+\end_inset
+
+We can interpret PPC defined by 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PPC_post"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ as a log linear encoding of distribution with basis functions 
+\begin_inset Formula $\vh(x)$
+\end_inset
+
+ and linear weight, or natural parameters, 
+\begin_inset Formula $\vr$
+\end_inset
+
+ and base measure 
+\begin_inset Formula $\frac{1}{Z(x)}$
+\end_inset
+
+.
+ A generic base measure may complicate downsteram computations.
+ This can be aleviated with further assumption about the tuning curves.
+ For example, for Poisson neurons with that encodes 
+\begin_inset Formula $x$
+\end_inset
+
+ by 
+\begin_inset Formula 
+\[
+p(x|\vr)\propto p(\vr|x)=\prod_{n=1}^{N}\text{Pois}\left(r_{m}|\phi_{m}(x)\right)\propto\frac{1}{\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)}\exp\left(\vr\cdot\vh(\vx)\right),
+\]
+
+\end_inset
+
+under the condition that the total firing rate is independent of 
+\begin_inset Formula $x$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\sum_{m=1}^{M}\phi_{m}(x)\approx C(\vphi),\label{eq:PPC_total_firing_rate}
+\end{equation}
+
+\end_inset
+
+the inverse base measure 
+\begin_inset Formula $Z(x)=\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)$
+\end_inset
+
+ can be assumed to be a constant for any 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ This is possible if 
+\begin_inset Formula $\vphi$
+\end_inset
+
+ is densely arranged on 
+\begin_inset Formula $\gX$
+\end_inset
+
+ and translation-invarant.
+ Under the log linear code interpretation, the source of uncertainty is
+ simply from the definition and depends on 
+\begin_inset Formula $\vh$
+\end_inset
+
+ and 
+\begin_inset Formula $Z$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
  as sub-optimal decoding
 \end_layout
 
@@ -1437,8 +1547,8 @@ noprefix "false"
 \begin_inset Formula $p(s)$
 \end_inset
 
- can be acquired through experience, but learning is largely ignored by
- the 
+ can be acquired through experience, but this is largely ignored by the
+ 
 \begin_inset ERT
 status open
 
@@ -1463,79 +1573,37 @@ name "rem:PPC_suboptimal_decoding"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Separator plain
-\end_inset
-
-
-\end_layout
-
-\begin_layout Remark
-\begin_inset Argument 1
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-gls{PPC}
-\end_layout
-
-\end_inset
-
- as log linear codes
-\end_layout
-
-\end_inset
-
-We can interpret PPC defined by 
+Under the interpretation of Remark 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:PPC_post"
+reference "rem:PPC_suboptimal_decoding"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
- as a log linear encoding of distribution with basis functions 
-\begin_inset Formula $\vh(x)$
+, PPC code is invariant to nuisance variables 
+\begin_inset Formula $c$
 \end_inset
 
- and linear weight, or natural parameters, 
-\begin_inset Formula $\vr$
+ that enter the likelihood through an additional term in the exponent
+\begin_inset Formula 
+\[
+p(\vr|x,c)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr+g(\vr,c)\right].
+\]
+
 \end_inset
 
- and base measure 
-\begin_inset Formula $\frac{1}{Z(x)}$
+Then decoding by Bayes rule gives 
+\begin_inset Formula 
+\[
+p(x|\vr,c)=\frac{p(\vr|x,c)p(x|c)}{p(\vr|c)}\propto p(x|c)\frac{1}{Z(x)}
+\]
+
 \end_inset
 
-.
- A generic base measure may render 
-\begin_inset Formula $p(x|\vr)$
-\end_inset
 
- not a known exponential family.
- This can be aleviated with further assumption about the tuning curves.
- For example, for Poisson neurons, 
-\begin_inset Formula $Z(x)$
-\end_inset
-
- is more or less independent of 
-\begin_inset Formula $x$
-\end_inset
-
- if the firing rates of all neurons sum to a constant for any 
-\begin_inset Formula $x$
-\end_inset
-
-, which can be realised by neurons with densely arranged translation-invarant
- tuning functions.
- Under the log linear code interpretation, the source of uncertainty is
- simply from the definition.
 \end_layout
 
 \begin_layout Standard
