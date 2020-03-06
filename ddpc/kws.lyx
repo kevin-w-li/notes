@@ -5,9 +5,6 @@
 \save_transient_properties true
 \origin unavailable
 \textclass article
-\begin_preamble
-\input{math_commands.tex}
-\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -57,9 +54,7 @@
 \shortcut idx
 \color #008000
 \end_index
-\leftmargin 2cm
 \topmargin 2cm
-\rightmargin 2cm
 \bottommargin 2cm
 \secnumdepth 3
 \tocdepth 3
@@ -80,7 +75,12 @@
 
 \begin_layout Title
 \noindent
-Sparse Stochastic Processes
+Amortised learning
+\end_layout
+
+\begin_layout Author
+\noindent
+Kevin W Li
 \end_layout
 
 \begin_layout Standard
@@ -123,12 +123,6 @@ Sparse Stochastic Processes
 
 \begin_inset FormulaMacro
 \newcommand{\y}{\mathbf{y}}
-{\mathbf{y}}
-\end_inset
-
-
-\begin_inset FormulaMacro
-\newcommand{\vy}{\mathbf{y}}
 {\mathbf{y}}
 \end_inset
 
@@ -212,12 +206,6 @@ Sparse Stochastic Processes
 
 
 \begin_inset FormulaMacro
-\newcommand{\cL}{\mathcal{L}}
-{\mathcal{L}}
-\end_inset
-
-
-\begin_inset FormulaMacro
 \newcommand{\GP}{\mathcal{GP}}
 {\mathcal{GP}}
 \end_inset
@@ -236,14 +224,8 @@ Sparse Stochastic Processes
 
 
 \begin_inset FormulaMacro
-\newcommand{\mK}{\boldsymbol{K}}
-{\boldsymbol{K}}
-\end_inset
-
-
-\begin_inset FormulaMacro
-\newcommand{\mS}{\boldsymbol{S}}
-{\boldsymbol{S}}
+\newcommand{\mK}{\mathbf{K}}
+{\mathbf{K}}
 \end_inset
 
 
@@ -272,6 +254,12 @@ Sparse Stochastic Processes
 
 
 \begin_inset FormulaMacro
+\newcommand{\vtheta}{\boldsymbol{\theta}}
+{\boldsymbol{\theta}}
+\end_inset
+
+
+\begin_inset FormulaMacro
 \newcommand{\lotimes}{\Large{\otimes}}
 {\Large{\otimes}}
 \end_inset
@@ -290,14 +278,14 @@ Sparse Stochastic Processes
 
 
 \begin_inset FormulaMacro
-\newcommand{\mA}{\boldsymbol{A}}
-{\boldsymbol{A}}
+\newcommand{\mA}{\mathbf{A}}
+{\mathbf{A}}
 \end_inset
 
 
 \begin_inset FormulaMacro
-\newcommand{\mB}{\boldsymbol{B}}
-{\boldsymbol{B}}
+\newcommand{\mB}{\mathbf{B}}
+{\mathbf{B}}
 \end_inset
 
 
@@ -308,21 +296,20 @@ Sparse Stochastic Processes
 
 
 \begin_inset FormulaMacro
-\newcommand{\vmu}{\bm{\mu}}
-{\bm{\mu}}
+\newcommand{\vphi}{\bm{\phi}}
+{\bm{\phi}}
 \end_inset
 
 
 \end_layout
 
 \begin_layout Section
-Stochastic Processes from RHKS functions
+Gaussian processes
 \end_layout
 
 \begin_layout Standard
-Suppose we have i.i.d.
- data 
-\begin_inset Formula $\gD=\left\{ x_{n,}y_{n}\right\} _{n=1}^{N}$
+Suppose we have data that are input and output paris 
+\begin_inset Formula $\cD=\left\{ \left(x_{n,}y_{n}\right)\right\} _{n=1}^{N}$
 \end_inset
 
  and we would like to perform regression to find a function 
@@ -330,224 +317,304 @@ Suppose we have i.i.d.
 \end_inset
 
  such that 
-\begin_inset Formula $f(x_{i})$
+\begin_inset Formula $f(x_{n})$
 \end_inset
 
- is close to 
-\begin_inset Formula $y_{i}$
+ is a good approximation of the label 
+\begin_inset Formula $y_{n}$
 \end_inset
 
 .
- Let 
+ Gaussian processes regression is an attractive method for two reasons:
+ first, it makes explicit the smoothness and regularity assumptions of 
 \begin_inset Formula $f$
 \end_inset
 
- be in the RKHS induced by positive-definite kernel 
-\begin_inset Formula $k(\cdot,\cdot)$
+ in a explicit way through a kernel function, and second, it produces uncertaint
+y and correlation estimates for predictions, since the posterior 
+\begin_inset Formula $f$
 \end_inset
 
-.
- If we minimise the squared error between 
-\begin_inset Formula $f(x)_{i}$
+ is uncertain and correlated across input points.
+ Define by 
+\begin_inset Formula $f\sim\GP(0,k_{\vtheta}(\cdot,\cdot))$
 \end_inset
 
- and 
-\begin_inset Formula $y_{i}$
-\end_inset
-
- under RKHS-norm regularisation, then, according to the Riesz representation
- theorem, the solution takes the form 
-\begin_inset Formula $f=\sum_{n=1}^{N}\alpha_{n}k(z_{n},\cdot)$
-\end_inset
-
-.
- To reduce computational cost, the Nystrom approximation is often used which
- corresponds to the following approximation 
-\begin_inset Formula 
-\begin{equation}
-f=\sum_{m=1}^{M}\alpha_{m}k(z_{m},\cdot),\label{eq:process}
-\end{equation}
-
-\end_inset
-
-where 
-\begin_inset Formula $z_{m}$
-\end_inset
-
- are inducing points that, 
-\begin_inset Formula $M\le N$
-\end_inset
-
- and 
-\begin_inset Formula $\valpha$
-\end_inset
-
- are coefficients to be determined by the objective function.
- A stochastic process may be defined by making 
-\begin_inset Formula $\valpha$
-\end_inset
-
- a random variable parametrised by some hyper-parameters.
+ a function drawn from a GP with zero mean function and covariance kernel
  
-\end_layout
+\begin_inset Formula $k_{\vtheta}$
+\end_inset
 
-\begin_layout Section
-Sparse Gaussian processes
+ with parameters 
+\begin_inset Formula $\vtheta$
+\end_inset
+
+, and denote the value of this function at 
+\begin_inset Formula $x$
+\end_inset
+
+ as 
+\begin_inset Formula $f^{x}$
+\end_inset
+
+, and the distribution induced by evaluating the GP at 
+\begin_inset Formula $x$
+\end_inset
+
+ as 
+\begin_inset Formula $F^{x}$
+\end_inset
+
+.
+ Depending on the nature of 
+\begin_inset Formula $y$
+\end_inset
+
+, a likelihood function is specified 
+\begin_inset Formula $p_{\vtheta}(Y^{x}|F^{x})$
+\end_inset
+
+ to account for observation noise.
+ Assuming conditional independence of the outputs given 
+\begin_inset Formula $f$
+\end_inset
+
+, the generative model for GP regression then takes the following joint
+ distribution
+\begin_inset Formula 
+\[
+p_{\vtheta}(\left\{ F_{n}^{x}\right\} )p_{\vtheta}(\left\{ Y_{n}^{x}\right\} |\left\{ F_{n}^{x}\right\} )=P_{\vtheta}(\left\{ F^{x}\right\} )\prod_{n=1}^{N}p_{\vtheta}(Y_{n}^{x}|F_{n}^{x})
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Given a GP prior on 
-\begin_inset Formula $f\text{\textasciitilde\GP(\mu(\cdot),\Sigma(\cdot,\cdot))}$
+For simplicity, suppose we are interested in predicting the output at a
+ single input 
+\begin_inset Formula $x^{*}$
 \end_inset
 
- and Gaussian likelihood 
-\begin_inset Formula $p(y|x,f)=\cN(y|f(x),\sigma^{2})$
-\end_inset
-
-, the posterior is a GP with the following parameters
-\begin_inset Formula 
-\begin{gather}
-f|\cD\sim\GP\left(\mu^{q}(\cdot),\Sigma^{q}(\cdot,\cdot)\right)\label{eq:full_post_gp}\\
-\mu^{q}(x)=\mSigma_{X}^{\intercal}(x)\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)^{-1}\left[\y-\vmu_{x}\right]\label{eq:full_post_mean}\\
-\Sigma^{q}(x,x')=\Sigma(x,x')-\mSigma_{X}^{\intercal}(x)\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)^{-1}\mSigma_{X}(x').\label{eq:full_gp_post}
-\end{gather}
-
-\end_inset
-
-where 
-\begin_inset Formula $\vmu_{x,i}=\mu(x_{i})$
-\end_inset
-
- 
-\begin_inset Formula $\Sigma_{X,i}(x)=\Sigma(x,x_{i})$
-\end_inset
-
- and 
-\begin_inset Formula $\Sigma_{XX,ij}=\Sigma(x_{i},x_{j})$
+ (as opposed to a set of new input points, referred to as joint prediction),
+ then the goal of inference is to produce posterior 
+\begin_inset Formula $p(y^{*}|\left\{ y^{x_{n}}\right\} )$
 \end_inset
 
 .
- The marginal likelihood (evidence) is 
-\begin_inset Formula 
-\begin{equation}
-\cL=-\frac{N}{2}\log(2\pi)-\frac{1}{2}\log\left|\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)\right|-\frac{1}{2}\vy^{\intercal}\left(\mSigma_{XX}+\sigma^{2}\mI_{N}\right)\vy.\label{eq:full_gp_evidence}
-\end{equation}
-
-\end_inset
-
-The matrix inversions in 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:full_post_gp"
-
-\end_inset
-
-, 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:full_gp_post"
-
-\end_inset
-
- costs 
-\begin_inset Formula $N^{3}$
-\end_inset
-
- and is very expensive for large datasets.
  
 \end_layout
 
 \begin_layout Standard
-The costs can be reduced using the formuation in the previous section.
- If 
-\begin_inset Formula $\valpha\sim\cN(\vm,\mS)$
+In the case that the likelihood is a Gaussian distribution 
+\begin_inset Formula $p_{\vtheta}(y^{x}|f^{x})=\cN(y|f^{x},\sigma^{2})$
 \end_inset
 
-, 
-\begin_inset Formula $f$
+, then we have closed-form predictive posterior for a new test input 
+\begin_inset Formula $x^{*}$
 \end_inset
 
- in 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:process"
+.
+ However, for many other non-conjugate likelihood functions, no closed-form
+ posteriors exists.
+ In addition, inference usually involves evaluation of the inverse of the
+ covariance matrix at all input locations, which has size 
+\begin_inset Formula $N\times N$
+\end_inset
+
+; for large 
+\begin_inset Formula $N$
+\end_inset
+
+, the computational intractability prevents scaling up GP to model large
+ datasets.
+ The latter computational cost may be reduced by augmenting the GP by a
+ smaller number of 
+\begin_inset Formula $M$
+\end_inset
+
+ inducing points 
+\begin_inset Formula $\left\{ z_{m}\right\} _{m=1}^{M}$
+\end_inset
+
+ with pseudo-measurements 
+\begin_inset Formula $\left\{ u_{m}\right\} _{m=1}^{M},u_{m}=f(z_{m})$
+\end_inset
+
+.
+ This modifies the (single-data) joint distribution to 
+\begin_inset Formula 
+\[
+p_{\vtheta}(U^{z})p_{\vtheta}(F^{x}|U^{z})p_{\vtheta}(Y^{x}|F^{x})
+\]
 
 \end_inset
 
- is a GP with a mean function 
-\begin_inset Formula $\mu^{sp}(x)=\valpha^{\intercal}\vk_{Z}(x)$
+From here, two general simplification methods exists to reduce the computational
+ costs.
+ 
+\end_layout
+
+\begin_layout Enumerate
+simplify factors in joint distribution model above, giving potentially inconsist
+ent joint distributions between training and test data 
+\end_layout
+
+\begin_layout Enumerate
+assuming a flexible parametric form of posterior and perform (stochastic)
+ variational optimisation.
+\end_layout
+
+\begin_layout Standard
+Methods of learning 
+\begin_inset Formula $\vtheta$
 \end_inset
 
- and a low-rank covariance function 
-\begin_inset Formula $\Sigma^{sp}(x,x')=\vk_{Z}^{\intercal}(x)\mS\vk_{Z}(x')$
+ on simplified generative models can be directly adapted into the amortised
+ learning framework, as it only requires specifying the joint distribution
+ through the simplified generative factors.
+ However, these simplifications result in degenerate prior GP processes,
+ or render the model not a GP anymore.
+ 
+\end_layout
+
+\begin_layout Standard
+The second method usually involves a clever factorisation of the variational
+ posterior, which is reviewed now.
+ For a single data and inducing input pair, the true posterior 
+\begin_inset Formula $p_{\vtheta}(F^{x},U^{z}|\cD)=p_{\vtheta}(F^{x}|U^{z},\cD)p_{\vtheta}(U^{z}|\mathcal{\cD})$
+\end_inset
+
+.
+ Now, assume a variational posterior 
+\begin_inset Formula $q_{\phi}(F^{x},U^{z}|\cD):=p_{\vtheta}(F^{x}|U^{z})q_{\phi}(U^{z}|\mathcal{\cD})$
+\end_inset
+
+, that is, only assume a variational distribution 
+\begin_inset Formula $q_{\phi}(U^{z}|\mathcal{\cD})$
+\end_inset
+
+ and construct the joint distribution by multiplying the conditional under
+ the generative model 
+\begin_inset Formula $p_{\vtheta}(F^{x}|U^{z})$
+\end_inset
+
+ that, nonetheless, does NOT depend on the dataset 
+\begin_inset Formula $\cD$
+\end_inset
+
+.
+ The variational objective is 
+\begin_inset Formula 
+\begin{align*}
+\cF(\vtheta,\vphi) & =\E_{q_{\vphi}(F^{x},U^{z}|\mathcal{\cD})}\left[\log\frac{p_{\vtheta}(Y^{x}|F^{x})p_{\vtheta}(F^{x}|U^{z})p_{\vtheta}(U^{z})}{q_{\phi}(F^{x},U^{z}|\mathcal{\cD})}\right]\\
+ & =\E_{q_{\phi}(U^{z}|\mathcal{\cD})}\left[\E_{p_{\vtheta}(F^{x}|U^{z})}\left[\log p_{\vtheta}(Y^{x}|F^{x})\right]\right]-KL\left[q_{\vphi}(U^{z}|D)\|p_{\vtheta}(U^{z})\right]
+\end{align*}
+
+\end_inset
+
+We may interpret this free energy as corresponding to a generative model
+ specified by a prior 
+\begin_inset Formula $\log p_{\vtheta}(U^{z})$
+\end_inset
+
+ that follows the original GP and a likelihood function 
+\begin_inset Formula $\E_{p_{\vtheta}(F^{x}|U^{z})}\left[\log p_{\vtheta}(Y^{x}|F^{x})\right]$
+\end_inset
+
+, a conditional expectation under the original GP.
+ Drawing samples from or evaluating 
+\begin_inset Formula $p_{\vtheta}(F^{x}|U^{z})$
+\end_inset
+
+ is tractable under the original GP, but computing 
+\begin_inset Formula $\E_{p_{\vtheta}(F^{x}|U^{z})}\left[\log p_{\vtheta}(Y^{x}|F^{x})\right]$
+\end_inset
+
+ is analytically intractable for many likelihood functions.
+ 
+\end_layout
+
+\begin_layout Standard
+To amortise learning 
+\begin_inset Formula $\vtheta$
+\end_inset
+
+, we approximate the inner expectation by 1-sample Monte Carlo estimate.
+ More specifically, we can substitute 
+\begin_inset Formula $\log p_{\vtheta}(y|f^{(s)})\approx\E_{p_{\vtheta}(F^{x}|U^{z})}\left[\log p_{\vtheta}(Y^{x}|F^{x})\right]$
 \end_inset
 
  where 
-\begin_inset Formula $k_{Z,i}(x)=k(z_{i},x)$
+\begin_inset Formula $f^{(s)}\sim p_{\vtheta}(F^{x}|U^{z})$
 \end_inset
 
 .
- In this case, the inversions in 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:full_post_gp"
+ In effect, the log joint, which is the target in the regression for the
+ gradient model, becomes noise due to Monte Carlo noise.
+ 
+\end_layout
+
+\begin_layout Subsection
+Factorised posterior.
+\end_layout
+
+\begin_layout Standard
+In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Titsias2009"
 
 \end_inset
 
- and 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:full_gp_post"
-
-\end_inset
-
- can be calculated in a more efficient way using the Woodbury matrix inversion
- lemma
+, the following form of posterior GP is proposed:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-\left(\mSigma_{XX}^{sp}+\sigma^{2}\mI_{N}\right)^{-1}=\left(\mK_{XZ}\mS\mK_{ZX}+\sigma^{2}\mI_{N}\right)^{-1}=\frac{1}{\sigma^{2}}\left[\mI_{N}-\mK_{XZ}\left(\sigma^{2}\mS^{-1}+\mK_{ZX}\mK_{XZ}\right)^{-1}\mK_{ZX}\right],
-\]
+\begin{align*}
+\mu^{q}(x) & =\vk_{x,Z}\mK_{ZZ}\vb\\
+k^{q}(x,x') & =k(x,x')-\vk_{xZ}\mK_{ZZ}^{-1}\vk_{Zx'}+\vk_{xZ}\mK_{ZZ}^{-1}\mA\mK_{ZZ}^{-1}\vk_{Zx'}
+\end{align*}
 
 \end_inset
 
 where 
-\begin_inset Formula $K_{XZ,ij}=k(x_{i},z_{j})$
+\begin_inset Formula $\vb$
 \end_inset
 
-, which costs 
-\begin_inset Formula $M^{3}+NM^{2}$
+ and 
+\begin_inset Formula $\mA$
 \end_inset
 
-.
- The matrix determinant term in 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:full_gp_evidence"
+ are variational parameters, which are fit to maximise the ELBO.
+ 
+\end_layout
 
-\end_inset
-
- can also be computed with the matrix determinant lemma as
+\begin_layout Standard
+Using amortised learning, one can use a more generic form of the posterior
+ function.
+ For example, the following stochastic function may be used 
 \begin_inset Formula 
 \[
-\log\left|\mSigma_{XX}^{sp}+\sigma^{2}\mI_{N}\right|=\log\left|\mK_{XZ}\mS\mK_{ZX}+\sigma^{2}\mI_{N}\right|=\log\left|\mS^{-1}+\sigma^{2}\mK_{ZX}\mK_{XZ}\right|+\log\left|\mS\right|+N\log(\sigma^{2}).
+f=\sum_{m}\alpha_{m}k(z_{m},\cdot),\quad\valpha\sim\cN(\vb,\mA)
 \]
 
 \end_inset
 
-which costs 
-\begin_inset Formula $M^{3}$
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "ref"
+options "plain"
+
 \end_inset
 
-.
- These costs are comparable to that for computing the free energy with sparse
- 
-\emph on
-posterior
-\emph default
- GP being the variational distribution.
+
 \end_layout
 
 \end_body
