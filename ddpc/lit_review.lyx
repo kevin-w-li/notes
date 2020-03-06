@@ -2073,15 +2073,7 @@ gls{PPC}
 
 \end_inset
 
- implementation for causal inference 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "MaRahmati2013Towards"
-literal "false"
-
-\end_inset
-
- , visual search 
+ implementations for visual search 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "MaPouget2011Behavior"
@@ -2089,7 +2081,7 @@ literal "false"
 
 \end_inset
 
- and visual categorisation 
+, visual categorisation 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "QamarMa2013Trial"
@@ -2097,7 +2089,15 @@ literal "false"
 
 \end_inset
 
- all involve specific circuitries, and has computations that are intractable
+ and causal inference 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "MaRahmati2013Towards"
+literal "false"
+
+\end_inset
+
+ all require specific circuitries, and have computations that are intractable
  and/or implausible.
  An overview of these circuitries can be found at 
 \begin_inset CommandInset citation
@@ -2137,8 +2137,8 @@ name "rem:PPC_intractable"
 \end_layout
 
 \begin_layout Standard
-For completeness, I briefly go through the three tasks and illustrate why
- Remark 
+For completeness, I briefly go through the three tasks and illustrate Remark
+ 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "rem:PPC_intractable"
@@ -2148,7 +2148,7 @@ noprefix "false"
 
 \end_inset
 
- holds.
+ in each of the cases.
  In visual search 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -2157,7 +2157,12 @@ literal "false"
 
 \end_inset
 
-, for each trial, a single oriented bar with orientation 
+, for each trial, a target appears (
+\begin_inset Formula $T=1$
+\end_inset
+
+) with probability 0.5 among distractors.
+ The target is a single oriented bar with orientation 
 \begin_inset Formula $s_{T}\in[0,\pi)$
 \end_inset
 
@@ -2171,19 +2176,43 @@ literal "false"
 \end_inset
 
  and location uniformly distributed on the screen.
- It is also assumed that each stimulus generates a neural pattern 
-\begin_inset Formula $\vr_{i}$
+ Suppose that each stimulus 
+\begin_inset Formula $s$
+\end_inset
+
+ generates a neural pattern 
+\begin_inset Formula $\vr_{n}$
 \end_inset
 
  with tuning kernel 
-\begin_inset Formula $\vh_{i}$
+\begin_inset Formula $\vh_{n}$
 \end_inset
 
 .
- It can be shown that the log likelihood ratio for the decision is
+ Since this is a decision making task, the desired probability is the Bernoulli
+ distribution of whether the target exists or not given all the firing patterns
+ 
+\begin_inset Formula $\left\{ \vr_{n}\right\} _{n=1}^{N}$
+\end_inset
+
+.
+ The natural parameters, and hence PPC, for this distribution is the log
+ probability ratio
+\begin_inset Formula 
+\[
+d=\log\frac{p\left(T=1|\left\{ \vr_{n}\right\} _{n=1}^{N}\right)}{p\left(T=0|\left\{ \vr_{n}\right\} _{n=1}^{N}\right)}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It can be shown that the log likelihood ratio for the decision is
 \begin_inset Formula 
 \begin{equation}
-d=\log\frac{1}{N}\sum_{i=1}^{N}e^{d_{i}},\quad d_{i}=\vh_{i}(s_{T})\cdot\vr_{i}-\log\int_{0}^{\pi}\exp\left[\vh_{i}(s_{i})\cdot\vr_{i}\right]dp_{d}(s_{i})\label{eq:PPC_visual_search}
+d=\log\frac{1}{N}\sum_{n=1}^{N}e^{d_{n}},\quad d_{n}=\vh_{n}(s_{T})\cdot\vr_{n}-\log\int_{0}^{\pi}\exp\left[\vh_{n}(x_{n})\cdot\vr_{n}\right]dp_{d}(x_{n}).\label{eq:PPC_visual_search}
 \end{equation}
 
 \end_inset
@@ -2192,12 +2221,12 @@ Intuitively, the decision variable
 \begin_inset Formula $d$
 \end_inset
 
- is an accumulation of the log odds that the target 
+ is the log of the average probability ratio that the target 
 \begin_inset Formula $s_{T}$
 \end_inset
 
  is present at the 
-\begin_inset Formula $i$
+\begin_inset Formula $n$
 \end_inset
 
 'the location.
@@ -2209,30 +2238,30 @@ Intuitively, the decision variable
 status open
 
 \begin_layout Plain Layout
-Intractable integral
+Integral over stimulus distribution
 \end_layout
 
 \end_inset
 
  If 
-\begin_inset Formula $p_{d}(s_{i})$
+\begin_inset Formula $p_{d}(x_{n})$
 \end_inset
 
  is a delta function at 
-\begin_inset Formula $s_{D}$
+\begin_inset Formula $x_{D}$
 \end_inset
 
 , then 
-\begin_inset Formula $d_{i}=\left[\vh_{i}(s_{T})-\vh_{i}(s_{D})\right]\cdot\vr_{i}$
+\begin_inset Formula $d_{n}=\left[\vh_{n}(x_{T})-\vh_{n}(x_{D})\right]\cdot\vr_{n}$
 \end_inset
 
 , and 
 \begin_inset Formula $d$
 \end_inset
 
- can be implemented easiy by neural circuits.
+ can be implemented easily by neural circuits.
  However, for a generic 
-\begin_inset Formula $p_{d}(s_{i})$
+\begin_inset Formula $p_{d}(x_{n})$
 \end_inset
 
 , it is not known how neural circuits can compute or approximate the integral
@@ -2248,7 +2277,7 @@ noprefix "false"
 
 .
  Importantly, it depends on 
-\begin_inset Formula $p_{d}(s_{i})$
+\begin_inset Formula $p_{d}(x_{n})$
 \end_inset
 
  that is not represented by or learned through 
@@ -2266,7 +2295,7 @@ gls{PPC}
 
 .
  Even assuming 
-\begin_inset Formula $p_{d}(s_{i})$
+\begin_inset Formula $p_{d}(x)$
 \end_inset
 
  is uniform (as suggested in Remark 
@@ -2280,6 +2309,131 @@ noprefix "false"
 \end_inset
 
  for decoding) does not help with this computation.
+\end_layout
+
+\begin_layout Standard
+In visual categorisation, 
+\end_layout
+
+\begin_layout Standard
+In causal inference 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "MaRahmati2013Towards"
+literal "false"
+
+\end_inset
+
+, subjects receive two stimuli 
+\begin_inset Formula $x_{1},x_{2}\in\sR^{2}$
+\end_inset
+
+ and need to decide whether they have a common cause, a task that resembles
+ whether subjects show the ventriloquist effect 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "HowardTempleton1966Human"
+literal "false"
+
+\end_inset
+
+.
+ In half of the trials, the two stimuli are generated by a common source
+ 
+\begin_inset Formula $x\sim p_{x}(s)$
+\end_inset
+
+, producing neural responses 
+\begin_inset Formula $\vr_{1},\vr_{2}$
+\end_inset
+
+ with likelihood 
+\begin_inset Formula 
+\[
+p(\vr_{1},\vr_{2}|C=1)=\int p_{r}(\vr_{1}|x)p_{r}(\vr_{2}|x)p_{x}(x)ds,
+\]
+
+\end_inset
+
+ where 
+\begin_inset Formula $C=1$
+\end_inset
+
+ indicates common cause, 
+\begin_inset Formula $p_{r}$
+\end_inset
+
+ is the likelihood of neural response, and 
+\begin_inset Formula $p_{x}$
+\end_inset
+
+ is the stimulus distribution.
+ In the other half of the trials, the two stimuli are generated by two independe
+nt causes 
+\begin_inset Formula $x_{1},x_{2}\stackrel{iid}{\sim}p_{x}(x)$
+\end_inset
+
+ with likelihood 
+\begin_inset Formula 
+\[
+p(\vr_{1},\vr_{2}|C=0)=\left(\int p_{r}(\vr_{1}|x_{1})p_{x}(x_{1})dx_{1}\right)\left(\int p_{r}(\vr_{2}|x_{2})p_{x}(x_{2})dx_{2}\right).
+\]
+
+\end_inset
+
+The log odds that is relevant for decision is then 
+\begin_inset Formula 
+\[
+d=\log\frac{p(\vr_{1},\vr_{2}|C=1)}{p(\vr_{1},\vr_{2}|C=0)}
+\]
+
+\end_inset
+
+Under the assumptions that the 
+\begin_inset Formula $p_{r}(\vr_{1}|x)$
+\end_inset
+
+ is Poisson with Gaussian-shaped tuning curves, and that the sum of firing
+ rate is a constant for any 
+\begin_inset Formula $x$
+\end_inset
+
+, 
+\begin_inset Formula $d$
+\end_inset
+
+ can be written in closed form, but the length of the expression is omitted
+ due to its length 
+\begin_inset CommandInset citation
+LatexCommand citep
+after "eqn. 12"
+key "MaRahmati2013Towards"
+literal "false"
+
+\end_inset
+
+.
+ It involves a logarithm term that is further approximated by a constant
+ that is the trial average.
+ The final expression has 
+\begin_inset CommandInset citation
+LatexCommand citep
+after "eqn. 14"
+key "MaRahmati2013Towards"
+literal "false"
+
+\end_inset
+
+ linear projections of 
+\begin_inset Formula $\vr_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vr_{2}$
+\end_inset
+
+, their polynomials up to order 3 and divisions.
+ 
 \end_layout
 
 \begin_layout Standard
