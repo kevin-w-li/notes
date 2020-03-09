@@ -69,7 +69,7 @@ theorems-ams-extended-chap-bytype
 \pdf_backref false
 \pdf_pdfusetitle true
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -94,6 +94,10 @@ theorems-ams-extended-chap-bytype
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -190,15 +194,6 @@ theorems-ams-extended-chap-bytype
 \begin_inset FormulaMacro
 \newcommand{\vz}{\vfont z}
 {\vfont z}
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset FormulaMacro
-\newcommand{\vs}{\vfont s}
-{\vfont s}
 \end_inset
 
 
@@ -574,8 +569,20 @@ theorems-ams-extended-chap-bytype
 
 
 \begin_inset FormulaMacro
+\newcommand{\vp}{\vectorfont p}
+{\vectorfont p}
+\end_inset
+
+
+\begin_inset FormulaMacro
 \newcommand{\vh}{\vectorfont h}
 {\vectorfont h}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\vs}{\vectorfont s}
+{\vectorfont s}
 \end_inset
 
 
@@ -1154,8 +1161,17 @@ literal "false"
 
 \end_inset
 
- as a way for representing a distribution by a group of noisy neurons.
- It considers how neuronal activities 
+ as a way for the brain to represent probability distributions.
+ Here, I reproduce and comment on the PPC theory.
+ Given a stimulus 
+\begin_inset Formula $x\in\gX$
+\end_inset
+
+ (a scalar for simplicity), neurons with tuning functions 
+\begin_inset Formula $\vphi(x):=\left[\phi_{m}(x)\right]_{m}^{M}$
+\end_inset
+
+ respond with stochastic activities 
 \begin_inset Formula $\vr:=\left[r_{m}\right]_{m=1}^{M},r_{m}\in\mathcal{R}$
 \end_inset
 
@@ -1173,13 +1189,7 @@ not to be confused with the real domain
 
 \end_inset
 
- could represent a stimulus 
-\begin_inset Formula $x\in\mathcal{X}$
-\end_inset
-
- (assumed to be scalar for simplicity), and how this representation could
- be used for a variety of tasks.
- The following main claims were made in the initial proposal 
+ according to a likelihood function 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "MaPouget2006Bayesian,BeckEtAl2007"
@@ -1187,63 +1197,49 @@ literal "false"
 
 \end_inset
 
-:
-\end_layout
 
-\begin_layout Enumerate
-neuronal variability encodes probability distributions over 
-\begin_inset Formula $x$
-\end_inset
-
-;
-\end_layout
-
-\begin_layout Enumerate
-probabilistic computations, such as cue combination, can be carried out
- by simple operations in 
-\begin_inset Formula $\mathcal{R}$
-\end_inset
-
-;
-\end_layout
-
-\begin_layout Enumerate
-the above properties hold for arbitrary tuning curves.
-\end_layout
-
-\begin_layout Standard
-I remark each of these claims as I reproduce the PPC theory.
- Given a stimulus 
-\begin_inset Formula $x$
-\end_inset
-
-, Poisson-like neural population with tuning functions 
-\begin_inset Formula $\vphi(x):=\left[\phi_{m}(x)\right]_{m}^{M}$
-\end_inset
-
- encodes 
-\begin_inset Formula $x$
-\end_inset
-
- by a likelihood function 
 \begin_inset Formula 
 \begin{equation}
-p(\vr|x)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr\right].\label{eq:PPC_lik}
+p(\vr|x)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr\right],\label{eq:PPC_lik}
 \end{equation}
 
 \end_inset
 
-This distribution depends on the nature of neuronal firing.
- A typical example is the Poisson firing neurons for which 
-\begin_inset Formula $h_{m}(x)=\log\phi_{m}(x)$
+where 
+\begin_inset Formula $\vh(x)$
 \end_inset
 
- , also known as the response kernel.
- Under the uniform prior over 
-\begin_inset Formula $x$
+ is known as the response kernel.
+ A typical example of 
+\begin_inset Formula $\vh(x)$
 \end_inset
 
+ is the Poisson-like neurons for which Gaussian-shaped tuning curves
+\begin_inset Formula 
+\begin{equation}
+\phi_{m}(x)=A\exp\left[-\frac{1}{2\sigma_{\text{tc}}}(x-x_{m})^{2}\right]\label{eq:PPC_gaussian_tc}
+\end{equation}
 
+\end_inset
+
+where 
+\begin_inset Formula $x_{m}$
+\end_inset
+
+ is the preferred stimulus for the 
+\begin_inset Formula $m$
+\end_inset
+
+'th neuron, 
+\begin_inset Formula $\sigma_{\text{tc}}$
+\end_inset
+
+ is the tuning curve width and 
+\begin_inset Formula $A$
+\end_inset
+
+ is the maximum firing rate.
+ Under the uniform prior
 \begin_inset Formula 
 \begin{equation}
 p(x)\propto1,\label{eq:PPC_uniform_prior}
@@ -1252,18 +1248,22 @@ p(x)\propto1,\label{eq:PPC_uniform_prior}
 \end_inset
 
 the likelihood implies the following posterior distribution, referred to
- as PPC 
+ as PPC encoded by 
+\begin_inset Formula $\vr$
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-p^{\text{PPC}}(x|\vr)\propto\frac{1}{Z(x)}\exp\left[\vh(x)\cdot\vr\right],\label{eq:PPC_post}
+p_{\text{PPC}}(x|\vr)\propto\frac{1}{Z(x)}\exp\left[\vh(x)\cdot\vr\right].\label{eq:PPC_post}
 \end{equation}
 
 \end_inset
 
-which belongs to the exponential family with 
+This is an exponential family distribution with 
 \begin_inset Formula $\vh(x)$
 \end_inset
 
@@ -1273,13 +1273,23 @@ which belongs to the exponential family with
 
  is the natural parameter.
  Note that, although the tuning curves may form a rich set of basis functions,
- their logarithm 
+ the response kernel 
 \begin_inset Formula $\vh(x)$
 \end_inset
 
  may not.
- For instance, a set of Gaussian-shaped 
+ For instance, Gaussian-shaped 
 \begin_inset Formula $\vphi(x)$
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_gaussian_tc"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
  is a rich basis on 
@@ -1287,10 +1297,14 @@ which belongs to the exponential family with
 \end_inset
 
 , it only implies a Gaussian 
-\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
+\begin_inset Formula $p_{\text{PPC}}(x|\vr)$
 \end_inset
 
- as 
+ if 
+\begin_inset Formula $Z(x)$
+\end_inset
+
+ is a constant, since 
 \begin_inset Formula $\vh(x)$
 \end_inset
 
@@ -1349,9 +1363,9 @@ The stimulus
 \begin_inset Formula $x$
 \end_inset
 
- is in fact deterministic with no uncertainty.
- The uncertainty in the posterior 
-\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
+ in PPC construction is deterministic with no uncertainty.
+ The uncertainty in 
+\begin_inset Formula $p_{\text{PPC}}(x|\vr)$
 \end_inset
 
  in 
@@ -1364,7 +1378,7 @@ noprefix "false"
 
 \end_inset
 
- is induced in decoding through the likelihood 
+ is induced by decoding through the likelihood 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:PPC_lik"
@@ -1374,7 +1388,7 @@ noprefix "false"
 
 \end_inset
 
- while incorporating a uniform prior 
+, incorporating a uniform prior 
 \begin_inset Formula $p(s)$
 \end_inset
 
@@ -1411,9 +1425,9 @@ gls{PPC}
 
 \end_inset
 
-We can interpret PPC defined by 
+The form of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "eq:PPC_post"
 plural "false"
 caps "false"
@@ -1421,29 +1435,28 @@ noprefix "false"
 
 \end_inset
 
- as a log linear encoding of distribution with basis functions 
+ is a log linear encoding of distribution with basis functions 
 \begin_inset Formula $\vh(x)$
 \end_inset
 
- and linear weight, or natural parameters, 
+ and linear weight 
 \begin_inset Formula $\vr$
 \end_inset
 
- and base measure 
+, with an additional base measure 
 \begin_inset Formula $\frac{1}{Z(x)}$
 \end_inset
 
 .
- Under the log linear code interpretation, the source of uncertainty is
- simply from the definition and depends on 
-\begin_inset Formula $\vh$
+ In this view, the encoded uncertainty simply comes depends on 
+\begin_inset Formula $\vh(x)$
 \end_inset
 
  and 
-\begin_inset Formula $Z$
+\begin_inset Formula $Z(x)$
 \end_inset
 
-, instead of depending on the firing likelihood 
+ and is unrelated to the likelihood 
 \begin_inset Formula $p(\vr|x)$
 \end_inset
 
@@ -1480,34 +1493,36 @@ gls{PPC}
 \end_inset
 
 We may take 
-\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
+\begin_inset Formula $p_{\text{PPC}}(x|\vr)$
 \end_inset
 
- as Bayesian decoding of what is encoded about 
+ as Bayesian decoding of uncertainty in 
 \begin_inset Formula $x$
 \end_inset
 
- by a particular firing pattern 
+ from a particular firing pattern 
 \begin_inset Formula $\vr$
 \end_inset
 
-.
- Optimal decoding requires that the brain have the exact represents for
- 
-\begin_inset Formula $p(\vr|s)$
-\end_inset
-
- and of 
-\begin_inset Formula $p(s)$
-\end_inset
-
-.
- While the former depends on the property of neurons and hence may be known
- by the brain, the latter is usually not uniform even for visual orientations
- (oblique effect), not to mension higher dimensional stimuli, such as images.
- Thus, 
+ using a wrong prior.
+ While the likelihood 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
+reference "eq:PPC_lik"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ depends on the property of neurons and is thus known to the brain, the
+ prior is unknown.
+ Plus, the prior is usually not uniform even for low-level features, such
+ as visual orientation (oblique effect), not to mention higher dimensional
+ stimuli, such as images.
+ Therefore, 
+\begin_inset CommandInset ref
+LatexCommand eqref
 reference "eq:PPC_uniform_prior"
 plural "false"
 caps "false"
@@ -1515,18 +1530,8 @@ noprefix "false"
 
 \end_inset
 
- does not usually hold, and decoding with a flat prior to obtain 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:PPC_post"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- is sub-optimal in the uncertainty represented, meaning that it does not
- reflect the real distribution of 
+ does not hold in general and decoding is sub-optimal, meaning that the
+ decoded uncertainty does not reflect the real distribution of 
 \begin_inset Formula $s$
 \end_inset
 
@@ -1534,26 +1539,6 @@ noprefix "false"
 \begin_inset Formula $\vr$
 \end_inset
 
-.
- One may hope that 
-\begin_inset Formula $p(s)$
-\end_inset
-
- can be acquired through experience, but this is largely ignored by the
- 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-gls{PPC}
-\end_layout
-
-\end_inset
-
- literature.
  
 \begin_inset CommandInset label
 LatexCommand label
@@ -1581,12 +1566,11 @@ noprefix "false"
 \end_inset
 
  may complicate downsteram computations.
- This can be aleviated with further assumptions on tuning functions 
+ This can be alleviated with further assumptions on tuning functions 
 \begin_inset Formula $\vphi(x)$
 \end_inset
 
-.
- 
+, as explained in the Remark below.
 \end_layout
 
 \begin_layout Remark
@@ -1594,11 +1578,7 @@ noprefix "false"
 status open
 
 \begin_layout Plain Layout
-Making 
-\begin_inset Formula $p^{\text{PPC}}(x|\vr)$
-\end_inset
-
- weakly dependent on 
+Weak dependence on 
 \begin_inset Formula $Z$
 \end_inset
 
@@ -1607,7 +1587,7 @@ Making
 
 \end_inset
 
-For Poisson neurons with likelihood 
+ For Poisson neurons with likelihood 
 \begin_inset Formula $\text{Pois}\left(r_{m}|\phi_{m}(x)\right)$
 \end_inset
 
@@ -1621,15 +1601,16 @@ noprefix "false"
 
 \end_inset
 
-, the PPC representation 
+, the distribution encoded by PPC is 
 \begin_inset Formula 
-\[
-p^{\text{PPC}}(x|\vr)\propto p(\vr|x)=\prod_{n=1}^{N}\text{Pois}\left(r_{m}|\phi_{m}(x)\right)\propto\frac{1}{\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)}\exp\left(\vr\cdot\vh(\vx)\right).
-\]
+\begin{equation}
+p_{\text{PPC}}(x|\vr)\propto p(\vr|x)=\prod_{n=1}^{N}\text{Pois}\left(r_{m}|\phi_{m}(x)\right)\propto\frac{1}{\exp\left[\sum_{m=1}^{M}\phi_{m}(x)\right]}\exp\left[\vr\cdot\vh(\vx)\right].\label{eq:PPC_poisson}
+\end{equation}
 
 \end_inset
 
-Under the condition that the total firing rate is independent of 
+Under the condition that the total firing rate is roughly independent of
+ 
 \begin_inset Formula $x$
 \end_inset
 
@@ -1645,7 +1626,7 @@ the inverse base measure
 \begin_inset Formula $Z(x)=\exp\left(\sum_{m=1}^{M}\phi_{m}(x)\right)$
 \end_inset
 
- can be assumed to be a constant for any 
+ can be assumed constant for any 
 \begin_inset Formula $x$
 \end_inset
 
@@ -1658,8 +1639,29 @@ the inverse base measure
 \begin_inset Formula $\gX$
 \end_inset
 
- and translation-invarant.
- 
+ and translation-invarant, neurons.
+ If we further assume 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_gaussian_tc"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, then 
+\begin_inset Formula $p_{\text{PPC}}(x|\vr)$
+\end_inset
+
+ is a Gaussian distribution.
+\begin_inset CommandInset label
+LatexCommand label
+name "rem:weak_z_dependence"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1673,40 +1675,186 @@ noprefix "false"
 
 \end_inset
 
-, PPC code is invariant to nuisance variables 
+, 
+\begin_inset Formula $p_{\text{PPC}}$
+\end_inset
+
+ is invariant to some nuisance variables 
 \begin_inset Formula $c$
 \end_inset
 
- that enter the likelihood through an additional term in the exponent
+ that enter the likelihood as
+\begin_inset Formula 
+\begin{equation}
+p(\vr|x,c)=\frac{1}{Z(x)}\nu_{n}(\vr,c)\exp\left[\vh(x)\cdot\vr\right],\label{eq:PPC_nuisance_lik}
+\end{equation}
+
+\end_inset
+
+where the base measure 
+\begin_inset Formula $\nu_{n}(\vr,c)$
+\end_inset
+
+ also depends on 
+\begin_inset Formula $c$
+\end_inset
+
+.
+ Then decoding by the Bayes rule gives 
 \begin_inset Formula 
 \[
-p^{\text{PPC}}(\vr|x,c)=\frac{1}{Z(x)}\nu(\vr)\exp\left[\vh(x)\cdot\vr+g(\vr,c)\right].
+p_{\text{PPC,n}}(x|\vr,c)=\frac{p(\vr|x,c)p(x|c)}{p(\vr|c)}\propto\frac{p(x|c)}{Z(x)}\exp\left[\vh(x)\cdot\vr\right].
 \]
 
 \end_inset
 
-Then decoding by Bayes rule gives 
-\begin_inset Formula 
-\[
-p^{\text{PPC}}(x|\vr,c)=\frac{p(\vr|x,c)p(x|c)}{p(\vr|c)}\propto\frac{p(x|c)}{Z(x)}\exp\left[\vh(x)\cdot\vr\right]
-\]
-
+An example is when 
+\begin_inset Formula $c$
 \end_inset
 
-under the additional assumption that 
+ is the contrast of a visual stimuli and scales the tuning functions to
+ 
+\begin_inset Formula $c\vphi(x)$
+\end_inset
+
+.
+ Under the assumption that 
 \begin_inset Formula $x$
 \end_inset
 
- and 
+ is both uniform and independent of 
 \begin_inset Formula $c$
 \end_inset
 
- are 
+, 
+\begin_inset Formula $p_{\text{PPC,n}}(x|\vr,c)=p_{\text{PPC}}(x|\vr)$
+\end_inset
+
+ and is thus independent of 
+\begin_inset Formula $c$
+\end_inset
+
+.
+ Almost all 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ literature consider contrast as the only nuisance variable.
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Possible nuisance variables
+\end_layout
+
+\end_inset
+
+ The way nuisance variables can affect firing through the base measure in
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_nuisance_lik"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is limited, as it does now allow a generic dependence of tuning on 
+\begin_inset Formula $c$
+\end_inset
+
+ through the response kernel 
+\begin_inset Formula $\vh(\cdot)$
+\end_inset
+
+.
+ In tasks where the nuisance variable is, for instance, spatial frequency
+ or phase, the respose kernel 
+\begin_inset Formula $\vh(\cdot)$
+\end_inset
+
+ depends on 
+\begin_inset Formula $c$
+\end_inset
+
+ in more complicated ways that cannot be expressed through 
+\begin_inset Formula $\nu_{n}$
+\end_inset
+
+ only.
+ Also, for 
+\begin_inset Formula $p^{\text{PPC,n}}(x|\vr,c)=p_{\text{PPC}}(x|\vr)$
+\end_inset
+
+ to hold, the condition that 
+\begin_inset Formula $p(x|c)$
+\end_inset
+
+ is uniform and independent of 
+\begin_inset Formula $c$
+\end_inset
+
+ is even stronger than 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_uniform_prior"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, since 
+\begin_inset Formula $c$
+\end_inset
+
+ and 
+\begin_inset Formula $x$
+\end_inset
+
+ are unlikely to be independent in the environment.
+\begin_inset CommandInset label
+LatexCommand label
+name "rem:PPC_nuisance_variables"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-PPC can be used to perform cue combination.
- Consider two neural populations with responses described by 
+I now move on to discuss how 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ has been used for computation.
+ In 
+\series bold
+cue combination
+\series default
+, consider two neural populations with responses described by 
 \begin_inset Formula 
 \begin{align*}
 p(\vr_{a},\vr_{b}|x) & =\frac{1}{Z_{ab}(x)}\nu_{ab}(\vr_{a},\vr_{b})\exp\left[\vh_{a}(x)\cdot\vr_{a}+\vh_{b}(x)\cdot\vr_{b}\right].
@@ -1714,13 +1862,27 @@ p(\vr_{a},\vr_{b}|x) & =\frac{1}{Z_{ab}(x)}\nu_{ab}(\vr_{a},\vr_{b})\exp\left[\v
 
 \end_inset
 
-This likelihood implies a posterior 
+Under uniform 
+\begin_inset Formula $p(x)$
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_uniform_prior"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, this likelihood implies a posterior
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-p(x|\vr_{a},\vr_{b})\propto\frac{1}{Z_{ab}(x)}\exp\left[\vh_{a}(x)\cdot\vr_{a}+\vh_{b}(x)\cdot\vr_{b}\right].
+p_{\text{PPC}}(x|\vr_{a},\vr_{b})\propto\frac{1}{Z_{ab}(x)}\exp\left[\vh_{a}(x)\cdot\vr_{a}+\vh_{b}(x)\cdot\vr_{b}\right].
 \]
 
 \end_inset
@@ -1742,17 +1904,24 @@ Note that
 \end_inset
 
 .
- For cue combination, it is desirable for a downstream population to combine
- the messages into activity 
+ For cue combination, it is desirable for the messages from 
+\begin_inset Formula $\vr_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vr_{b}$
+\end_inset
+
+ into a downstream activity 
 \begin_inset Formula $\vr_{c}$
 \end_inset
 
-, such that 
+ such that 
 \begin_inset Formula $p(x|\vr_{c})=p(x|\vr_{a},\vr_{b})$
 \end_inset
 
 .
- Suppose that this population has response kernel 
+ Suppose that this third population has response kernel 
 \begin_inset Formula $\vh_{c}(s)$
 \end_inset
 
@@ -1765,7 +1934,7 @@ literal "false"
 
 \end_inset
 
- shows that this is possible if 
+ shows that message combination is possible if 
 \begin_inset Formula $\vh_{c}(x)\cdot\vr_{c}=\vh_{a}(x)\cdot\vr_{a}+\vh_{b}(x)\cdot\vr_{b}$
 \end_inset
 
@@ -1774,23 +1943,23 @@ literal "false"
  two upstream populations by
 \begin_inset Formula 
 \begin{equation}
-\vh_{d}(x)=\mW_{d}\vh_{c}(x),\quad d\in\left\{ a,b\right\} \label{eq:PPC_shared_basis}
+\vh_{d}(x)=\mW_{d}\vh_{c}(x),\quad d\in\left\{ a,b\right\} .\label{eq:PPC_shared_basis}
 \end{equation}
 
 \end_inset
 
-This allows cue combinations to be performed easily with
+This allows cue combinations to be performed easily by
 \begin_inset Formula 
 \begin{equation}
-\vr_{c}=\mW_{a}^{\intercal}\vr_{a}+\mW_{b}^{\intercal}\vr_{b}\label{eq:PPC_cue_combination}
+\vr_{c}=\mW_{a}^{\intercal}\vr_{a}+\mW_{b}^{\intercal}\vr_{b}.\label{eq:PPC_cue_combination}
 \end{equation}
 
 \end_inset
 
- with implied decoded posterior 
+The decoded posterior is then
 \begin_inset Formula 
 \[
-p(x|\vr_{c})\propto\frac{1}{Z_{ab}(x)}\exp\left[\vh_{c}(x)\cdot\vr_{c}\right]
+p_{\text{PPC}}(x|\vr_{c})\propto\frac{1}{Z_{ab}(x)}\exp\left[\vh_{c}(x)\cdot\vr_{c}\right]=p_{\text{PPC}}(x|\vr_{a},\vr_{b})
 \]
 
 \end_inset
@@ -1820,7 +1989,7 @@ gls{PPC}
 
 \end_inset
 
- The shared basis in 
+ The shared basis assumption in 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:PPC_shared_basis"
@@ -1830,30 +1999,42 @@ noprefix "false"
 
 \end_inset
 
- allows PPC to implement cue combination with simple addition of the codes.
- However, it also means that 
-\begin_inset Formula $\vh_{c}$
+ allows 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
 \end_inset
 
- should in general be more flexible than 
-\begin_inset Formula $\vh_{a}$
+ to implement cue combination with simple addition of the codes.
+ However, it also implies that response properties of upstream neural population
+s 
+\begin_inset Formula $a$
 \end_inset
 
  and 
-\begin_inset Formula $\vh_{b}$
+\begin_inset Formula $b$
+\end_inset
+
+ is constrained by a downstream neuron 
+\begin_inset Formula $c$
 \end_inset
 
 .
- This is against usual concept that response properties of downstream population
- is derived from upstream neurons.
- For example, V4 neurons have wider tuning widths than V1 neurons as they
- pool responses from V1.
- For a cascade of cue combination tasks, higher areas should have response
- kernel that is the most diverse, which may be even more counter-intuitive.
+ This seems counter-intuitive, as one would hope that the reverse would
+ hold.
+ For example, V4 neurons have wider tuning widths than V1 neurons, which
+ is likely a consequence of V4 pooling responses from V1.
+ 
 \end_layout
 
 \begin_layout Standard
-In addition to cue combination, 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "BeckPouget2011Marginalization"
@@ -1861,58 +2042,120 @@ literal "false"
 
 \end_inset
 
- proposed how marginalisation could be implemented by PPC.
- The authors considered addition of two random variables: 
+ considered 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ implementation of 
+\series bold
+adding of two random variables
+\series default
+ 
 \begin_inset Formula $x_{3}=x_{1}+x_{2}$
 \end_inset
 
-, and restricted the discussions to all variables being Gaussian distributed,
- 
-\begin_inset Formula $x_{i}\sim\gN(\mu_{i},\Sigma_{i})$
+.
+ This computation is performed during coordinate transformation.
+ For instance, transforming eye-centred coordinates 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+ to head-centred coordinates 
+\begin_inset Formula $x_{3}$
+\end_inset
+
+ by adding the eye position 
+\begin_inset Formula $x_{2}$
 \end_inset
 
 .
- In such specific case, PPCs 
-\begin_inset Formula $\vr_{i}$
+ The authors assumed that all variables are Gaussian distributed, 
+\begin_inset Formula $x_{i}\sim\gN(\mu_{i},\Sigma_{i})$
 \end_inset
 
- encode the natural parameters of these Gaussians, with corresponding response
- kernel 
-\begin_inset Formula $\vh_{d}(x)=[\frac{-x^{2}}{2\vv_{d}};x\vm]^{\intercal}$
+, which can be encoded by PPC using neurons with Gaussian-shaped tuning
+ curves 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_gaussian_tc"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
- where 
+, giving a corresponding response kernel 
+\begin_inset Formula $\vh_{d}(x)=\left(\frac{-x^{2}}{2\vp_{d}}+x\vm_{d}\right)^{\intercal}$
+\end_inset
+
+, where 
 \begin_inset Formula $d\in\left\{ a,b,c\right\} $
 \end_inset
 
  and 
-\begin_inset Formula $a_{d,i}\in\sR_{+}$
+\begin_inset Formula $p_{d,m}\in\sR_{+}$
 \end_inset
 
  and 
-\begin_inset Formula $b_{d,i}\in\sR$
+\begin_inset Formula $b_{d,m}\in\sR$
 \end_inset
 
- are derived from properties of Gaussian-shaped tuning functions.
- Since means and precisions simply add for addition of Gaussian random variables
-, we use the following to find an expression for 
-\begin_inset Formula $\vr_{c}$
+ depends on 
+\begin_inset Formula $\sigma_{\text{tc}}$
 \end_inset
 
+ and 
+\begin_inset Formula $x_{m}$
+\end_inset
+
+.
+ In particular, 
+\begin_inset Formula $\vp_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vm_{d}$
+\end_inset
+
+ decodes from 
+\begin_inset Formula $\vr_{d}$
+\end_inset
+
+ the precision and the mean multiplied by the precision, respectively.
  
+\end_layout
+
+\begin_layout Standard
+The sum of two Gaussians is another Gaussian with mean and variance that
+ are the respective sums of the input means and precisions.
+ This relationship is expressed in terms of 
+\begin_inset Formula $\vr$
+\end_inset
+
+'s as 
 \begin_inset Formula 
 \begin{equation}
-\frac{\vm_{c}\cdot\vr_{c}}{\vv_{c}\cdot\vr_{c}}=\frac{\vm_{a}\cdot\vr_{a}}{\vv_{a}\cdot\vr_{a}}+\frac{\vm_{b}\cdot\vr_{b}}{\vv_{b}\cdot\vr_{b}}\quad\frac{1}{\vv_{c}\cdot\vr_{c}}=\frac{1}{\vv_{a}\cdot\vr_{a}}+\frac{1}{\vv_{b}\cdot\vr_{b}}.\label{eq:PPC_gaussian_addition}
+\frac{\vm_{c}\cdot\vr_{c}}{\vp_{c}\cdot\vr_{c}}=\frac{\vm_{a}\cdot\vr_{a}}{\vp_{a}\cdot\vr_{a}}+\frac{\vm_{b}\cdot\vr_{b}}{\vp_{b}\cdot\vr_{b}}\quad\frac{1}{\vp_{c}\cdot\vr_{c}}=\frac{1}{\vp_{a}\cdot\vr_{a}}+\frac{1}{\vp_{b}\cdot\vr_{b}}.\label{eq:PPC_gaussian_addition}
 \end{equation}
 
 \end_inset
 
-This is a underdetermined system, as it only constrains projections of 
+This is a under-determined system, as it only constrains projections of
+ 
 \begin_inset Formula $\vr_{c}$
 \end_inset
 
  along 
-\begin_inset Formula $\vv_{c}$
+\begin_inset Formula $\vp_{c}$
 \end_inset
 
  and 
@@ -1920,8 +2163,8 @@ This is a underdetermined system, as it only constrains projections of
 \end_inset
 
 .
- One solution can be obtained by first finding orthonormal basis 
-\begin_inset Formula $\vv_{c}^{\dagger}$
+ One proposed solution is obtained by first finding orthonormal basis 
+\begin_inset Formula $\vp_{c}^{\dagger}$
 \end_inset
 
  and 
@@ -1929,7 +2172,7 @@ This is a underdetermined system, as it only constrains projections of
 \end_inset
 
  such that 
-\begin_inset Formula $\vv_{c}^{\dagger}\cdot\vv_{c}=\vm_{c}^{\dagger}\cdot\vm_{c}=1;\vv_{c}^{\dagger}\cdot\vm_{c}=\vm_{c}^{\dagger}\cdot\vv_{c}=0$
+\begin_inset Formula $\vp_{c}^{\dagger}\cdot\vp_{c}=\vm_{c}^{\dagger}\cdot\vm_{c}=1;\vp_{c}^{\dagger}\cdot\vm_{c}=\vm_{c}^{\dagger}\cdot\vp_{c}=0$
 \end_inset
 
 , and then express 
@@ -1940,7 +2183,7 @@ This is a underdetermined system, as it only constrains projections of
  
 \begin_inset Formula 
 \begin{equation}
-\vr_{c}=\frac{\left[\left(\vm_{a}\cdot\vr_{a}\right)\left(\vv_{b}\cdot\vr_{b}\right)+\left(\vm_{b}\cdot\vr_{b}\right)\left(\vv_{a}\cdot\vr_{a}\right)\right]}{\vv_{a}\cdot\vr_{a}+\vv_{b}\cdot\vr_{b}}\vm_{c}^{\dagger}+\frac{\left(\vv_{a}\cdot\vr_{a}\right)\left(\vv_{b}\cdot\vr_{b}\right)}{\vv_{a}\cdot\vr_{a}+\vv_{b}\cdot\vr_{b}}\vv_{c}^{\dagger}\label{eq:PPC_divisive_subspace}
+\vr_{c}=\frac{\left[\left(\vm_{a}\cdot\vr_{a}\right)\left(\vp_{b}\cdot\vr_{b}\right)+\left(\vm_{b}\cdot\vr_{b}\right)\left(\vp_{a}\cdot\vr_{a}\right)\right]}{\vp_{a}\cdot\vr_{a}+\vp_{b}\cdot\vr_{b}}\vm_{c}^{\dagger}+\frac{\left(\vp_{a}\cdot\vr_{a}\right)\left(\vp_{b}\cdot\vr_{b}\right)}{\vp_{a}\cdot\vr_{a}+\vp_{b}\cdot\vr_{b}}\vp_{c}^{\dagger}\label{eq:PPC_divisive_subspace}
 \end{equation}
 
 \end_inset
@@ -1949,73 +2192,12 @@ which can be written in computationally inefficient but biologically plausible
  form by expanding the dot products 
 \begin_inset Formula 
 \begin{equation}
-r_{c,k}=\frac{\sum_{ij}w_{ijk}r_{a,i}r_{b,j}}{\vv_{a}\cdot\vr_{a}+\vv_{b}\cdot\vr_{b}},\quad w_{ijk}=\left(m_{a,i}v_{b,j}+m_{b,i}v_{a,j}\right)m_{c,k}^{\dagger}+v_{a,i}v_{b,j}v_{c,k}^{\dagger}.\label{eq:PPC_divisive}
+r_{c,k}=\frac{\sum_{ij}w_{ijk}r_{a,i}r_{b,j}}{\vp_{a}\cdot\vr_{a}+\vp_{b}\cdot\vr_{b}},\quad w_{ijk}=\left(m_{a,i}v_{b,j}+m_{b,i}v_{a,j}\right)m_{c,k}^{\dagger}+v_{a,i}v_{b,j}v_{c,k}^{\dagger}.\label{eq:PPC_divisive}
 \end{equation}
 
 \end_inset
 
-The authors noted that this is similar to divisive normalisation that is
- thought to underlie many cortical computation 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "CarandiniHeeger2012Normalization"
-literal "false"
 
-\end_inset
-
-.
- Divisive normalisation is then used as a component for computing nonlinear
- interactions of non-Gaussian variables encoded by 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-gls{PPC}
-\end_layout
-
-\end_inset
-
-, with weights 
-\begin_inset Formula $\vw$
-\end_inset
-
- trained by supervised learning.
- Across tasks, it was found that a network with normalisation nonliearity
- can form a posterior (by linear decoding) very close to the true posterior
- , and was better than networks without normalisation or with ReLU nonlinearity
- instead.
- In addition, to test whether 
-\begin_inset Formula $\vr_{c}$
-\end_inset
-
- is a 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-gls{PPC}
-\end_layout
-
-\end_inset
-
- representation, the authors used a criterion that is how close is the posterior
- readout from 
-\begin_inset Formula $\vr_{c}$
-\end_inset
-
- to the true posterior, independent of a nuisance features (contrast).
- Indeed, this criteron holds for 
-\begin_inset Formula $\vr_{c}$
-\end_inset
-
- computed in many tasks.
- 
 \end_layout
 
 \begin_layout Remark
@@ -2051,86 +2233,36 @@ noprefix "false"
 \end_inset
 
  and 
-\begin_inset Formula $\vv_{c}^{\dagger}$
+\begin_inset Formula $\vp_{c}^{\dagger}$
 \end_inset
 
 , which is a rather constrained space for neural activities.
- Note that 
-\begin_inset Formula $\vr_{a}$
-\end_inset
-
- and 
-\begin_inset Formula $\vr_{b}$
-\end_inset
-
- does not have such constraints.
- For example, if they are Poisson variables, their covariance matrices are
- full rank for typical tuning curves.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Separator plain
-\end_inset
-
-
-\end_layout
-
-\begin_layout Remark
-\begin_inset Argument 1
-status open
-
-\begin_layout Plain Layout
-Divisive normalisation for optimal performance
-\end_layout
+The authors noted that 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_divisive"
+plural "false"
+caps "false"
+noprefix "false"
 
 \end_inset
 
- Although the divisive normalisation is derived the summation of Gaussian
- variables, empirically it seems to be important in many nonlinear problems
- with non-Gaussian variables.
- This finding agrees with the literature that uses local gain control to
- improve performance on a wide range of tasks involving images 
+ is a quadratic operation followed by divisive normalisation.
+ The latter that is thought to underlie many cortical computation 
 \begin_inset CommandInset citation
-LatexCommand citep
-key "BalleSimoncelli2016Density,LaparraSimoncelli2017Perceptually,BalleSimoncelli2017End"
+LatexCommand citet
+key "CarandiniHeeger2012Normalization"
 literal "false"
 
 \end_inset
 
 .
- However, the true posteriors in the experiments are arguably close to a
- Gaussian distribution, and is symmetric and unimodal.
- A stronger test would be a task where the posterior is skewed or multimodal.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Separator plain
-\end_inset
-
-
-\end_layout
-
-\begin_layout Remark
-\begin_inset Argument 1
-status open
-
-\begin_layout Plain Layout
-Contrast invariance
-\end_layout
-
-\end_inset
-
- Contrast is the only instance of nuisance variable in all experiments,
- in which case it only scales the tuning curves and thus does not affect
- 
-\begin_inset Formula $p(x|\vr)$
-\end_inset
-
-.
- Other nuisance variables, such as spatial frequency and phase, may affect
- tuning curves in other ways.
- Therefore, using contrast invariance as the criterion for a 
+ To test how well these two computations generalise to other nonlinear tasks
+ with non-Gaussian variables, they are deployed in the neural networks trained
+ to computing PPC posteriors 
 \begin_inset ERT
 status open
 
@@ -2143,12 +2275,136 @@ gls{PPC}
 
 \end_inset
 
- representation is sufficient only in a rather limited context.
+.
+ In each task, the parameters of the neural networks are trained by stochastic
+ gradient descent to minimise the KL divergence between the true posterior
+ given the neural activities and the PPC posterior decoded from the neural
+ network.
+ The PPC posterior is assumed to be a standard exponential family distribution
+ (Gaussian, Bernoulli or von-Mises) depending on the nature of the output
+ variable, with natural parameters being linearly decoded from the neural
+ network's output.
  
 \end_layout
 
 \begin_layout Standard
-The principled solutions for cue combination 
+Across tasks, it was found that a network with both quadratic operation
+ and divisive normalisation can form a PPC posterior that is very close
+ to the true posterior in terms of KL divergence, and was closer than networks
+ without either quadratic operation or normalisation, or with ReLU nonlinearity
+ instead.
+ In addition, normalisation nonlinearity allows good PPC posteriors to be
+ linearly decodable independent of the stimulus contrast.
+ 
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Small KL divergence
+\end_layout
+
+\end_inset
+
+ Although the divisive normalisation is derived from the summation of Gaussian
+ variables, it is shown empirically to be important for a few nonlinear
+ problems with non-Gaussian variables.
+ However, the true posterior can be well approximated by, if not equal to,
+ the assumed standard exponential family distribution for each task.
+ A stronger test case would be a task where the posterior is skewed or multimoda
+l.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "rem:PPC_simple_posteriors"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Contrast-invariance
+\end_layout
+
+\end_inset
+
+ The target true posterior distribution ignores the contrast by definition;
+ therefore, in principle, any neural network with sufficient capacity should
+ be able to learn to ignore contrast and form equally good PPC posteriors
+ with a linear readout.
+ The observation that divisive normalisation helps decoding regardless of
+ contrast suggests that normalisation helps with contrast invariance, which
+ is rather intuitive as contrast only affects the scale of the neural activity
+ in all tasks.
+ The experiments also suggest that quadratic operation may give the network
+ more capacity than other operations compared.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Advantage of divisive normalisation
+\end_layout
+
+\end_inset
+
+ The result (in odor recognition) that the network with divisive normalisation
+ outperforms other alternatives in contrast-invariant linear decodability
+ (small KL and contrast-invariance) indicates stronger approximating power
+ of this neural network architecture.
+ Indeed, this operation has advantages in other more challenging tasks on
+ images 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "BalleSimoncelli2016Density,BalleSimoncelli2017End,LaparraSimoncelli2017Perceptually"
+literal "false"
+
+\end_inset
+
+.
+ However, one cannot conclude solely from these two observations that divisive
+ normalisation is crucial for good performance on the tasks, or for 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ representation and computation of variables therein.
+\end_layout
+
+\begin_layout Standard
+So far, we have seen exact PPC algorithms for cue combination 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:PPC_cue_combination"
@@ -2168,8 +2424,8 @@ noprefix "false"
 
 \end_inset
 
- are exact and easy to implement by two different types of neural circuits.
- The assumptions of shared basis 
+, which are easy to implement by two different types of neural circuits.
+ However, the assumptions of shared basis in cue combination 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:PPC_shared_basis"
@@ -2179,7 +2435,7 @@ noprefix "false"
 
 \end_inset
 
-, Gaussian addition 
+, Gaussianity 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:PPC_gaussian_addition"
@@ -2189,7 +2445,7 @@ noprefix "false"
 
 \end_inset
 
- and the subspace hypothesis 
+ and constrained activity 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:PPC_divisive_subspace"
@@ -2199,20 +2455,8 @@ noprefix "false"
 
 \end_inset
 
- are quite strong, as the uncertain beliefs involved in real-world and biologica
-lly relevant situations may be more complicated.
- Although divisive normalisation inspired by 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:PPC_divisive"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- is empirically demonstrated to be accurate for some tasks, implementation
- for other problems using 
+ in addition are quite strong.
+ I argue the reason for these limitations is that 
 \begin_inset ERT
 status open
 
@@ -2225,56 +2469,8 @@ gls{PPC}
 
 \end_inset
 
- is analytically challenging to derive from first principles.
- As shown in later work, 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-gls{PPC}
-\end_layout
-
-\end_inset
-
- implementations for visual search 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "MaPouget2011Behavior"
-literal "false"
-
-\end_inset
-
-, visual categorisation 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "QamarMa2013Trial"
-literal "false"
-
-\end_inset
-
- and causal inference 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "MaRahmati2013Towards"
-literal "false"
-
-\end_inset
-
- all require specific circuitries, and have computations that are intractable
- and/or implausible.
- An overview of these circuitries can be found at 
-\begin_inset CommandInset citation
-LatexCommand citep
-after "Eqs. 5-17"
-key "OrhanMa2017Efficient"
-literal "false"
-
-\end_inset
-
-.
+ encodes distribution by natural parameters, which complicates computation.
+ 
 \end_layout
 
 \begin_layout Remark
@@ -2282,20 +2478,86 @@ literal "false"
 status open
 
 \begin_layout Plain Layout
-PPC for generic computation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
 \end_layout
 
 \end_inset
 
- Since PPC represents probability distributions by their natural parameters,
- it is in general challenging to derive exact or approximate algorithms
- using PPC, and the implementation may not be plausible.
- However, in specific settings, it may be possible to arrive at tractable
- and plausible form of solutions.
+ for generic computations
+\end_layout
+
+\end_inset
+
+ Computation over distributions represented in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ amounts to mapping a set of input natural parameters to an output natural
+ parameters.
+ This requires either knowing the form of the true output distribution,
+ such as when adding two Gaussian variables, or making an assumption for
+ such a distribution.
+ For exponential family distributions, the form is specified by a sufficient
+ statistics function.
+ (Note that 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_shared_basis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ in addition implicitly sets the sufficient statistics functions for the
+ three distributions.) However, it is, in general, challenging to know the
+ set of possible natural parameters from a given sufficient statistics function
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+after "Chap. 2"
+key "WainwrightJordan2008"
+literal "false"
+
+\end_inset
+
+.
+ Thus, almost all computations considered in the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ literature has the output distribution being one of the standard exponential
+ family distributions for which the set of possible natural parameters are
+ known.
  
 \begin_inset CommandInset label
 LatexCommand label
-name "rem:PPC_intractable"
+name "rem:PPC_generic_computations"
 
 \end_inset
 
@@ -2303,19 +2565,183 @@ name "rem:PPC_intractable"
 \end_layout
 
 \begin_layout Standard
-For completeness, I briefly go through the three tasks and illustrate Remark
- 
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Deriving 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ algorithms
+\end_layout
+
+\end_inset
+
+ To compute the downstream 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ in closed-form, the relationship between the input and output natural parameter
+s must be known, such as 
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "rem:PPC_intractable"
+LatexCommand eqref
+reference "eq:PPC_gaussian_addition"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
- in each of the cases.
- In visual search 
+ for addition, or can be approximated, such as 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_shared_basis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ in cue combination.
+ This is usually possible by having a likelihood 
+\begin_inset Formula $p(\vr|x)$
+\end_inset
+
+ such that 
+\begin_inset Formula $p_{\text{PPC}}(x|\vr)$
+\end_inset
+
+ is tractable for downstream manipulations.
+ In most cases, the likelihood is assumed to be Poisson with Gaussian-shaped
+ tuning curves, inducing a Gaussian 
+\begin_inset Formula $p_{\text{PPC}}(x|\vr)$
+\end_inset
+
+ that facilitates mathematical derivations in natural parameters (Remark
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "rem:weak_z_dependence"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Remark
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Implementing 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ in circuitry
+\end_layout
+
+\end_inset
+
+ A Gaussian 
+\begin_inset Formula $p_{\text{PPC}}(x|\vr)$
+\end_inset
+
+ may not facilitate simple and consistent neural circuit implementations.
+ The expressions of output natural parameters derived are different for
+ different tasks; implementing these expressions thus necessarily requires
+ task-specific circuitry.
+ In some cases, some operations are not known to be biologically plausible
+ and requires further approximations.
+ (Recall that the plausible quadratic operation and divisive normalisation
+ are derived in addition of Gaussian variables.)
+\begin_inset CommandInset label
+LatexCommand label
+name "rem:PPC_generic_implementations"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I now briefly go through PPC implementations of three additional tasks to
+ illustrate Remarks 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "rem:PPC_generic_computations"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "rem:PPC_generic_implementations"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Common to all the three tasks, the desired posterior is binary for which
+ the natural parameter is known: the log odds ratio.
+ This trivial case requires no posterior assumptions.
+\end_layout
+
+\begin_layout Standard
+In 
+\series bold
+visual search 
+\series default
+
 \begin_inset CommandInset citation
 LatexCommand citep
 key "MaPouget2011Behavior"
@@ -2323,25 +2749,36 @@ literal "false"
 
 \end_inset
 
-, for each trial, a target appears (
-\begin_inset Formula $T=1$
-\end_inset
-
-) with probability 0.5 among distractors.
- The target is a single oriented bar with orientation 
-\begin_inset Formula $s_{T}\in[0,\pi)$
-\end_inset
-
- appears at random locations of the screen.
- There are also 
+, the stimulus consists of 
 \begin_inset Formula $N$
 \end_inset
 
- distractors bars with orientation distributed according to 
+ oriented bars presented at 
+\begin_inset Formula $N$
+\end_inset
+
+ locations on a screen.
+ On each trial, with probability 0.5, one of the bars is chosen to be the
+ target (
+\begin_inset Formula $T=1$
+\end_inset
+
+) with a fixed orientation 
+\begin_inset Formula $s_{T}$
+\end_inset
+
+ across trials.
+ All other bars are distractors with orientations i.i.d.
+ as 
 \begin_inset Formula $p_{d}(s)$
 \end_inset
 
- and location uniformly distributed on the screen.
+ on each trial.
+ The task is to report whether the target exists among the 
+\begin_inset Formula $N$
+\end_inset
+
+ bars.
  Suppose that each stimulus 
 \begin_inset Formula $s$
 \end_inset
@@ -2354,28 +2791,37 @@ literal "false"
 \begin_inset Formula $\vh_{n}$
 \end_inset
 
-.
- Since this is a decision making task, the desired probability is the Bernoulli
- distribution of whether the target exists or not given all the firing patterns
- 
-\begin_inset Formula $\left\{ \vr_{n}\right\} _{n=1}^{N}$
+ for the 
+\begin_inset Formula $n$
 \end_inset
 
-.
- The natural parameters, and hence PPC, for this distribution is the log
- probability ratio
+'th location.
+ The 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+gls{PPC}
+\end_layout
+
+\end_inset
+
+ of the desired posterior distribution is 
 \begin_inset Formula 
 \[
-d=\log\frac{p\left(T=1|\left\{ \vr_{n}\right\} _{n=1}^{N}\right)}{p\left(T=0|\left\{ \vr_{n}\right\} _{n=1}^{N}\right)}.
+d=\log\frac{p\left(T=1|\left\{ \vr_{n}\right\} _{n=1}^{N}\right)}{p\left(T=0|\left\{ \vr_{n}\right\} _{n=1}^{N}\right)},
 \]
 
 \end_inset
 
+which can be expressed in terms of 
+\begin_inset Formula $\left\{ \vr_{n}\right\} _{n=1}^{N}$
+\end_inset
 
-\end_layout
-
-\begin_layout Standard
-It can be shown that the log likelihood ratio for the decision is
+ as
 \begin_inset Formula 
 \begin{equation}
 d=\log\frac{1}{N}\sum_{n=1}^{N}e^{d_{n}},\quad d_{n}=\vh_{n}(s_{T})\cdot\vr_{n}-\log\int_{0}^{\pi}\exp\left[\vh_{n}(x_{n})\cdot\vr_{n}\right]dp_{d}(x_{n}).\label{eq:PPC_visual_search}
@@ -2396,19 +2842,11 @@ Intuitively, the decision variable
 \end_inset
 
 'the location.
- 
-\end_layout
-
-\begin_layout Remark
-\begin_inset Argument 1
-status open
-
-\begin_layout Plain Layout
-Integral over stimulus distribution
-\end_layout
-
+ The logarithm in the expression for 
+\begin_inset Formula $d_{n}$
 \end_inset
 
+ is biologically implausible.
  If 
 \begin_inset Formula $p_{d}(x_{n})$
 \end_inset
@@ -2422,67 +2860,74 @@ Integral over stimulus distribution
 \end_inset
 
 , and 
-\begin_inset Formula $d$
+\begin_inset Formula $e^{d}$
 \end_inset
 
- can be implemented easily by neural circuits.
+ can be implemented easily by neural circuitry.
  However, for a generic 
 \begin_inset Formula $p_{d}(x_{n})$
 \end_inset
 
-, it is not known how neural circuits can compute or approximate the integral
- in 
+, the integral is intractable, and it is not known how neural circuits can
+ approximate it.
+ 
+\end_layout
+
+\begin_layout Standard
+In 
+\series bold
+visual categorisation
+\series default
+, the stimuli are Gabor filters generated with orientations drawn from a
+ mixture of two Gaussians 
+\begin_inset Formula $p(x|C=1)=\gN\left(x|0,\sigma_{1}^{2}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $p(x|C=2)=\gN\left(x|0,\sigma_{2}^{2}\right)$
+\end_inset
+
+, where 
+\begin_inset Formula $\sigma_{1}<\sigma_{2}$
+\end_inset
+
+.
+ Subjects need to decide from which Gaussian the presented orientation is
+ drawn.
+ The fact that the two Gaussians are largely overlapping makes this task
+ difficult and suitable for probing uncertainty representation.
+ Assuming that 
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "eq:PPC_visual_search"
+LatexCommand eqref
+reference "eq:PPC_total_firing_rate"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
-.
- Importantly, it depends on 
-\begin_inset Formula $p_{d}(x_{n})$
+ holds and that neurons are Poisson with Gaussian-shaped tuning curves,
+ 
+\begin_inset Formula $\vh(x)=\left(\frac{-x^{2}}{2}\vv+x\vm\right)^{\intercal}$
 \end_inset
 
- that is not represented by or learned through 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-gls{PPC}
-\end_layout
+, the relevant PPC code can be shown to be 
+\begin_inset Formula 
+\begin{equation}
+d=\frac{p(C=1|\vr)}{p(C=2|\vr)}=\frac{1}{2}\log\frac{1+\sigma_{2}^{2}\vv\cdot\vr}{1+\sigma_{1}^{2}\vv\cdot\vr}-\frac{\left(\sigma_{2}^{2}-\sigma_{1}^{2}\right)\left(\vm\cdot\vr\right)^{2}}{2\left(1+\sigma_{1}^{2}\vv\cdot\vr\right)\left(1+\sigma_{2}^{2}\vv\cdot\vr\right)}.\label{eq:PPC_visual_categorisation}
+\end{equation}
 
 \end_inset
 
-.
- Even assuming 
-\begin_inset Formula $p_{d}(x)$
-\end_inset
-
- is uniform (as suggested in Remark 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "rem:PPC_suboptimal_decoding"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- for decoding) does not help with this computation.
+The implausible logarithm appears in this expression.
 \end_layout
 
 \begin_layout Standard
-In visual categorisation, 
-\end_layout
+In 
+\series bold
+causal inference 
+\series default
 
-\begin_layout Standard
-In causal inference 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "MaRahmati2013Towards"
@@ -2506,11 +2951,15 @@ literal "false"
 .
  In half of the trials, the two stimuli are generated by a common source
  
-\begin_inset Formula $x\sim p_{x}(s)$
+\begin_inset Formula $x_{1}=x_{2}=x$
 \end_inset
 
 , producing neural responses 
-\begin_inset Formula $\vr_{1},\vr_{2}$
+\begin_inset Formula $\vr_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vr_{2}$
 \end_inset
 
  with likelihood 
@@ -2547,63 +2996,94 @@ p(\vr_{1},\vr_{2}|C=0)=\left(\int p_{r}(\vr_{1}|x_{1})p_{x}(x_{1})dx_{1}\right)\
 
 \end_inset
 
-The log odds that is relevant for decision is then 
+The integrals in these likelihoods are intractable for generic 
+\begin_inset Formula $p_{x}$
+\end_inset
+
+.
+ However, by assuming again that 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:PPC_total_firing_rate"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ holds and that 
+\begin_inset Formula $p_{r}(\vr|x)$
+\end_inset
+
+ is Poisson with Gaussian-shaped tuning curves as in Remark 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "rem:weak_z_dependence"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, 
+\begin_inset Formula $p_{r}(x|\vr)$
+\end_inset
+
+ is an unnormalised Gaussian, and those likelihoods can be computed in closed-fo
+rm.
+ The relevant log odds is 
 \begin_inset Formula 
 \[
-d=\log\frac{p(\vr_{1},\vr_{2}|C=1)}{p(\vr_{1},\vr_{2}|C=0)}
+d=\log\frac{p(C=1|\vr_{1},\vr_{2})}{p(C=0|\vr_{1},\vr_{2})},
 \]
 
 \end_inset
 
-Under the assumptions that the 
-\begin_inset Formula $p_{r}(\vr_{1}|x)$
+which expands to 
+\begin_inset Formula 
+\[
+d=\frac{z_{11}z_{21}}{z_{12}+z_{22}+J_{s}}-\frac{1}{2}\left[\frac{z_{22}z_{11}^{2}}{\left(z_{12}+J_{s}\right)\left(z_{12}+z_{22}+J_{s}\right)}-\frac{z_{12}z_{21}^{2}}{\left(z_{22}+J_{s}\right)\left(z_{12}+z_{22}+J_{s}\right)}+\log\left(1+\frac{z_{12}z_{22}}{J_{s}(z_{12}+z_{22}+J_{s})}\right)\right],
+\]
+
 \end_inset
 
- is Poisson with Gaussian-shaped tuning curves, and that the sum of firing
- rate is a constant for any 
-\begin_inset Formula $x$
+where 
+\begin_inset Formula $J_{s}$
 \end_inset
 
-, 
-\begin_inset Formula $d$
+ depends on the tuning width 
+\begin_inset Formula $\sigma_{\text{tc}}$
 \end_inset
 
- can be written in closed form, but the length of the expression is omitted
- due to its length 
+, and 
+\begin_inset Formula $z$
+\end_inset
+
+'s are linear projections of 
+\begin_inset Formula $\vr$
+\end_inset
+
+ along directions that depends on the tuning curves parameter.
+ The implausible logarithm appears again.
+ As the authors noted 
 \begin_inset CommandInset citation
 LatexCommand citep
-after "eqn. 12"
+after "Section 6"
 key "MaRahmati2013Towards"
 literal "false"
 
 \end_inset
 
-.
- It involves a logarithm term that is further approximated by a constant
- that is the trial average.
- The final expression has 
-\begin_inset CommandInset citation
-LatexCommand citep
-after "eqn. 14"
-key "MaRahmati2013Towards"
-literal "false"
-
-\end_inset
-
- linear projections of 
-\begin_inset Formula $\vr_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $\vr_{2}$
-\end_inset
-
-, their polynomials up to order 3 and divisions.
- 
+, the neural implementation of this equation is possible but very complicated.
 \end_layout
 
 \begin_layout Standard
-Finally, almost all the literature 
+In summary, for the three binary decision tasks, the expressions for PPC
+ posterior are different for the tasks, suggesting drastically different
+ neural circuitry for tasks involving very simple stimulus distributions.
+ Also, all expressions involve logarithm, a strange nonlinearity for neural
+ circuits to perform.
+ 
 \end_layout
 
 \begin_layout Subsubsection
